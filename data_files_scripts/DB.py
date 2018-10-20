@@ -10,8 +10,10 @@ class DB:
     def __init__(self, client, db, name=" "):
         try:
             self.client =pymongo.MongoClient(client)
-            print(self.client.database_names())
+            print(self.client.test)
+            #print(self.client.database_names())
             self.db = self.client[db]
+            print(self.db)
         except pymongo.errors.ConnectionFailure:
             print("failed to connect")
 
@@ -29,6 +31,14 @@ class DB:
         except Exception as e:
             print("Error", e)
         return x
+
+    def return_ids_list(self, collection):
+        #self.collection = self.db[collection]
+        l=[]
+        all = self.find_all(collection)
+        for e in all:
+            l.append(e["postID"])
+        return l
 
     def print_all(self, collection):
         for e in self.find_all(collection):
