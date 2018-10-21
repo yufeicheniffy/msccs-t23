@@ -32,6 +32,14 @@ class DB:
             print("Error", e)
         return x
 
+    def find_category_by_id(self, collection, id):
+        self.collection = self.db[collection]
+        try:
+            x = self.collection.find_one({"postID": str(id)})
+        except Exception as e:
+            print("Error", e)
+        return x["categories"]
+
     def return_ids_list(self, collection):
         #self.collection = self.db[collection]
         l=[]

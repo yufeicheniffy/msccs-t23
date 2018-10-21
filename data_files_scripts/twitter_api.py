@@ -1,6 +1,7 @@
 import tweepy
 import sys
 import json
+import time
 
 
 class twitter_api:
@@ -31,7 +32,8 @@ class twitter_api:
         for i in range(1, iterations+1):
             tweets = (self.api.statuses_lookup(ids[start:end]))
             for t in tweets:
-                list.append(t.text)
+                c = self.DB.find_category_by_id("test", t.id)
+                list.append({"postID": t.id, "text": t.text, "category": c})
             #for first iteration new start = 100 and end (1+1)*100-1 = 199
             #we dont care that at the next iteration will overide the len of list
             # because for loop is terminated.
@@ -42,8 +44,10 @@ class twitter_api:
         # and we end at 200+2-1 = 201 because arrays starts from 0
         start = iterations*100
         tweets = self.api.statuses_lookup(ids[start:start+last_ids-1])
+        print(start+last_ids-1)
         for t in tweets:
-            list.append(t.text)
+            list.append({"postID": t.id, "text": t.text})
+        print(len(list))
         return list
 #find one tweet maybe will be used for testing
 
