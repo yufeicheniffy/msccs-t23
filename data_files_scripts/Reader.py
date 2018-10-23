@@ -26,5 +26,5 @@ class Reader():
                 for e in x:
                     if(e is not None):
                         final_list.append(e)
-                        print(e)
+                        
             return final_list
