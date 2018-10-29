@@ -9,6 +9,7 @@ class MongoCollection:
                     'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
+    #the dictionary to find the catagory index in catarogy array.
     def __init__(self,collectionname='func_test',databasename='Helpme',MongoURI="mongodb://Admin_1:glasgowcom@cluster0-shard-00-00-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-01-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-02-0yvu9.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"):
         #connect to specific database
         # collections: Test;Train;Tweets; default:func_test to test
@@ -78,7 +79,8 @@ class MongoCollection:
             print("Error", e)
         return token.process(self.find_text_by_id(postid))
 
-    def return_train_dic(self):
+
+    def return_train_dic(self):#retuen a dictionary, postid as key with corresponding catagory matrix and tokenized text.
         try:
             dic={}
             for e in self.return_ids_list():

@@ -16,7 +16,7 @@ class HelpMeTokenizer(TweetTokenizer):
 		"""
 		tokenized = self.tokenize(text)
 		#print(tokenized)
-		print(type(tokenized))
+		#print(type(tokenized))
 
 		# remove stopwords
 		no_stopwords = [x for x in tokenized if not x in corp.stopwords.words()]
@@ -25,7 +25,7 @@ class HelpMeTokenizer(TweetTokenizer):
 		no_repeats = list(set(no_stopwords))
 
 
-		print(no_repeats)
+		#print(no_repeats)
 		return no_repeats
 
 
