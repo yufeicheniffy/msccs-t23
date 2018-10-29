@@ -46,8 +46,9 @@ class twitter_api:
         tweets = self.api.statuses_lookup(ids[start:start+last_ids-1])
         print(start+last_ids-1)
         for t in tweets:
-            list.append({"postID": t.id, "text": t.text})
-        print(len(list))
+            c = self.DB.find_category_by_id("test", t.id)
+            list.append({"postID": t.id, "text": t.text, "category": c})
+        
         return list
 #find one tweet maybe will be used for testing
 
@@ -56,6 +57,11 @@ class twitter_api:
         tweet_json = tweet._json
 
         return self.make_dictionary(tweet_json)
+
+    def search_query(self, event):
+        for tweets in tweepy.Cursor(self.api.search, q=event, lang="en", result_type="recent", count=100).items():
+            print(self.make_dictionary(tweets._json))
+
 
 #dictionary{id,text,user,coords,media}
 #will help to visualise live events.
@@ -79,7 +85,8 @@ class twitter_api:
         tweet_dict = {"id": id, "text": tweet_text, "user": tweet_user, "coords": tweet_cordinates, "urls": tweet_urls, "media": tweet_media}
         return tweet_dict
 
-    def transform_to_dict(self, list):
+    #transforms to simple dict of {text}
+    def transform_to_textdict(self, list):
 
         returner = [{"text": x} for x in list]
 
