@@ -10,8 +10,8 @@ Tweet=MongoCollection('Tweets')
 
 dic={}
 for id in trainlabelid:
-    dic.setdefault(id,[]).append([[traincollection.return_catmatrix_by_id(id)]])#Tweet.return_tokenizers_by_id(id) waiting to input
-print(dic)
+    dic.setdefault(id,[]).append([[traincollection.return_catmatrix_by_id(id)]])#Tweet.return_tokenizers_by_id(id)
+print('total documents:'+repr(len(dic)))
 
 
 
