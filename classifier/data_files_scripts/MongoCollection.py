@@ -11,8 +11,8 @@ class MongoCollection:
                     }
     #the dictionary to find the catagory index in catarogy array.
     def __init__(self,collectionname='func_test',databasename='Helpme',MongoURI="mongodb://Admin_1:glasgowcom@cluster0-shard-00-00-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-01-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-02-0yvu9.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"):
-        #connect to specific database
-        # collections: Test;Train;Tweets; default:func_test to test
+        #connect to cloud database default. chage to local,set:  MongoURI="mongodb://localhost:27017/"
+        #collections: Test;Train;Tweets; default:func_test to test
         try:
             self.client = pymongo.MongoClient(MongoURI)
             print("connected to client:" + repr(self.client.list_database_names()))
@@ -71,6 +71,45 @@ class MongoCollection:
         except Exception as e:
             print("Error", e)
         return catmatrix
+
+    def return_catmatrix_all(self):
+        try:
+            idlist=self.return_ids_list()
+            catmaxtrixAll=np.full((len(idlist),25),0)
+            for i,id in zip(range(0,len(idlist)),idlist):
+                catmaxtrixAll[i,:]=self.return_catmatrix_by_id(id)
+        except Exception as e:
+            print('Error',e)
+        return catmaxtrixAll
+    
+    def return_text_all(self):
+        try:
+            idlist=self.return_ids_list()
+            dic={}
+            for id in idlist:
+                dic.setdefault(id,[]).append(self.find_text_by_id(id))
+        except Exception as e:
+            print('Error',e)
+        return dic
+    
+    def return_priority_by_id(self,postid):
+        try:
+             x = self.collection.find_one({"postID": str(postid)})
+        except Exception as e:
+            print("Error", e)
+        return x["priority"]
+
+    def return_classfier_dic(self):
+        try:
+            idlist=self.return_ids_list()
+            dic={}
+            for id in idlist:
+                dic.setdefault(id,[]).append([self.find_text_by_id(id),self.return_catmatrix_by_id(id)])
+        except Exception as e:
+            print('Error',e)
+        return dic
+
+
 
     def return_tokenizers_by_id(self,postid):
         try:
