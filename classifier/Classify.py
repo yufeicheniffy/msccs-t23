@@ -41,19 +41,19 @@ class Classify:
 		self.classifiers = list()
 
 
-	def train():
+	def train(self):
 		"""
 		Fits classifiers to the training data we already have.
 		"""
 		#len(categories)
-		for i in range(0, len(cat_arr[0])):
+		for i in range(0, len(self.cat_arr[0])):
 		    c = BernoulliNB().fit(self.vect_train, self.cat_arr[:,i])
 		    self.classifiers.append(c)
 
 		print("Training complete!")
 
 
-	def predict(tweets):
+	def predict(self,tweets):
 		"""
 		Returns an array of predictions for the given features.
 
@@ -66,9 +66,9 @@ class Classify:
 			raise RuntimeError("Classifiers have not been trained!")
 
 		tokenized = self.vectorizer.transform(tweets)
-		predictions = np.zeros(len(tweets), len(self.classifiers))
+		predictions = np.zeros((len(tweets), len(self.classifiers)))
 
-		for i in len(classifiers):
+		for i in len(self.classifiers):
 			predictions[:,i] = self.classifiers[i].predict(tokenized)
 
 		print(predictions)
