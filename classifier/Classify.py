@@ -36,7 +36,7 @@ class Classify:
 
 		self.cat_arr = np.array(self.cat)
 
-		print(len(cat_arr[:,0]))
+		print(len(self.cat_arr[:,0]))
 
 		self.classifiers = list()
 
@@ -47,7 +47,7 @@ class Classify:
 		"""
 		#len(categories)
 		for i in range(0, len(cat_arr[0])):
-		    c = BernoulliNB().fit(vect_train, cat_arr[:,i])
+		    c = BernoulliNB().fit(self.vect_train, self.cat_arr[:,i])
 		    self.classifiers.append(c)
 
 		 print("Training complete!")
