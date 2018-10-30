@@ -34,7 +34,7 @@ class Classify:
 
 		print(self.vectorizer.get_feature_names())
 
-		self.cat_arr = np.array(cat)
+		self.cat_arr = np.array(self.cat)
 
 		print(len(cat_arr[:,0]))
 
