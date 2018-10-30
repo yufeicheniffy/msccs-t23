@@ -68,7 +68,7 @@ class Classify:
 		tokenized = self.vectorizer.transform(tweets)
 		predictions = np.zeros((len(tweets), len(self.classifiers)))
 
-		for i in len(self.classifiers):
+		for i in range(0, len(self.classifiers)):
 			predictions[:,i] = self.classifiers[i].predict(tokenized)
 
 		print(predictions)
