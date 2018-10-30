@@ -50,7 +50,7 @@ class Classify:
 		    c = BernoulliNB().fit(self.vect_train, self.cat_arr[:,i])
 		    self.classifiers.append(c)
 
-		 print("Training complete!")
+		print("Training complete!")
 
 
 	def predict(tweets):
