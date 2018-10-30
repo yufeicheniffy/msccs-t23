@@ -8,7 +8,7 @@ import io
 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8') 
-traincollection = MongoCollection(collectionname='Training',MongoURI="mongodb://localhost:27017/")
+traincollection = MongoCollection(collectionname='Training_token',MongoURI="mongodb://localhost:27017/")
 trainlabelid=traincollection.return_ids_list()
 dic=traincollection.return_classfier_dic()
 print(dic)
