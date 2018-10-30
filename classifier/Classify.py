@@ -5,8 +5,15 @@ from nltk.corpus import stopwords
 import numpy as np
 
 class Classify:
+	"""
+	A classifier which pulls tweet data from the mongodb database.
+	"""
+
 	def __init__(self, collectionname='Training_token', databasename='Helpme', \
 		MongoURI="mongodb://Admin_1:glasgowcom@cluster0-shard-00-00-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-01-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-02-0yvu9.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"):
+		"""
+		Create classifier. Does not train classifier -- Use .train to do that.
+		"""
 		self.coll=MongoCollection(collectionname=collectionname, databasename=databasename, \
 			MongoURI=MongoURI)
 		#coll.find_text_by_id('243374590288592896')
@@ -50,8 +57,10 @@ class Classify:
 		"""
 		Returns an array of predictions for the given features.
 
-		:param tweets: a list of string tweets
-		:throws: 
+		:param tweets: a list or array of string tweets
+		:returns: predictions matrix
+
+		:throws RuntimeError: if classifiers have not been trained
 		"""
 		if len(self.classifiers) == 0:
 			raise RuntimeError("Classifiers have not been trained!")
