@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, './data_files_scripts')
+
 from MongoCollection import MongoCollection
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.feature_extraction.text import CountVectorizer

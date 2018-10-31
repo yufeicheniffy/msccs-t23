@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, './data_files_scripts')
+
 from MongoCollection import MongoCollection
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.feature_extraction.text import CountVectorizer
@@ -35,6 +38,7 @@ class Classify:
 		print(self.vectorizer.get_feature_names())
 
 		self.cat_arr = np.array(self.cat)
+		print(cat_arr)
 
 		print(len(self.cat_arr[:,0]))
 
