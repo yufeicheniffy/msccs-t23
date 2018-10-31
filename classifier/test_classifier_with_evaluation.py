@@ -8,11 +8,20 @@ mydb = myclient["MasterProject"]
 mycol = mydb["Test"]
 ytest = []
 xtest = []
+
 #for computation reasons just test TWICE the first ytest works with all the TestCollection
-ytest.append(mycol.find_one()["categories"])
-ytest.append(mycol.find_one()["categories"])
-xtest.append(mycol.find_one()["text"])
-xtest.append(mycol.find_one()["text"])
+i=0
+for tweet in mycol.find():
+
+
+	x_ = tweet["text"]
+	print(tweet)
+	if('categories' in tweet):
+		y_ = tweet["categories"]
+	else:
+		y_ = tweet["categories "]
+	ytest.append(y_)
+	xtest.append(x_)
 print("YTEST")
 print(ytest)
 
