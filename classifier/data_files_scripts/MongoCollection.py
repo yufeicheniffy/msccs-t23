@@ -25,12 +25,22 @@ class MongoCollection:
             print("failed to connect")
 
     def insert(self, item):
+        """
+        Insert the given item to the collection
+
+        :param item: item to insert
+        """
         try:
             self.collection.insert(item)
         except Exception as e:
             print("Error", e)
 
     def find_all(self):
+        """
+        Find all documents in the collection 
+
+        :return: all documents
+        """
         try:
             x = self.collection.find()
         except Exception as e:
@@ -38,10 +48,19 @@ class MongoCollection:
         return x
 
     def print_all(self):
+        """
+        Print all documents in the collection.
+        """
         for e in self.find_all():
             print(e)
 
     def find_category_by_id(self, postid):
+        """
+        Lookup the category of the given tweet.
+
+        :param postid: tweet to lookup
+        :return: categories of tweet
+        """
         try:
             x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
@@ -49,6 +68,12 @@ class MongoCollection:
         return x["categories"]
 
     def find_text_by_id(self,postid):
+        """
+        Lookup the text of the given tweet.
+
+        :param postid: tweet to lookup
+        :return: text of tweet
+        """
         try:
             x = self.collection.find_one({"identifier": str(postid)})
             if (x is None):
@@ -58,6 +83,11 @@ class MongoCollection:
         return x["text"]
 
     def return_ids_list(self):
+        """
+        Return all tweet ids in collection.
+
+        :return: list of tweet ids
+        """
         l=[]
         all = self.find_all()
         for e in all:
@@ -65,6 +95,9 @@ class MongoCollection:
         return l
 
     def return_catmatrix_by_id(self, postid):
+        """
+        ....
+        """
         try:
             catmatrix=np.full((25,), 0)
             catalist=self.find_category_by_id(postid)
@@ -76,6 +109,9 @@ class MongoCollection:
         return catmatrix
 
     def return_catmatrix_all(self):
+        """
+        ....
+        """
         try:
             idlist=self.return_ids_list()
             catmaxtrixAll=np.full((len(idlist),25),0)
@@ -86,6 +122,11 @@ class MongoCollection:
         return catmaxtrixAll
     
     def return_text_all(self):
+        """
+        Lookup text for all tweets.
+
+        :return: dictionary of id to text for all tweets
+        """
         try:
             idlist=self.return_ids_list()
             dic={}
@@ -96,13 +137,25 @@ class MongoCollection:
         return dic
     
     def return_priority_by_id(self,postid):
+        """
+        Return the priority of the given tweet
+
+        :param postid: tweet to look up
+        :return: priority of tweet
+        """
         try:
              x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
             print("Error", e)
         return x["priority"]
 
+
     def return_classfier_dic(self):
+        """
+        Return a dictionary of id to [text, category] for all tweets in collection
+
+        :return: dict of id to [text, category] 
+        """
         try:
             idlist=self.return_ids_list()
             dic={}
