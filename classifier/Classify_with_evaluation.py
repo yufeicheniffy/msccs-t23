@@ -29,7 +29,7 @@ class Classify:
             binary=True, max_features=vocab_size)
         self.vect_train = self.vectorizer.fit_transform(self.text)
 
-        print(self.vectorizer.get_feature_names())
+        #print(self.vectorizer.get_feature_names())
 
 
         self.classifiers = list()
@@ -57,30 +57,26 @@ class Classify:
         return returner
 
 #   input ytest_array,and X_test
-    def evaluation_(self,ytest_array,predict):
-        listdic = []
-        data_v = []
-        #y_test_arr = self.create_binary_category(ytest_array)
-        y_test_arr = np.array(ytest_array)
-        print(y_test_arr)
-        print(sum(y_test_arr))
-        print(type(y_test_arr))
-        for i in range(0,len(self.categories)):
-            listdic.append({"Category": self.categories[i], "Accuracy": accuracy_score(y_test_arr[:,i],predict[:,i]), "Recall": recall_score(y_test_arr[:,i],predict[:,i],pos_label=1), "Preccision": precision_score(y_test_arr[:,i],predict[:,i],pos_label=1), "F1score":f1_score(y_test_arr[:,i],predict[:,i],pos_label=1)})
-            data_v.append(accuracy_score(y_test_arr[:,i],predict[:,i]))
-            data_v.append(recall_score(y_test_arr[:,i],predict[:,i],pos_label=1))
-            data_v.append(precision_score(y_test_arr[:,i],predict[:,i],pos_label=1))
-            data_v.append(f1_score(y_test_arr[:,i], predict[:,i], pos_label=1))
-
-        data_v = np.array(data_v)
-        data_v = data_v.reshape(25,4)
-        data_frame = pd.DataFrame(data=data_v, index=np.array(self.categories),columns=np.array(['Accuracy', 'Precision', 'Recall', 'F1 Score']))
-        #print(data_frame)
-        data_frame.to_csv('evaluation.csv', sep='\t')
-        return data_frame
+    def evaluation_(self,ytest_array,predict,names):
+        ytest_arr = np.array(ytest_array)
+        res = list()
+        for x in range(0, len(ytest_array[0])):
+            d = {"Category": names[x],
+                "Accuracy": accuracy_score(ytest_arr[:,x],predict[:,x]),
+                "Recall": recall_score(ytest_arr[:,x],predict[:,x]),
+                "Precision": precision_score(ytest_arr[:,x],predict[:,x]),
+                "F1": f1_score(ytest_arr[:,x],predict[:,x])}
+            print(d)
+            res.append(d)
+        return res
 
 
     def simple_evaluation(self, actual, prediction):
+        """
+        Simple evaluator, printing overal confusion matrix, accuracy
+        recall, precision, f1
+        """
+
         true_pos = 0
         true_neg = 0
         false_pos = 0
@@ -102,8 +98,11 @@ class Classify:
         print("true negative ", true_neg)
         print("false negative ", false_neg)
         print("overall accuracy ", (true_pos+true_neg)/(true_pos+true_neg+false_pos+false_neg))
-        print("overall recall ", true_pos/(true_pos+false_neg))
-        print("overall precision ", true_pos/(true_pos+false_pos))
+        p = true_pos/(true_pos+false_pos)
+        r = true_pos/(true_pos+false_neg)
+        print("overall recall ", r)
+        print("overall precision ", p)
+        print("overall f1 ", 2*(p*r)/(p+r))
 
     def predict(self,tweets):
         """
