@@ -1,0 +1,26 @@
+	Accuracy	Precision	Recall	F1 Score
+Advice	1.0	0.0	0.0	0.0
+CleanUp	1.0	0.0	0.0	0.0
+ContinuingNews	1.0	0.0	0.0	0.0
+Discussion	1.0	0.0	0.0	0.0
+Donations	1.0	0.0	0.0	0.0
+EmergingThreats	1.0	0.0	0.0	0.0
+Factoid	1.0	0.0	0.0	0.0
+FirstPartyObservation	1.0	0.0	0.0	0.0
+GoodsServices	0.9997176895714528	0.0	0.0	0.0
+Hashtags	1.0	0.0	0.0	0.0
+InformationWanted	1.0	0.0	0.0	0.0
+Irrelevant	0.9943537914290554	0.0	0.0	0.0
+KnownAlready	1.0	0.0	0.0	0.0
+MovePeople	0.995313646886116	0.0	0.0	0.0
+MultimediaShare	0.9999435379142906	0.0	0.0	0.0
+Official	1.0	0.0	0.0	0.0
+PastNews	1.0	0.0	0.0	0.0
+SearchAndRescue	1.0	0.0	0.0	0.0
+Sentiment	0.9558466489752131	0.0	0.0	0.0
+ServiceAvailable	1.0	0.0	0.0	0.0
+SignificantEventChange	0.9375529332053526	0.0	0.0	0.0
+ThirdPartyObservation	1.0	0.0	0.0	0.0
+Unknown	0.9613799333747388	0.0	0.0	0.0
+Volunteer	1.0	0.0	0.0	0.0
+Weather	0.9942408672576365	0.0	0.0	0.0

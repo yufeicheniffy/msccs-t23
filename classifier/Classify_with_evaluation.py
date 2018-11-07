@@ -1,12 +1,10 @@
 import sys
 sys.path.insert(0, './data_files_scripts')
 
-from MongoCollection import MongoCollection
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 import numpy as np
-import pymongo
 from sklearn.metrics import f1_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
@@ -19,10 +17,9 @@ class Classify:
 	A classifier which pulls tweet data from the mongodb database.
 	"""
 
-	def __init__(self, collectionname='Training_token', databasename='MasterProject',
-		MongoURI="mongodb://localhost:27017/"):
+	def __init__(self, cats, tweet_texts):
 		"""
-		Create classifier. Does not train classifier -- Use .train to do that.
+		Create and train classifier.
 		"""
 		self.categories=[
 		    "Advice",
@@ -51,39 +48,31 @@ class Classify:
 		    "Volunteer",
 		    "Weather"
 		]
-		self.coll=MongoCollection(collectionname=collectionname, databasename=databasename, \
-			MongoURI=MongoURI)
 		#coll.find_text_by_id('243374590288592896')
-		self.tweet_info = self.coll.return_train_dic()
-		self.cat = list()
-		self.text = list()
+		#self.tweet_info = training_tweets
+		self.cat = cats
+		self.text = tweet_texts
 		#self.text_t = dict()
-		for tweet in sorted(self.tweet_info.keys()):
+		"""for tweet in sorted(self.tweet_info.keys()):
 			self.cat.append(self.tweet_info[tweet][0][0])
 			self.text.append(self.coll.find_text_by_id(tweet))
-
-
-
 		    #cat[tweet] = tweet_info[tweet][0][0]
 		    #text[tweet] = coll.find_text_by_id(tweet)
-		    #text_t[tweet] = tweet_info[tweet][0][1]
+		    #text_t[tweet] = tweet_info[tweet][0][1]"""
 		self.cat_arr = np.array(self.cat)
-		print(self.cat)
-		print(self.cat_arr)
+		#print(self.cat)
+		#print(self.cat_arr)
 
-		self.vectorizer = CountVectorizer(stop_words=stopwords.words(),binary=True)
+		self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+			binary=True, max_features=1000)
 		self.vect_train = self.vectorizer.fit_transform(self.text)
 
 		print(self.vectorizer.get_feature_names())
 
-		# myclient_ = pymongo.MongoClient("mongodb://localhost:27017/")
-		# mydb = myclient_["MasterProject"]
-		# mycol = mydb["Terms"]
-		# mycol.insert({"TermDoc":"Terms", "Array": self.cat_arr})
-
-		print(len(self.cat_arr[:,0]))
+		#print(len(self.cat_arr[:,0]))
 
 		self.classifiers = list()
+		self.train()
 
 
 	def train(self):
@@ -130,10 +119,10 @@ class Classify:
 		listdic = []
 		data_v = []
 		y_test_arr = self.create_binary_category(ytest_array)
-		print("y_test_array")
-		print(y_test_arr)
-		print("Predictions")
-		print(predict)
+		#print("y_test_array")
+		#print(y_test_arr)
+		#print("Predictions")
+		#print(predict)
 		for i in range(0,len(self.categories)):
 		    listdic.append({"Category": self.categories[i], "Accuracy": accuracy_score(y_test_arr[:,i],predict[:,i]), "Recall": recall_score(y_test_arr[:,i],predict[:,i],pos_label=1), "Preccision": precision_score(y_test_arr[:,i],predict[:,i],pos_label=1), "F1score":f1_score(y_test_arr[:,i],predict[:,i],pos_label=1)})
 		    data_v.append(accuracy_score(y_test_arr[:,i],predict[:,i]))
@@ -144,10 +133,14 @@ class Classify:
 		data_v = np.array(data_v)
 		data_v = data_v.reshape(25,4)
 		data_frame = pd.DataFrame(data=data_v, index=np.array(self.categories),columns=np.array(['Accuracy', 'Precision', 'Recall', 'F1 Score']))
-		print(data_frame)
+		#print(data_frame)
 		data_frame.to_csv('evaluation.csv', sep='\t')
 		return data_frame
 
+
+	def simple_evaluation(self, actual, prediction):
+		for x in range(0, len(actual)):
+			print(actual[x], ' ', prediction[x])
 
 	def predict(self,tweets):
 		"""
@@ -160,7 +153,7 @@ class Classify:
 		"""
 		if len(self.classifiers) == 0:
 			raise RuntimeError("Classifiers have not been trained!")
-
+		print(tweets)
 		tokenized = self.vectorizer.transform(tweets)
 		predictions = np.zeros((len(tweets), len(self.classifiers)))
 

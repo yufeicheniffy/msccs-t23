@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, './data_files_scripts')
+
 import pymongo
 import numpy as np
 from HelpMeTokenizer import HelpMeTokenizer
