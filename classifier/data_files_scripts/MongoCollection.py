@@ -3,7 +3,6 @@ sys.path.insert(0, './data_files_scripts')
 
 import pymongo
 import numpy as np
-from HelpMeTokenizer import HelpMeTokenizer
 
 class MongoCollection:
     catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
@@ -120,6 +119,22 @@ class MongoCollection:
         except Exception as e:
             print('Error',e)
         return catmaxtrixAll
+
+    def return_catdict_all(self):
+        """
+        Return a dictionary of ID to list of binary category values.
+
+        :return: dict of categories for tweets
+        """
+        try:
+            idlist=self.return_ids_list()
+            cat_dict={}
+            for id in idlist:
+                cat_dict[id] = self.return_catmatrix_by_id(id)
+        except Exception as e:
+            print('Error',e)
+        return cat_dict
+
     
     def return_text_all(self):
         """
@@ -131,7 +146,7 @@ class MongoCollection:
             idlist=self.return_ids_list()
             dic={}
             for id in idlist:
-                dic.setdefault(id,[]).append(self.find_text_by_id(id))
+                dic[id] = self.find_text_by_id(id)
         except Exception as e:
             print('Error',e)
         return dic
@@ -163,23 +178,4 @@ class MongoCollection:
                 dic.setdefault(id,[]).append([self.find_text_by_id(id),self.return_catmatrix_by_id(id)])
         except Exception as e:
             print('Error',e)
-        return dic
-
-
-
-    def return_tokenizers_by_id(self,postid):
-        try:
-         token=HelpMeTokenizer()
-        except Exception as e:
-            print("Error", e)
-        return token.process(self.find_text_by_id(postid))
-
-
-    def return_train_dic(self):#retuen a dictionary, postid as key with corresponding catagory matrix and tokenized text.
-        try:
-            dic={}
-            for e in self.return_ids_list():
-                dic.setdefault(e,[]).append([self.return_catmatrix_by_id(e),self.return_tokenizers_by_id(e)])
-        except Exception as e:
-            print("Error", e)
         return dic

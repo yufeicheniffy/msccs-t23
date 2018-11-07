@@ -28,17 +28,22 @@ for tweet in sorted(testing.keys()):
 	cat_test.append(testing[tweet][0][0])
 	text_test.append(test_connect.find_text_by_id(tweet))"""
 
-overall = training_connect.return_train_dic() + test_connect.return_text_all()
+"""overall = training_connect.return_train_dic() + test_connect.return_text_all()
 cat = list()
 text = list()
 for tweet in sorted(training.keys()):
 	cat.append(training[tweet][0][0])
-	text.append(training_connect.find_text_by_id(tweet))
+	text.append(training_connect.find_text_by_id(tweet))"""
+
+print(training_connect.return_text_all())
+print(training_connect.return_catdict_all())
+text_dict = {**training_connect.return_text_all(), **test_connect.return_text_all()}
+cat_dict = {**training_connect.return_catdict_all(), **test_connect.return_catdict_all()}
 
 
 
-clas = Classify(cat, text)
+"""clas = Classify(cat, text)
 predict = clas.predict(text_test)
 #returns a csv file with a dataframe
 #clas.evaluation_(cat_test,predict)
-clas.simple_evaluation(cat_test,predict)
+clas.simple_evaluation(cat_test,predict)"""
