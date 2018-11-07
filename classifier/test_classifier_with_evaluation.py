@@ -3,47 +3,58 @@ sys.path.insert(0, './data_files_scripts')
 
 from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
+from sklearn.model_selection import train_test_split
+import numpy as np
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
 test_connect = MongoCollection(collectionname='Test', MongoURI="mongodb://localhost:27017/")
 
-#for computation reasons just test TWICE the first ytest works with all the TestCollection
-
-# original train tes
-"""training = training_connect.return_train_dic()
-cat = list()
-text = list()
-#self.text_t = dict()
-for tweet in sorted(training.keys()):
-	cat.append(training[tweet][0][0])
-	text.append(training_connect.find_text_by_id(tweet))
-	#cat[tweet] = tweet_info[tweet][0][0]
-	#text[tweet] = coll.find_text_by_id(tweet)
-	#text_t[tweet] = tweet_info[tweet][0][1]
-
-testing= test_connect.return_text_all()
-cat_test = list()
-text_test = list()
-for tweet in sorted(testing.keys()):
-	cat_test.append(testing[tweet][0][0])
-	text_test.append(test_connect.find_text_by_id(tweet))"""
-
-"""overall = training_connect.return_train_dic() + test_connect.return_text_all()
-cat = list()
-text = list()
-for tweet in sorted(training.keys()):
-	cat.append(training[tweet][0][0])
-	text.append(training_connect.find_text_by_id(tweet))"""
-
-print(training_connect.return_text_all())
-print(training_connect.return_catdict_all())
-text_dict = {**training_connect.return_text_all(), **test_connect.return_text_all()}
-cat_dict = {**training_connect.return_catdict_all(), **test_connect.return_catdict_all()}
+#resplit train/test
+td0 = training_connect.return_text_all()
+cd0 = training_connect.return_catdict_all()
+print(len(td0))
+print(len(cd0))
+td1 = test_connect.return_text_all()
+cd1 = test_connect.return_catdict_all()
+print(len(td1))
+print(len(cd1))
 
 
+text_dict = {**td0, **td1}
+cat_dict = {**cd0, **cd1}
 
-"""clas = Classify(cat, text)
+print(len(text_dict))
+print(len(cat_dict))
+
+full_text = list()
+full_cat = list()
+for id in (sorted(text_dict.keys())):
+	full_text.append(text_dict[id])
+	full_cat.append(cat_dict[id])
+
+print(len(full_text))
+print(len(full_cat))
+
+text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_cat, 
+	test_size = .2)
+
+print(len(text_train))
+print(len(text_test))
+print(len(cat_train))
+print(len(text_test))
+
+cat_test_arr = np.array(cat_test, dtype=np.float64)
+print(cat_test_arr)
+print(sum(cat_test_arr))
+
+clas = Classify(cat_train, text_train, 500)
 predict = clas.predict(text_test)
-#returns a csv file with a dataframe
 #clas.evaluation_(cat_test,predict)
-clas.simple_evaluation(cat_test,predict)"""
+clas.simple_evaluation(cat_test,predict)
+
+print(type(cat_test_arr))
+print(type(predict))
+print(cat_test_arr.shape)
+print(predict.shape)
+print(type(cat_test_arr[0][0]))
+print(type(predict[0][0]))

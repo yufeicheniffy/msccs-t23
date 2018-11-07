@@ -120,19 +120,44 @@ class MongoCollection:
             print('Error',e)
         return catmaxtrixAll
 
+    def create_catmatrix(self, categories):
+        """
+        Return a binary category array.
+        """
+        try:
+            catmatrix=np.full((25,), 0)
+            for e in categories:
+                i=self.catadictionary.get(e)
+                catmatrix[i]=1
+        except Exception as e:
+            print("Error", e)
+        return catmatrix
+
     def return_catdict_all(self):
         """
         Return a dictionary of ID to list of binary category values.
 
         :return: dict of categories for tweets
         """
-        try:
+        """try:
             idlist=self.return_ids_list()
             cat_dict={}
             for id in idlist:
                 cat_dict[id] = self.return_catmatrix_by_id(id)
         except Exception as e:
-            print('Error',e)
+            raise
+            #print('Error',e)
+        return cat_dict"""
+        try:
+            cat_info = self.collection.find(projection = {'categories': 1})
+            print(cat_info)
+            cat_dict = dict()
+            for item in cat_info:
+                #print(item)
+                cat_dict[item['_id']] = self.create_catmatrix(item.get('categories', []))
+        except Exception as e:
+            raise
+            #print('Error',e)
         return cat_dict
 
     
@@ -142,14 +167,25 @@ class MongoCollection:
 
         :return: dictionary of id to text for all tweets
         """
-        try:
+        """try:
             idlist=self.return_ids_list()
             dic={}
             for id in idlist:
                 dic[id] = self.find_text_by_id(id)
         except Exception as e:
             print('Error',e)
-        return dic
+        return dic"""
+        try:
+            text_info = self.collection.find(projection = {'text': 1})
+            #print(text_info)
+            text_dict = dict()
+            for item in text_info:
+                #print(item)
+                text_dict[item['_id']] = item.get('text')
+        except Exception as e:
+            raise
+            #print('Error',e)
+        return text_dict
     
     def return_priority_by_id(self,postid):
         """

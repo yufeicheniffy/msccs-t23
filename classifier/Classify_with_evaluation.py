@@ -13,152 +13,112 @@ import pandas as pd
 
 
 class Classify:
-	"""
-	A classifier which pulls tweet data from the mongodb database.
-	"""
+    """
+    A classifier which pulls tweet data from the mongodb database.
+    """
 
-	def __init__(self, cats, tweet_texts):
-		"""
-		Create and train classifier.
-		"""
-		self.categories=[
-		    "Advice",
-		    "CleanUp",
-		    "ContinuingNews",
-		    "Discussion",
-		    "Donations",
-		    "EmergingThreats",
-		    "Factoid",
-		    "FirstPartyObservation",
-		    "GoodsServices",
-		    "Hashtags",
-		    "InformationWanted",
-		    "Irrelevant",
-		    "KnownAlready",
-		    "MovePeople",
-		    "MultimediaShare",
-		    "Official",
-		    "PastNews",
-		    "SearchAndRescue",
-		    "Sentiment",
-		    "ServiceAvailable",
-		    "SignificantEventChange",
-		    "ThirdPartyObservation",
-		    "Unknown",
-		    "Volunteer",
-		    "Weather"
-		]
-		#coll.find_text_by_id('243374590288592896')
-		#self.tweet_info = training_tweets
-		self.cat = cats
-		self.text = tweet_texts
-		#self.text_t = dict()
-		"""for tweet in sorted(self.tweet_info.keys()):
-			self.cat.append(self.tweet_info[tweet][0][0])
-			self.text.append(self.coll.find_text_by_id(tweet))
-		    #cat[tweet] = tweet_info[tweet][0][0]
-		    #text[tweet] = coll.find_text_by_id(tweet)
-		    #text_t[tweet] = tweet_info[tweet][0][1]"""
-		self.cat_arr = np.array(self.cat)
-		#print(self.cat)
-		#print(self.cat_arr)
+    def __init__(self, cats, tweet_texts, vocab_size):
+        """
+        Create and train classifier.
+        """
+        self.cat = cats
+        self.text = tweet_texts
+        self.cat_arr = np.array(self.cat)
 
-		self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
-			binary=True, max_features=1000)
-		self.vect_train = self.vectorizer.fit_transform(self.text)
+        self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+            binary=True, max_features=vocab_size)
+        self.vect_train = self.vectorizer.fit_transform(self.text)
 
-		print(self.vectorizer.get_feature_names())
-
-		#print(len(self.cat_arr[:,0]))
-
-		self.classifiers = list()
-		self.train()
+        print(self.vectorizer.get_feature_names())
 
 
-	def train(self):
-		"""
-		Fits classifiers to the training data we already have.
-		"""
-		#len(categories)
-		for i in range(0, len(self.cat_arr[0])):
-		    c = BernoulliNB().fit(self.vect_train, self.cat_arr[:,i])
-		    self.classifiers.append(c)
-
-		print("Training complete!")
-
-	#retrieves the index of category eg 0 = 'Advice'
-	def map_id(self,category):
-	    returner = []
-	    for c in category:
-	        for i in range(0,len(self.categories)):
-	            if(c == self.categories[i]):
-	                returner.append(i)
-	    return returner
+        self.classifiers = list()
+        self.train()
 
 
-#	it would be lists of lists [true_labels0 = [label1,label2,], true_labels1 = [label1]]
-#	create the binary Test x Categoriy matrix : each row of matrix represent the true categories of each Test data->
-#	[Binary_category1,....,Binary_categorym,.......Binary_category25]
-	def create_binary_category(self,ytest_array):
-		returner = np.zeros(25)[:None]
+    def train(self):
+        """
+        Fits classifiers to the training data we already have.
+        """
+        #len(categories)
+        for i in range(0, len(self.cat_arr[0])):
+            c = BernoulliNB().fit(self.vect_train, self.cat_arr[:,i])
+            self.classifiers.append(c)
 
-		for ytest in ytest_array:
-			#checking if is a simple text, without this if the for would iterate to every char of string
-			if isinstance(ytest, str):
-			    ytest= [ytest]
-			id_1 = self.map_id(ytest)
-			category_arr = np.zeros(25)[:None]
-			for id in id_1:
-				category_arr[id]=1
-			returner = np.vstack((returner, category_arr))	
+        print("Training complete!")
 
-		return returner[1:,:]
+    #retrieves the index of category eg 0 = 'Advice'
+    def map_id(self,category):
+        returner = []
+        for c in category:
+            for i in range(0,len(self.categories)):
+                if(c == self.categories[i]):
+                    returner.append(i)
+        return returner
 
-#	input ytest_array,and X_test
-	def evaluation_(self,ytest_array,predict):
-		listdic = []
-		data_v = []
-		y_test_arr = self.create_binary_category(ytest_array)
-		#print("y_test_array")
-		#print(y_test_arr)
-		#print("Predictions")
-		#print(predict)
-		for i in range(0,len(self.categories)):
-		    listdic.append({"Category": self.categories[i], "Accuracy": accuracy_score(y_test_arr[:,i],predict[:,i]), "Recall": recall_score(y_test_arr[:,i],predict[:,i],pos_label=1), "Preccision": precision_score(y_test_arr[:,i],predict[:,i],pos_label=1), "F1score":f1_score(y_test_arr[:,i],predict[:,i],pos_label=1)})
-		    data_v.append(accuracy_score(y_test_arr[:,i],predict[:,i]))
-		    data_v.append(recall_score(y_test_arr[:,i],predict[:,i],pos_label=1))
-		    data_v.append(precision_score(y_test_arr[:,i],predict[:,i],pos_label=1))
-		    data_v.append(f1_score(y_test_arr[:,i], predict[:,i], pos_label=1))
+#   input ytest_array,and X_test
+    def evaluation_(self,ytest_array,predict):
+        listdic = []
+        data_v = []
+        #y_test_arr = self.create_binary_category(ytest_array)
+        y_test_arr = np.array(ytest_array)
+        print(y_test_arr)
+        print(sum(y_test_arr))
+        print(type(y_test_arr))
+        for i in range(0,len(self.categories)):
+            listdic.append({"Category": self.categories[i], "Accuracy": accuracy_score(y_test_arr[:,i],predict[:,i]), "Recall": recall_score(y_test_arr[:,i],predict[:,i],pos_label=1), "Preccision": precision_score(y_test_arr[:,i],predict[:,i],pos_label=1), "F1score":f1_score(y_test_arr[:,i],predict[:,i],pos_label=1)})
+            data_v.append(accuracy_score(y_test_arr[:,i],predict[:,i]))
+            data_v.append(recall_score(y_test_arr[:,i],predict[:,i],pos_label=1))
+            data_v.append(precision_score(y_test_arr[:,i],predict[:,i],pos_label=1))
+            data_v.append(f1_score(y_test_arr[:,i], predict[:,i], pos_label=1))
 
-		data_v = np.array(data_v)
-		data_v = data_v.reshape(25,4)
-		data_frame = pd.DataFrame(data=data_v, index=np.array(self.categories),columns=np.array(['Accuracy', 'Precision', 'Recall', 'F1 Score']))
-		#print(data_frame)
-		data_frame.to_csv('evaluation.csv', sep='\t')
-		return data_frame
+        data_v = np.array(data_v)
+        data_v = data_v.reshape(25,4)
+        data_frame = pd.DataFrame(data=data_v, index=np.array(self.categories),columns=np.array(['Accuracy', 'Precision', 'Recall', 'F1 Score']))
+        #print(data_frame)
+        data_frame.to_csv('evaluation.csv', sep='\t')
+        return data_frame
 
 
-	def simple_evaluation(self, actual, prediction):
-		for x in range(0, len(actual)):
-			print(actual[x], ' ', prediction[x])
+    def simple_evaluation(self, actual, prediction):
+        true_pos = 0
+        true_neg = 0
+        false_pos = 0
+        false_neg = 0
+        for x in range(0, len(actual)):
+            for y in range(0, len(actual[x])):
+                if actual[x][y] == 1:
+                    if prediction[x][y] == 1:
+                        true_pos += 1
+                    else: 
+                        false_neg +=1
+                else:
+                    if prediction[x][y] == 1:
+                        false_pos += 1
+                    else:
+                        true_neg += 1
+        print("true positive ", true_pos)
+        print("false positive ", false_pos)
+        print("true negative ", true_neg)
+        print("false negative ", false_neg)
+        print("overall accuracy ", (true_pos+true_neg)/(true_pos+true_neg+false_pos+false_neg))
+        print("overall recall ", true_pos/(true_pos+false_neg))
+        print("overall precision ", true_pos/(true_pos+false_pos))
 
-	def predict(self,tweets):
-		"""
-		Returns an array of predictions for the given features.
+    def predict(self,tweets):
+        """
+        Returns an array of predictions for the given features.
 
-		:param tweets: a list or array of string tweets
-		:returns: predictions matrix
+        :param tweets: a list or array of string tweets
+        :returns: predictions matrix
 
-		:throws RuntimeError: if classifiers have not been trained
-		"""
-		if len(self.classifiers) == 0:
-			raise RuntimeError("Classifiers have not been trained!")
-		print(tweets)
-		tokenized = self.vectorizer.transform(tweets)
-		predictions = np.zeros((len(tweets), len(self.classifiers)))
+        :throws RuntimeError: if classifiers have not been trained
+        """
+        if len(self.classifiers) == 0:
+            raise RuntimeError("Classifiers have not been trained!")
+        tokenized = self.vectorizer.transform(tweets)
+        predictions = np.zeros((len(tweets), len(self.classifiers)))
 
-		for i in range(0, len(self.classifiers)):
-			predictions[:,i] = self.classifiers[i].predict(tokenized)
-
-		#print(predictions)
-		return(predictions)
+        for i in range(0, len(self.classifiers)):
+            predictions[:,i] = self.classifiers[i].predict(tokenized)
+        return(predictions)
