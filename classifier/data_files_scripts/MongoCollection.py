@@ -30,9 +30,19 @@ class MongoCollection:
         except Exception as e:
             print("Error", e)
 
-    def return_collection(self):#in order to directly call pymongo collection methods, return collection
 
-        return self.collection
+    def find(self, query):
+        '''
+        find a document into this MongoCollection
+        '''
+        try:
+            self.collection.find(query)
+        except Exception as e:
+            print("Error", e)
+
+    def set_collection(self,collectionname): #change collection 
+        self.collection=self.database[collectionname]
+        return self
 
     def find_all(self):
         '''

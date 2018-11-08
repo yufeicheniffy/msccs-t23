@@ -6,9 +6,17 @@ import json
 from bson import json_util, ObjectId
 import app.search_rest as rest
 
+global G_collection #the instance of MongoCollection, Don't need to create a lot of instance.
 @app.route('/')
-@app.route('/index') #home and index page.
 def home():
+        global G_collection
+        G_collection=MongoCollection.MongoCollection(collectionname='TweetsData') #create the instance in the home page. Each time the project should run start with home page.
+        user = {'username': 'Team28'}
+        return render_template('index.html', title='Home', user=user)
+
+@app.route('/index') #home and index page.
+def index():
+        global G_collection
         user = {'username': 'Team28'}
         return render_template('index.html', title='Home', user=user)
 
@@ -23,7 +31,7 @@ def RequestForms():
 
 @app.route('/searchresults')# a route to show Tweet content
 def results():
-        database=MongoCollection.MongoCollection(collectionname='Training_token')
+        database=G_collection.set_collection(collectionname='TweetsData')
         Tweets={
         'PostID':"243374590288592896",
         'text':database.find_text_by_id("243374590288592896"),
@@ -40,9 +48,9 @@ def page_not_found(e):
 def api_all():
         # run locally http://127.0.0.1:5000/api/v1/resources/
         # will return a json result of the first 100 Test data, you can change the limit
-    mycol = MongoCollection.MongoCollection(collectionname='Test')
+    database=G_collection.set_collection(collectionname='TweetsData')
     results=[]
-    for tweet in mycol.return_collection().find().limit(int(100)):
+    for tweet in database.collection.find().limit(int(100)):
         results.append(json.loads(json_util.dumps(tweet)))
 
     return (jsonify(results))
@@ -60,7 +68,7 @@ def api_all():
 def api_filter():
     query= request.form['query']
     # use the name that you gave to your collection
-    mycol = MongoCollection.MongoCollection(collectionname='func_test')
+    database=G_collection.set_collection(collectionname='TweetsData')
     results, ids = rest.query_search(query)
-    mycol.return_collection().insert(results)
+    database.insert(results)
     return jsonify({"name": ids})
