@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Retrive Tweets</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.PostID.label }}<br>
+            {{ form.PostID(size=32) }}
+        </p>
+        <p>
+            {{ form.Category.label }}<br>
+            {{ form.Category(size=32) }}
+        </p>
+        <p>
+            {{ form.Priority.label }}<br>
+            {{ form.Priority(size=32) }}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
