@@ -6,7 +6,10 @@ import json
 from bson import json_util, ObjectId
 import app.search_rest as rest
 
+
 global G_collection #the instance of MongoCollection, Don't need to create a lot of instance.
+
+
 @app.route('/')
 def home():
         global G_collection
@@ -43,7 +46,7 @@ def results():
 @app.errorhandler(404)
 def page_not_found(e):
     return "<h1>404</h1><p>The resource could not be found.</p>", 404
-    
+
 @app.route('/api/v1/resources/', methods=['GET']) # return the result of tweetapi.
 def api_all():
         # run locally http://127.0.0.1:5000/api/v1/resources/
@@ -68,7 +71,35 @@ def api_all():
 def api_filter():
     query= request.form['query']
     # use the name that you gave to your collection
-    database=G_collection.set_collection(collectionname='TweetsData')
+    database=G_collection.set_collection(collectionname='Test_Panos')
     results, ids = rest.query_search(query)
     database.insert(results)
     return jsonify({"name": ids})
+
+@app.route('/priority_html', methods=['GET'])# a route to call tweet api,by a seatch form
+def priotiy_html():
+    return render_template('form_by_priority.html')
+
+@app.route('/priority', methods=['POST'])
+def api_filter_priority():
+    priority= request.form['priority']
+    print(priority)
+    # use the name that you gave to your collection
+    G_collection.set_collection(collectionname='TweetsData')
+    ids = G_collection.return_tweets_by_priority(priority)
+
+    return jsonify({"name": len(ids)})
+
+@app.route('/category_html', methods=['GET'])# a route to call tweet api,by a seatch form
+def category():
+    return render_template('category.html')
+
+@app.route('/category_filter', methods=['POST'])
+def api_filter_category():
+    category= request.form['category']
+    print(category)
+    # use the name that you gave to your collection
+    G_collection.set_collection(collectionname='TweetsData')
+    ids = G_collection.return_tweets_by_category(category)
+
+    return jsonify({"name": len(ids)})
