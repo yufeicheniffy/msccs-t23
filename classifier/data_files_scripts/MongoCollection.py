@@ -3,6 +3,7 @@ sys.path.insert(0, './data_files_scripts')
 
 import pymongo
 import numpy as np
+
 class MongoCollection:
     catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
                     'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8, 'EmergingThreats': 9,
@@ -25,9 +26,12 @@ class MongoCollection:
             print("failed to connect")
 
     def insert(self, item):
-        '''
-        insert a document into this MongoCollection
-        '''
+        """
+        Insert the given item to the collection
+
+        :param item: item to insert
+        """
+
         try:
             self.collection.insert(item)
         except Exception as e:
@@ -48,9 +52,13 @@ class MongoCollection:
         return self
 
     def find_all(self):
-        '''
-        return all Documents
-        '''
+
+        """
+        Find all documents in the collection 
+
+        :return: all documents
+        """
+
         try:
             x = self.collection.find()
         except Exception as e:
@@ -58,14 +66,23 @@ class MongoCollection:
         return x
 
     def print_all(self):
-        '''
-        print all Documents
-        '''
+
+        """
+        Print all documents in the collection.
+        """
+
         for e in self.find_all():
             print(e)
 
     def find_category_by_id(self, postid):
-        ''' return categories by giving postID '''
+
+        """
+        Lookup the category of the given tweet.
+
+        :param postid: tweet to lookup
+        :return: categories of tweet
+        """
+
         try:
             x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
@@ -73,7 +90,14 @@ class MongoCollection:
         return x["categories"]
 
     def find_text_by_id(self,postid):
-        ''' return Tweets text by giving postID '''
+
+        """
+        Lookup the text of the given tweet.
+
+        :param postid: tweet to lookup
+        :return: text of tweet
+        """
+
         try:
             x = self.collection.find_one({"identifier": str(postid)})
             if (x is None):
@@ -83,7 +107,13 @@ class MongoCollection:
         return x["text"]
 
     def return_ids_list(self):
-        ''' return all Tweets' postID'''
+
+        """
+        Return all tweet ids in collection.
+
+        :return: list of tweet ids
+        """
+
         l=[]
         all = self.find_all()
         for e in all:
@@ -91,8 +121,11 @@ class MongoCollection:
         return l
 
     def return_catmatrix_by_id(self, postid):
-        ''' return the catagories matrix by postID
-        '''
+
+        """
+        ....
+        """
+
         try:
             catmatrix=np.full((25,), 0)
             catalist=self.find_category_by_id(postid)
@@ -104,7 +137,11 @@ class MongoCollection:
         return catmatrix
 
     def return_catmatrix_all(self):
-        ''' return all catagories matrix'''
+
+        """
+        return the caragories vector according to catagory dictionary
+        """
+
         try:
             idlist=self.return_ids_list()
             catmaxtrixAll=np.full((len(idlist),25),0)
@@ -113,30 +150,100 @@ class MongoCollection:
         except Exception as e:
             print('Error',e)
         return catmaxtrixAll
+
+    def create_catmatrix(self, categories):
+        """
+        Return a binary category array.
+        """
+        try:
+            catmatrix=np.full((25,), 0)
+            for e in categories:
+                i=self.catadictionary.get(e)
+                catmatrix[i]=1
+        except Exception as e:
+            print("Error", e)
+        return catmatrix
+
+    def return_catdict_all(self):
+        """
+        Return a dictionary of ID to list of binary category values.
+
+        :return: dict of categories for tweets
+        """
+        """try:
+            idlist=self.return_ids_list()
+            cat_dict={}
+            for id in idlist:
+                cat_dict[id] = self.return_catmatrix_by_id(id)
+        except Exception as e:
+            raise
+            #print('Error',e)
+        return cat_dict"""
+        try:
+            cat_info = self.collection.find(projection = {'categories': 1})
+            print(cat_info)
+            cat_dict = dict()
+            for item in cat_info:
+                #print(item)
+                cat_dict[item['_id']] = self.create_catmatrix(item.get('categories', []))
+        except Exception as e:
+            raise
+            #print('Error',e)
+        return cat_dict
+
     
     def return_text_all(self):
-        ''' return all Tweets text'''
-        try:
+
+        """
+        Lookup text for all tweets.
+
+        :return: dictionary of id to text for all tweets
+        """
+        """try:
+
             idlist=self.return_ids_list()
             dic={}
             for id in idlist:
-                dic.setdefault(id,[]).append(self.find_text_by_id(id))
+                dic[id] = self.find_text_by_id(id)
         except Exception as e:
             print('Error',e)
-        return dic
+        return dic"""
+        try:
+            text_info = self.collection.find(projection = {'text': 1})
+            #print(text_info)
+            text_dict = dict()
+            for item in text_info:
+                #print(item)
+                text_dict[item['_id']] = item.get('text')
+        except Exception as e:
+            raise
+            #print('Error',e)
+        return text_dict
     
     def return_priority_by_id(self,postid):
-        ''' return  Tweets priority by postID'''
+
+        """
+        Return the priority of the given tweet
+
+        :param postid: tweet to look up
+        :return: priority of tweet
+        """
+
         try:
              x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
             print("Error", e)
         return x["priority"]
 
+
     def return_classfier_dic(self):
-        '''return a dictionary, whose key is postid and value is a list containing Tweets text and catagories matrix
-        e.g: {'92837218':['Italy earthquake',[1,0,0...0]]}
-        '''
+
+        """
+        Return a dictionary of id to [text, category] for all tweets in collection
+
+        :return: dict of id to [text, category] 
+        """
+
         try:
             idlist=self.return_ids_list()
             dic={}

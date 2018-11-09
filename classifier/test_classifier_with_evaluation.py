@@ -3,42 +3,50 @@ sys.path.insert(0, './data_files_scripts')
 
 from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
+from sklearn.model_selection import train_test_split
+import numpy as np
+import csv
+
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
 test_connect = MongoCollection(collectionname='Test', MongoURI="mongodb://localhost:27017/")
 
-#for computation reasons just test TWICE the first ytest works with all the TestCollection
+#resplit train/test
+td0 = training_connect.return_text_all()
+cd0 = training_connect.return_catdict_all()
+print(len(td0))
+print(len(cd0))
+td1 = test_connect.return_text_all()
+cd1 = test_connect.return_catdict_all()
+print(len(td1))
+print(len(cd1))
 
-# original train tes
-"""training = training_connect.return_train_dic()
-cat = list()
-text = list()
-#self.text_t = dict()
-for tweet in sorted(training.keys()):
-	cat.append(training[tweet][0][0])
-	text.append(training_connect.find_text_by_id(tweet))
-	#cat[tweet] = tweet_info[tweet][0][0]
-	#text[tweet] = coll.find_text_by_id(tweet)
-	#text_t[tweet] = tweet_info[tweet][0][1]
 
-testing= test_connect.return_text_all()
-cat_test = list()
-text_test = list()
-for tweet in sorted(testing.keys()):
-	cat_test.append(testing[tweet][0][0])
-	text_test.append(test_connect.find_text_by_id(tweet))"""
+text_dict = {**td0, **td1}
+cat_dict = {**cd0, **cd1}
 
-overall = training_connect.return_train_dic() + test_connect.return_text_all()
-cat = list()
-text = list()
-for tweet in sorted(training.keys()):
-	cat.append(training[tweet][0][0])
-	text.append(training_connect.find_text_by_id(tweet))
+full_text = list()
+full_cat = list()
+for id in (sorted(text_dict.keys())):
+	full_text.append(text_dict[id])
+	full_cat.append(cat_dict[id])
+
+text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_cat, 
+	test_size = .1)
 
 
 
-clas = Classify(cat, text)
+cat_test_arr = np.array(cat_test, dtype=np.float64)
+
+clas = Classify(cat_train, text_train, 2000)
 predict = clas.predict(text_test)
-#returns a csv file with a dataframe
-#clas.evaluation_(cat_test,predict)
+evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
+	key=training_connect.catadictionary.__getitem__))
 clas.simple_evaluation(cat_test,predict)
+
+keys = evals[0].keys()
+with open('eval.csv', 'w') as f:
+    d_write = csv.DictWriter(f, keys)
+    d_write.writeheader()
+    d_write.writerows(evals)
+
