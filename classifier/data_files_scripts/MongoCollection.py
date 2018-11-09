@@ -11,10 +11,12 @@ class MongoCollection:
                     'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
-    #the dictionary to find the catagory index in catarogy array.
+       #the dictionary to find the catagory index in catarogy matrix.
     def __init__(self,collectionname='func_test',databasename='Helpme',MongoURI="mongodb://Admin_1:glasgowcom@cluster0-shard-00-00-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-01-0yvu9.gcp.mongodb.net:27017,cluster0-shard-00-02-0yvu9.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true"):
-        #connect to cloud database default. chage to local,set:  MongoURI="mongodb://localhost:27017/"
-        #collections: Test;Train;Tweets; default:func_test to test
+        '''connect to cloud database default. chage to local,set:  MongoURI="mongodb://localhost:27017/"
+           collections: Test;Train;Tweets; default:func_test to test
+           create MongoClient instance
+        '''
         try:
             self.client = pymongo.MongoClient(MongoURI)
             print("connected to client:" + repr(self.client.list_database_names()))
@@ -29,17 +31,34 @@ class MongoCollection:
 
         :param item: item to insert
         """
+
         try:
             self.collection.insert(item)
         except Exception as e:
             print("Error", e)
 
+
+    def find(self, query):
+        '''
+        find a document into this MongoCollection
+        '''
+        try:
+            self.collection.find(query)
+        except Exception as e:
+            print("Error", e)
+
+    def set_collection(self,collectionname): #change collection 
+        self.collection=self.database[collectionname]
+        return self
+
     def find_all(self):
+
         """
         Find all documents in the collection 
 
         :return: all documents
         """
+
         try:
             x = self.collection.find()
         except Exception as e:
@@ -47,19 +66,23 @@ class MongoCollection:
         return x
 
     def print_all(self):
+
         """
         Print all documents in the collection.
         """
+
         for e in self.find_all():
             print(e)
 
     def find_category_by_id(self, postid):
+
         """
         Lookup the category of the given tweet.
 
         :param postid: tweet to lookup
         :return: categories of tweet
         """
+
         try:
             x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
@@ -67,12 +90,14 @@ class MongoCollection:
         return x["categories"]
 
     def find_text_by_id(self,postid):
+
         """
         Lookup the text of the given tweet.
 
         :param postid: tweet to lookup
         :return: text of tweet
         """
+
         try:
             x = self.collection.find_one({"identifier": str(postid)})
             if (x is None):
@@ -82,11 +107,13 @@ class MongoCollection:
         return x["text"]
 
     def return_ids_list(self):
+
         """
         Return all tweet ids in collection.
 
         :return: list of tweet ids
         """
+
         l=[]
         all = self.find_all()
         for e in all:
@@ -94,9 +121,11 @@ class MongoCollection:
         return l
 
     def return_catmatrix_by_id(self, postid):
+
         """
         ....
         """
+
         try:
             catmatrix=np.full((25,), 0)
             catalist=self.find_category_by_id(postid)
@@ -108,9 +137,11 @@ class MongoCollection:
         return catmatrix
 
     def return_catmatrix_all(self):
+
         """
-        ....
+        return the caragories vector according to catagory dictionary
         """
+
         try:
             idlist=self.return_ids_list()
             catmaxtrixAll=np.full((len(idlist),25),0)
@@ -162,12 +193,14 @@ class MongoCollection:
 
     
     def return_text_all(self):
+
         """
         Lookup text for all tweets.
 
         :return: dictionary of id to text for all tweets
         """
         """try:
+
             idlist=self.return_ids_list()
             dic={}
             for id in idlist:
@@ -188,12 +221,14 @@ class MongoCollection:
         return text_dict
     
     def return_priority_by_id(self,postid):
+
         """
         Return the priority of the given tweet
 
         :param postid: tweet to look up
         :return: priority of tweet
         """
+
         try:
              x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
@@ -202,11 +237,13 @@ class MongoCollection:
 
 
     def return_classfier_dic(self):
+
         """
         Return a dictionary of id to [text, category] for all tweets in collection
 
         :return: dict of id to [text, category] 
         """
+
         try:
             idlist=self.return_ids_list()
             dic={}
