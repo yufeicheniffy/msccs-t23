@@ -253,7 +253,7 @@ class MongoCollection:
         return list_return
 
 
-     def return_tweets_by_priority(self,priority):
+    def return_tweets_by_priority(self,priority):
         """
         Return tweets belonging to the given priority.
 
