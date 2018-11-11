@@ -234,3 +234,37 @@ class MongoCollection:
         except Exception as e:
             print('Error',e)
         return dic
+
+
+    def return_tweets_by_category(self, category):
+        """
+        Return tweets belonging to the given category.
+
+        :param category: category to search for
+        :return: list of tweet ids in the given category
+        """
+        try:
+            x = self.collection.find({"categories": str(category)})
+        except Exception as e:
+            print("Error", e)
+        list_return = []
+        for t in x:
+            list_return.append(t["postID"])
+        return list_return
+
+
+     def return_tweets_by_priority(self,priority):
+        """
+        Return tweets belonging to the given priority.
+
+        :param category: priority to search for
+        :return: list of tweet ids in the given priority
+        """
+        try:
+            x = self.collection.find({"priority": str(priority)})
+        except Exception as e:
+            print("Error", e)
+        list_return = []
+        for t in x:
+            list_return.append(t["postID"])
+        return list_return
