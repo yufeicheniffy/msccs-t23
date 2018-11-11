@@ -66,7 +66,7 @@ class Classify:
                 "Recall": recall_score(ytest_arr[:,x],predict[:,x]),
                 "Precision": precision_score(ytest_arr[:,x],predict[:,x]),
                 "F1": f1_score(ytest_arr[:,x],predict[:,x])}
-            print(d)
+            #print(d)
             res.append(d)
         return res
 
