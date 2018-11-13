@@ -177,7 +177,7 @@ class MongoCollection:
         """
         try:
             cat_info = self.collection.find(projection = {'categories': 1})
-            print(cat_info)
+            #print(cat_info)
             cat_dict = dict()
             for item in cat_info:
                 #print(item)

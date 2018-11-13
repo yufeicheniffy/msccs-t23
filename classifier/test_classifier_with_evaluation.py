@@ -5,7 +5,15 @@ from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
-import csv
+import csv, argparse
+
+parser = argparse.ArgumentParser(description='Test classification.')
+parser.add_argument('--out', action='store', default='eval.csv', required=False, dest='output_name')
+# note: cannot do both enhanced and location based filters together. 
+# glasgow filter will take priority.
+
+args = parser.parse_args()
+output_name = args.output_name
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -14,12 +22,12 @@ test_connect = MongoCollection(collectionname='Test', MongoURI="mongodb://localh
 #resplit train/test
 td0 = training_connect.return_text_all()
 cd0 = training_connect.return_catdict_all()
-print(len(td0))
-print(len(cd0))
+#print(len(td0))
+#print(len(cd0))
 td1 = test_connect.return_text_all()
 cd1 = test_connect.return_catdict_all()
-print(len(td1))
-print(len(cd1))
+#print(len(td1))
+#print(len(cd1))
 
 
 text_dict = {**td0, **td1}
@@ -38,14 +46,14 @@ text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_ca
 
 cat_test_arr = np.array(cat_test, dtype=np.float64)
 
-clas = Classify(cat_train, text_train, 2000)
+clas = Classify(cat_train, text_train, 2000, model='nb')
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))
 clas.simple_evaluation(cat_test,predict)
 
 keys = evals[0].keys()
-with open('eval.csv', 'w') as f:
+with open(output_name, 'w') as f:
     d_write = csv.DictWriter(f, keys)
     d_write.writeheader()
     d_write.writerows(evals)

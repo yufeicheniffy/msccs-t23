@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, './data_files_scripts')
 
+from sklearn.svm import *
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
@@ -11,13 +12,12 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import accuracy_score
 import pandas as pd
 
-
 class Classify:
     """
     A classifier which pulls tweet data from the mongodb database.
     """
 
-    def __init__(self, cats, tweet_texts, vocab_size):
+    def __init__(self, cats, tweet_texts, vocab_size, model='nb'):
         """
         Create and train classifier.
         """
@@ -30,7 +30,7 @@ class Classify:
         self.vect_train = self.vectorizer.fit_transform(self.text)
 
         #print(self.vectorizer.get_feature_names())
-
+        self.model = model
 
         self.classifiers = list()
         self.train()
@@ -42,7 +42,13 @@ class Classify:
         """
         #len(categories)
         for i in range(0, len(self.cat_arr[0])):
-            c = BernoulliNB().fit(self.vect_train, self.cat_arr[:,i])
+            if self.model == 'svc':
+                m = SVC(class_weight='balanced')
+            elif self.model == 'linearsvc':
+                m = LinearSVC(class_weight='balanced')
+            else: 
+                m = BernoulliNB()
+            c = m.fit(self.vect_train, self.cat_arr[:,i])
             self.classifiers.append(c)
 
         print("Training complete!")
