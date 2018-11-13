@@ -9,11 +9,13 @@ import csv, argparse
 
 parser = argparse.ArgumentParser(description='Test classification.')
 parser.add_argument('--out', action='store', default='eval.csv', required=False, dest='output_name')
+parser.add_argument('--classifier', action='store', default='nb', required=False, dest='classifier')
 # note: cannot do both enhanced and location based filters together. 
 # glasgow filter will take priority.
 
 args = parser.parse_args()
 output_name = args.output_name
+classifier = args.classifier
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -43,10 +45,9 @@ text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_ca
 	test_size = .1)
 
 
-
 cat_test_arr = np.array(cat_test, dtype=np.float64)
 
-clas = Classify(cat_train, text_train, 2000, model='nb')
+clas = Classify(cat_train, text_train, 2000, model=classifier)
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))

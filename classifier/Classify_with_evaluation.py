@@ -3,6 +3,7 @@ sys.path.insert(0, './data_files_scripts')
 
 from sklearn.svm import *
 from sklearn.naive_bayes import BernoulliNB
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 import numpy as np
@@ -43,9 +44,14 @@ class Classify:
         #len(categories)
         for i in range(0, len(self.cat_arr[0])):
             if self.model == 'svc':
+                print("SVC Model")
                 m = SVC(class_weight='balanced')
             elif self.model == 'linearsvc':
+                print("LinearSVC")
                 m = LinearSVC(class_weight='balanced')
+            elif self.model == 'rf':
+                print("RandomForestClassifier")
+                m = RandomForestClassifier(class_weight='balanced', n_estimators=100)
             else: 
                 m = BernoulliNB()
             c = m.fit(self.vect_train, self.cat_arr[:,i])
