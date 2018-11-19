@@ -17,7 +17,12 @@ class Classify:
     """
     A classifier which pulls tweet data from the mongodb database.
     """
-
+    catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
+                    'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8, 'EmergingThreats': 9,
+                    'SignificantEventChange':10, 'MultimediaShare': 11, 'ServiceAvailable': 12, 'Factoid': 13, 'Official': 14,
+                    'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
+                    'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
+                    }
     def __init__(self, cats, tweet_texts, vocab_size, model='nb'):
         """
         Create and train classifier.
@@ -132,4 +137,25 @@ class Classify:
 
         for i in range(0, len(self.classifiers)):
             predictions[:,i] = self.classifiers[i].predict(tokenized)
+        return(predictions)
+
+    def return_predict_categories(self,tweets):
+        """
+        Returns an List of prediction catagories for the given features.
+        :param tweets: a list or array of string tweets
+        :returns: predictions matrix
+
+        :throws RuntimeError: if classifiers have not been trained
+    
+        """
+        if len(self.classifiers) == 0:
+            raise RuntimeError("Classifiers have not been trained!")
+        tokenized = self.vectorizer.transform(tweets)
+        predictions = np.zeros((len(tweets), len(self.classifiers)))
+
+        for i in range(0, len(self.classifiers)):
+            predictions[:,i] = self.classifiers[i].predict(tokenized)
+        #for i in range((len(tweets)):
+            #predictions_cateindex=np.argwhere(predictions[i,:])
+            #predictions_categories=self.catadictionary.keys
         return(predictions)

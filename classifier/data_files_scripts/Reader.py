@@ -19,7 +19,10 @@ class Reader():
             #for i in the range of the events,(here we have 5)
             #we create a size 6 list which its element is a list of json elements, grouped by events
             for i in range(0,len(data['events'])):
-                list.append(data["events"][i]["tweets"])
+                dic=data["events"][i]["tweets"]
+                for j in range(0,len(dic)):
+                    dic[j]['event']=data["events"][i]["eventid"]
+                list.append(dic)
             #append every element to the final list as a simple json elementself.
             # now we have a 1d list with every tweet ready to be inserted to our db.
             for x in list:

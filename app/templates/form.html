@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>AJAX Example MSC TEAM PROJECT</title>
+		<head>
+				{% if title %}
+				<title>{{ title }} - HelpMe</title>
+				{% else %}
+				<title>Welcome to Helpme</title>
+				{% endif %}
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
@@ -13,6 +17,15 @@
 	<script src="{{ url_for('static', filename='js/form.js') }}"></script>
 </head>
 <body>
+			<div>
+					Helpme:
+					 <a href="/index">Home</a>
+					 <a href="/tweetapi">Retrieve Tweets</a>
+					 <a href="/priority_html">Search_by_priority</a>
+					 <a href="/category_html">Filter_by_Category</a>
+					 <a href="/eventfilter_html">Filter by event</a>
+			</div>
+			<hr>
 <div class="container">
 	<br><br><br><br>
 	<form class="form-inline">

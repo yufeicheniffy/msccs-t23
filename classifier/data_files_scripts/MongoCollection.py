@@ -106,6 +106,24 @@ class MongoCollection:
             print("Error", e)
         return x["text"]
 
+    def find_text_by_ids(self,postidlist):
+        """
+        Lookup the text of the given tweet.
+
+        :param postid: tweet id list to lookup
+        :return: List of tweet
+        """
+        try:
+            textlist=[]
+            for id in postidlist:
+                x = self.collection.find_one({"identifier": str(id)})
+                if (x is None):
+                    x = self.collection.find_one({"postID": str(id)})
+                textlist.append(x["text"])
+        except Exception as e:
+            print("Error", e)
+        return textlist
+
     def return_ids_list(self):
         """
         Return all tweet ids in collection.
@@ -219,6 +237,19 @@ class MongoCollection:
             print("Error", e)
         return x["priority"]
 
+    def return_event_by_id(self,postid):
+        """
+        Return the event of the given tweet
+
+        :param postid: tweet to look up
+        :return: event of tweet
+        """
+        try:
+             x = self.collection.find_one({"postID": str(postid)})
+        except Exception as e:
+            print("Error", e)
+        return x["event"]
+
 
     def return_classfier_dic(self):
         """
@@ -252,6 +283,21 @@ class MongoCollection:
             list_return.append(t["postID"])
         return list_return
 
+    def return_tweets_by_event(self, event):
+        """
+        Return tweets belonging to the given event.
+
+        :param event: event to search for
+        :return: list of tweet ids in the given event
+        """
+        try:
+            x = self.collection.find({"event": str(event)})
+        except Exception as e:
+            print("Error", e)
+        list_return = []
+        for t in x:
+            list_return.append(t["postID"])
+        return list_return
 
     def return_tweets_by_priority(self,priority):
         """
@@ -268,3 +314,32 @@ class MongoCollection:
         for t in x:
             list_return.append(t["postID"])
         return list_return
+    
+    def updata_category_by_id(self,postid,category):
+        """
+        updata category for given Tweets
+
+        :param category: postid, category
+        :return: -
+        """
+        try:
+            myquery = { "postID": postid }
+            newvalues = { "$set": { "categories": category } }
+            self.collection.update_many(myquery,newvalues)
+        except Exception as e:
+            print("Error", e)
+
+    def updata_event_by_ids(self,postidlist,eventname):
+        """
+        updata event for a list of given Tweets
+
+        :param category: a list of postid and correspongding list of eventname
+        :return: -
+        """
+        try:
+            for i in range(0,len(postidlist)):
+                myquery = { "postID": postidlist[i] }
+                newvalues = { "$set": { "event": eventname[i] } }
+                self.collection.update_many(myquery,newvalues)
+        except Exception as e:
+            print("Error", e)

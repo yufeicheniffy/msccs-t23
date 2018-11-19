@@ -1,5 +1,7 @@
 import sys
 sys.path.insert(0, './data_files_scripts')
+import sys
+sys.path.insert(0, './classifier')
 
 from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection

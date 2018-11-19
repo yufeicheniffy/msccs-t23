@@ -5,7 +5,7 @@ from app.searchForm import searchForm
 import json
 from bson import json_util, ObjectId
 import app.search_rest as rest
-
+#from classifier.test_classifier_with_evaluation import clas
 
 global G_collection #the instance of MongoCollection, Don't need to create a lot of instance.
 
@@ -14,13 +14,13 @@ global G_collection #the instance of MongoCollection, Don't need to create a lot
 def home():
         global G_collection
         G_collection=MongoCollection.MongoCollection(collectionname='TweetsData') #create the instance in the home page. Each time the project should run start with home page.
-        user = {'username': 'Team28'}
+        user = {'username': 'Team23'}
         return render_template('index.html', title='Home', user=user)
 
 @app.route('/index') #home and index page.
 def index():
         global G_collection
-        user = {'username': 'Team28'}
+        user = {'username': 'Team23'}
         return render_template('index.html', title='Home', user=user)
 
 @app.route('/tweetapi', methods=['GET'])# a route to call tweet api,by a seatch form
@@ -39,6 +39,7 @@ def results():
         'PostID':"243374590288592896",
         'text':database.find_text_by_id("243374590288592896"),
         'catagories':database.find_category_by_id("243374590288592896"),
+       # 'predicted catagories': clas.predict(database.find_text_by_id("243374590288592896")),
         'priority':database.return_priority_by_id("243374590288592896")
         }
         return render_template('searchresults.html',title='Results',Tweets=Tweets)
@@ -101,5 +102,21 @@ def api_filter_category():
     # use the name that you gave to your collection
     G_collection.set_collection(collectionname='TweetsData')
     ids = G_collection.return_tweets_by_category(category)
+    #text= G_collection.find_text_by_ids(ids)
+
+    return jsonify({"name": len(ids)})
+
+@app.route('/eventfilter_html', methods=['GET'])# a route to call tweet api,by a seatch form
+def event():
+    return render_template('eventfilter_html')
+
+@app.route('/eventfilter', methods=['POST'])
+def api_filter_event():
+    event= request.form['eventfilter']
+    print(event)
+    # use the name that you gave to your collection
+    G_collection.set_collection(collectionname='TweetsData')
+    ids = G_collection.return_tweets_by_event(event)
+    #text= G_collection.find_text_by_ids(ids)
 
     return jsonify({"name": len(ids)})
