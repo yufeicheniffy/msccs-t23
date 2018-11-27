@@ -1,35 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<head>
-			{% if title %}
-			<title>{{ title }} - HelpMe</title>
-			{% else %}
-			<title>Welcome to Helpme</title>
-			{% endif %}
-
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-	<script src="{{ url_for('static', filename='js/category.js') }}"></script>
-</head>
-<body>
-		<div>
-				Helpme:
-				 <a href="/index">Home</a>
-				 <a href="/tweetapi">Retrieve Tweets</a>
-				 <a href="/priority_html">Search_by_priority</a>
-				 <a href="/category_html">Filter_by_Category</a>
-				 <a href="/eventfilter_html">Filter by event</a>
-		</div>
-		<hr>
-<div class="container">
-	<br><br><br><br>
+{% extends "layout.html" %}
+{% block content %}
+<div class="row">
+	<div class="col-md-9">
+			<br><br><br><br>
 	<form class="form-inline">
 	  <div class="form-group">
 	    <label class="sr-only" for="category">Query</label>
@@ -40,6 +13,149 @@
 	<br>
 	<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
 	<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+			
+		<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="accordion" id="accordionExample">
+							<div class="card">
+							  <div class="card-header" id="headingOne">
+								<h5 class="mb-0">
+								  <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+										Request
+								  </button>
+								</h5>
+							  </div>
+						  
+							  <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordionExample">
+								<div class="card" >
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item"><a href="#">Goods Services </a></li>
+										<li class="list-group-item"><a href="#">Search And Rescue </a></li>
+										<li class="list-group-item"><a href="#">Information Wanted</a></li>
+									</ul>
+								</div>
+								<div class="card-footer"></div>
+								</div>
+							 
+							</div>
+					</div>
+			</div>
+			<div class="col-md-6 col-sm-6 col-xs-12">
+				<div class="accordion" id="accordionExample2">
+						<div class="card">
+							<div class="card-header" id="headingTwo">
+							<h5 class="mb-0">
+								<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+									Calls
+								</button>
+							</h5>
+							</div>
+						
+							<div id="collapseTwo" class="collapse " aria-labelledby="headingTwo" data-parent="#accordionExample2">
+							<div class="card" >
+								<ul class="list-group list-group-flush">
+										<li class="list-group-item"><a href="#">Action Volunteer </a></li>
+										<li class="list-group-item"><a href="#">Action Donations </a></li>
+										<li class="list-group-item"><a href="#">Action Move People</a></li>
+								</ul>
+							</div>
+							<div class="card-footer"></div>
+							  
+							</div>
+						</div>
+				</div>
+			</div>
+			</div>
+			<br>
+			<div class="row">
+			<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="accordion" id="accordionExample3">
+							<div class="card">
+								<div class="card-header" id="headingThree">
+								<h5 class="mb-0">
+									<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+											Report
+									</button>
+								</h5>
+								</div>
+							
+								<div id="collapseThree" class="collapse " aria-labelledby="headingThree" data-parent="#accordionExample3">
+								<div class="card" >
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item"><a href="#">First Party Observation</a> </li>
+										<li class="list-group-item"><a href="#">Third Party Observation </a></li>
+										<li class="list-group-item"><a href="#">Weathern</a> </li>
+										<li class="list-group-item"><a href="#">Emerging Threats </a></li>
+										<li class="list-group-item"><a href="#">Significant Event Change </a></li>
+										<li class="list-group-item"><a href="#">Multimedia Share</a></li>
+										<li class="list-group-item"><a href="#">Service Available</a> </li>
+										<li class="list-group-item"><a href="#">Factoid </a></li>
+										<li class="list-group-item"><a href="#">Official</a></li>
+										<li class="list-group-item"><a href="#">CleanUp</a> </li>
+										<li class="list-group-item"><a href="#">Hashtags</a> </li>
+									</ul>
+								</div>
+								<div class="card-footer"></div>
+								</div>
+							</div>
+					</div>
+			</div>
+			<div class="clearfix"></div>
+			<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="accordion" id="accordionExample4">
+							<div class="card">
+								<div class="card-header" id="headingFour">
+								<h5 class="mb-0">
+									<button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+										Others
+									</button>
+								</h5>
+								</div>
+							
+								<div id="collapseFour" class="collapse " aria-labelledby="headingFour" data-parent="#accordionExample4">
+								<div class="card" >
+									<ul class="list-group list-group-flush">
+										<li class="list-group-item"><a href="#">Past News </a></li>
+										<li class="list-group-item"><a href="#">Continuing News </a></li>
+										<li class="list-group-item"><a href="#">Advice</a></li>
+										<li class="list-group-item"><a href="#">Sentiment </a></li>
+										<li class="list-group-item"><a href="#">Discussion </a></li>
+										<li class="list-group-item"><a href="#">Irrelevant</a></li>
+										<li class="list-group-item"><a href="#">Unknown</a> </li>
+										<li class="list-group-item"><a href="#">Known Already</a> </li>
+									</ul>
+								</div>
+								<div class="card-footer"></div>
+								</div>
+								</div>
+							</div>
+					</div>
+			</div>
+		</div>
+
+		<div class="col-md-3">
+				<h4>Filters</h4>
+				<div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
+						<div class="btn-group" role="group">
+								<button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Priority Level
+								</button>
+								<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+								<a class="dropdown-item" href="/category_html">High</a>
+								<a class="dropdown-item" href="/category_html">Medium</a>
+								<a class="dropdown-item" href="/category_html">Low</a>
+								</div>
+							</div>
+						<button type="button" class="btn btn-light">Time</button>
+						<button type="button" class="btn btn-light">Media</button>
+						<button type="button" class="btn btn-light">Incident Type</button>
+						<a class="btn btn-light" href="/tweetapi">Retrieve Tweets</a>
+						 <a class="btn btn-light" href="/priority_html">Search_by_priority</a>
+						 <a class="btn btn-light" href="/category_html">Filter_by_Category</a>
+						 <a class="btn btn-light" href="/eventfilter_html">Filter by event</a>
+						
+						
+				</div>
+			</div>
 </div>
-</body>
-</html>
+{% endblock content %}

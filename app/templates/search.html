@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block content %}
+<br>
+<!-- <div class="container"> -->
+        <div class="row">
+            <div class="col-md-9">
+                    <!-- {% for tweet in tweets %}
+                  <blockquote>
+
+                    </blockquote>
+                    <blockquote class="twitter-tweet" data-lang="en">
+                        <p lang="en" dir="ltr">just setting up my twttr</p>&mdash; Jack (@jack) <a href="https://twitter.com/jack/status/20">March 21, 2006</a>
+                    </blockquote>
+                        <a href="'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'"{{ tweet.postID }}></a>
+                    {% endfor %} -->
+            </div>
+
+            <div class="col-md-3">
+                <h4>Filters</h4>
+                <div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
+                        <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Priority Level
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                <a class="dropdown-item" href="/category">High</a>
+                                <a class="dropdown-item" href="/category">Medium</a>
+                                <a class="dropdown-item" href="/category">Low</a>
+                                </div>
+                            </div>
+                        <button type="button" class="btn btn-light">Time</button>
+                        <button type="button" class="btn btn-light">Media</button>
+                        <button type="button" class="btn btn-light">Incident Type</button>
+                        
+                        
+                </div>
+            </div>
+        </div>
+    <!-- </div> -->
+{% endblock content %}

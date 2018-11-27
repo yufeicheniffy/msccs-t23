@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body_content %}
+    <style>
+      .home_form{
+        max-width: 50%;
+        margin-left: 25%;
+        margin-top: 20%;
+      }
+      .home_title{
+          color: #d3d3d3;
+          margin-left: 37%;
+      }
+    </style>
+    <div class="container">
+            <form class="home_form" action="/search" method="POST">
+                <h1 class="home_title">Help Me!!!</h1>
+                <label for="name"> </label>
+                <input class="form-control search_input" type="text" id="name" name="query" placeholder="Search an emergency" /><br/>
+                <input class="btn btn-primary btn-xs search_button" type="submit" value="Search" />
+            </form>
+    </div>
+{% endblock body_content %}

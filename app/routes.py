@@ -23,6 +23,12 @@ def index():
         user = {'username': 'Team23'}
         return render_template('index.html', title='Home', user=user)
 
+@app.route('/home') #home and index page.
+def home2():
+        global G_collection
+        user = {'username': 'Team23'}
+        return render_template('home.html', title='Home', search= True)
+
 @app.route('/tweetapi', methods=['GET'])# a route to call tweet api,by a seatch form
 def tweetapi():
     return render_template('form.html')

@@ -1,0 +1,104 @@
+body.search_page {
+    background-image: url(../images/1.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    z-index: -1;
+}
+.search_input {
+    width: 100% !important;
+    border-radius: 20px !important;
+}
+.search_button{
+    margin-left: 45%;
+}
+
+#footer {
+	color: rgba(255,255,255,0.6);
+
+	background: #313131;
+	background: -moz-linear-gradient(top, #555555 0%, #313131 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #1a1d2b), color-stop(100%, #313131));
+	background: -webkit-linear-gradient(top, #555555 0%, #313131 100%);
+	background: -o-linear-gradient(top, #555555 0%, #313131 100%);
+	background: -ms-linear-gradient(top, #555555 0%, #313131 100%);
+	background: linear-gradient(to bottom, #555555 0%,#313131 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#555555', endColorstr='#313131',GradientType=0 );
+}
+#footer>.container {
+	padding-top:60px;
+	margin-bottom:60px;
+}
+
+#footer>.copyright {
+	background-color:rgba(0,0,0,0.2);
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+	padding:25px 0;
+	font-size:13px;
+	display:block;
+}
+
+	@media only screen and (max-width: 768px) {
+		#footer .footer-gallery {
+			text-align:center;
+		}
+		#footer .footer-gallery>a,
+		#footer .footer-gallery>img {
+			float:none;
+			margin-right:0;
+		}
+		
+		#footer .row>div {
+			margin-bottom:60px;
+		}
+	}
+
+	/* sticky footer */
+	footer.sticky {
+		width: 100%;
+	}
+	@media only screen and (max-width: 768px) {
+		footer.sticky {
+			top:auto !important;
+			position:relative !important;
+		}
+	}
+	/* footer links - breadcrumbs like */
+	#footer ul.inline-links>li+li:before {
+        padding: 0 5px 0 0;
+        content: "/\00a0";
+        color:rgba(255,255,255,0.3);
+      }
+    #footer .copyright ul.list-social-icons {
+        height:30px;
+    }
+    #footer .copyright ul.list-social-icons a.social-icon {
+        margin:0;
+    }
+    @media only screen and (max-width: 480px) {
+        #footer h4 {
+            margin-top:60px;
+            display:block;
+        }
+        #footer .mobile-block {
+            margin-bottom:25px !important;
+        }
+        #footer.footer-fixed .mobile-block {
+            margin-bottom:0 !important;
+        }
+        #footer .copyright {
+            text-align:center;
+        }
+    }
+    .home_form{
+        max-width: 50%;
+        margin-left: 25%;
+        margin-top: 20%;
+      }
+      .home_title{
+        margin-left: 37%;
+      }
+      .clearfix {
+        clear: both;
+        content: "";
+        display: block;
+    }
