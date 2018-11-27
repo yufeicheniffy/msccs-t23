@@ -13,7 +13,7 @@ global G_collection #the instance of MongoCollection, Don't need to create a lot
 @app.route('/')
 def home():
         global G_collection
-        G_collection=MongoCollection.MongoCollection(collectionname='TweetsData') #create the instance in the home page. Each time the project should run start with home page.
+        G_collection=MongoCollection.MongoCollection(collectionname='TweetsData', MongoURI="mongodb://localhost:27017/") #create the instance in the home page. Each time the project should run start with home page.
         user = {'username': 'Team23'}
         return render_template('index.html', title='Home', user=user)
 
