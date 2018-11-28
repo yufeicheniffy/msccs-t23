@@ -1,4 +1,4 @@
-import sys
+import sys, os
 sys.path.insert(0, './data_files_scripts')
 
 from sklearn.svm import *
@@ -12,6 +12,7 @@ from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import accuracy_score
 import pandas as pd
+from sklearn.externals import joblib
 
 class Classify:
     """
@@ -23,7 +24,7 @@ class Classify:
                     'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
-    def __init__(self, cats, tweet_texts, vocab_size, model='nb'):
+    def __init__(self, cats, tweet_texts=None, vocab_size=2000, model='nb', pretrained=None):
         """
         Create and train classifier.
         """
@@ -31,15 +32,23 @@ class Classify:
         self.text = tweet_texts
         self.cat_arr = np.array(self.cat)
 
-        self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
-            binary=True, max_features=vocab_size)
-        self.vect_train = self.vectorizer.fit_transform(self.text)
-
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
         self.classifiers = list()
-        self.train()
+        
+        if pretrained is None:
+            self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+                binary=True, max_features=vocab_size)
+            self.vect_train = self.vectorizer.fit_transform(self.text)
+            self.train()
+        else:
+            for f in sorted(os.listdir(pretrained)):
+                fn = os.fsdecode(f)
+                if fn.endswith('v.pkl'):
+                    self.vectorizer = joblib.load(pretrained+fn)
+                else:
+                    self.classifiers.append(joblib.load(pretrained+fn))
 
 
     def train(self):
@@ -64,6 +73,16 @@ class Classify:
 
         print("Training complete!")
 
+
+    def save_classifier(self, path='pretrained/'):
+        """
+        Saves the classifier to the specified path
+        """
+        joblib.dump(self.vectorizer, path+'v.pkl', compress=1)
+        for n in range(0,len(self.classifiers)):
+            joblib.dump(self.classifiers[n], path+'c%02d.pkl' % n, compress=1)
+        print("Classifiers saved to: " + path)
+
     #retrieves the index of category eg 0 = 'Advice'
     def map_id(self,category):
         returner = []
@@ -86,7 +105,6 @@ class Classify:
             #print(d)
             res.append(d)
         return res
-
 
     def simple_evaluation(self, actual, prediction):
         """

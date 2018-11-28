@@ -49,7 +49,7 @@ text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_ca
 
 cat_test_arr = np.array(cat_test, dtype=np.float64)
 
-clas = Classify(cat_train, text_train, 2000, model=classifier)
+clas = Classify(cat_train, pretrained='pretrained/')
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))
@@ -61,5 +61,4 @@ with open(output_name, 'w') as f:
     d_write.writeheader()
     d_write.writerows(evals)
 
-# save classifier
-clas.save_classifier()
+
