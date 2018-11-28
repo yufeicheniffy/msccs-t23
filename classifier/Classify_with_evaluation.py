@@ -7,10 +7,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 import numpy as np
-from sklearn.metrics import f1_score
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 import pandas as pd
 from sklearn.externals import joblib
 
@@ -24,9 +21,11 @@ class Classify:
                     'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
+
     def __init__(self, cats, tweet_texts=None, vocab_size=2000, model='nb', pretrained=None):
         """
-        Create and train classifier.
+        Create and train classifier. Can specify path to pretrained
+        classifiers using "pretrained"
         """
         self.cat = cats
         self.text = tweet_texts
