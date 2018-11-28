@@ -15,13 +15,13 @@ def home():
         global G_collection
         G_collection=MongoCollection.MongoCollection(collectionname='TweetsData', MongoURI="mongodb://localhost:27017/") #create the instance in the home page. Each time the project should run start with home page.
         user = {'username': 'Team23'}
-        return render_template('index.html', title='Home', user=user)
+       return render_template('home.html', title='Home', search= True)
 
 @app.route('/index') #home and index page.
 def index():
         global G_collection
         user = {'username': 'Team23'}
-        return render_template('index.html', title='Home', user=user)
+        return render_template('home.html', title='Home', search= True)
 
 @app.route('/home') #home and index page.
 def home2():
