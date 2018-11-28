@@ -8,16 +8,21 @@ from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
 import csv, argparse
+from sklearn.svm import *
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.ensemble import RandomForestClassifier
 
 parser = argparse.ArgumentParser(description='Test classification.')
 parser.add_argument('--out', action='store', default='eval.csv', required=False, dest='output_name')
 parser.add_argument('--classifier', action='store', default='nb', required=False, dest='classifier')
-# note: cannot do both enhanced and location based filters together. 
-# glasgow filter will take priority.
+parser.add_argument('--pretrained', action='store_true', dest='pretrained')
+parser.add_argument('--save', action='store_true', dest='save')
 
 args = parser.parse_args()
 output_name = args.output_name
 classifier = args.classifier
+pretrained = args.pretrained
+save = args.save
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -26,12 +31,8 @@ test_connect = MongoCollection(collectionname='Test', MongoURI="mongodb://localh
 #resplit train/test
 td0 = training_connect.return_text_all()
 cd0 = training_connect.return_catdict_all()
-#print(len(td0))
-#print(len(cd0))
 td1 = test_connect.return_text_all()
 cd1 = test_connect.return_catdict_all()
-#print(len(td1))
-#print(len(cd1))
 
 
 text_dict = {**td0, **td1}
@@ -49,7 +50,19 @@ text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_ca
 
 cat_test_arr = np.array(cat_test, dtype=np.float64)
 
-clas = Classify(cat_train, text_train, 2000, model=classifier)
+if pretrained:
+	clas = Classify(cat_train, pretrained='pretrained/')
+elif classifier == 'rf':
+	clas = Classify(cat_train, text_train, 2000,
+		model=RandomForestClassifier(class_weight='balanced', n_estimators=100))
+elif classifier == 'svc':
+	clas = Classify(cat_train, text_train, 2000,
+		model=SVC(class_weight='balanced'))
+elif classifier == 'linearsvc':
+	clas = Classify(cat_train, text_train, 2000,
+		model=LinearSVC(class_weight='balanced'))
+else: 
+	clas = Classify(cat_train, text_train, 2000)
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))
@@ -61,5 +74,5 @@ with open(output_name, 'w') as f:
     d_write.writeheader()
     d_write.writerows(evals)
 
-# save classifier
-clas.save_classifier()
+if save:
+	clas.save_classifier()

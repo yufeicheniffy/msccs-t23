@@ -10,6 +10,7 @@ import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 import pandas as pd
 from sklearn.externals import joblib
+from sklearn.base import clone
 
 class Classify:
     """
@@ -22,7 +23,8 @@ class Classify:
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
 
-    def __init__(self, cats, tweet_texts=None, vocab_size=2000, model='nb', pretrained=None):
+    def __init__(self, cats, tweet_texts=None, vocab_size=2000, model=BernoulliNB(), 
+        pretrained=None):
         """
         Create and train classifier. Can specify path to pretrained
         classifiers using "pretrained"
@@ -56,17 +58,7 @@ class Classify:
         """
         #len(categories)
         for i in range(0, len(self.cat_arr[0])):
-            if self.model == 'svc':
-                print("SVC Model")
-                m = SVC(class_weight='balanced')
-            elif self.model == 'linearsvc':
-                print("LinearSVC")
-                m = LinearSVC(class_weight='balanced')
-            elif self.model == 'rf':
-                print("RandomForestClassifier")
-                m = RandomForestClassifier(class_weight='balanced', n_estimators=100)
-            else: 
-                m = BernoulliNB()
+            m = clone(self.model)
             c = m.fit(self.vect_train, self.cat_arr[:,i])
             self.classifiers.append(c)
 
