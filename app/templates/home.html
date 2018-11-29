@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block body_content %}
+    <style>
+      .home_form{
+        max-width: 50%;
+        margin-left: 25%;
+        margin-top: 10%;
+      }
+      .home_title{
+          color: #d3d3d3;
+          margin-left: 37%;
+      }
+    </style>
+    <br>
+    <div class="alert alert-info" role="alert">
+            <h4 class="alert-heading">Hello and Welcome to Help Me.</h4>
+    </div>
+    <div class="container">
+            <form class="home_form" action="/tweetapi" method="POST">
+                <h1 class="home_title">Help Me!!!</h1>
+                <label for="name"> </label>
+                <label for="other">Help Me is an app, that helps it users search through query and category specific emergency events and incidents. Try it out, search for anything.</label>
+                <input class="btn btn-primary btn-xs search_button" type="submit" value="Go to search" />
+            </form>
+    </div>
+{% endblock body_content %}
