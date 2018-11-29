@@ -11,7 +11,6 @@ G_collection=None #the instance of MongoCollection, Don't need to create a lot o
 
 def initdatabase(): #!!!!A function to ensure the database is connected. Add this in EVERY routes function please.
         global G_collection
-<<<<<<< HEAD
         if G_collection is None:
                 G_collection=MongoCollection.MongoCollection(collectionname='TweetsData', MongoURI="mongodb://localhost:27017/") #create the instance in the home page. Each time the project should run start with home page.
         else:
@@ -21,22 +20,6 @@ def initdatabase(): #!!!!A function to ensure the database is connected. Add thi
 @app.route('/home') #home and index page.
 def home2():
         initdatabase()
-=======
-        G_collection=MongoCollection.MongoCollection(collectionname='TweetsData', MongoURI="mongodb://localhost:27017/") #create the instance in the home page. Each time the project should run start with home page.
-        user = {'username': 'Team23'}
-       return render_template('home.html', title='Home', search= True)
-
-@app.route('/index') #home and index page.
-def index():
-        global G_collection
-        user = {'username': 'Team23'}
-        return render_template('home.html', title='Home', search= True)
-
-@app.route('/home') #home and index page.
-def home2():
-        global G_collection
-        user = {'username': 'Team23'}
->>>>>>> e9811c7f07a4e6bbc0ca25c8282893699afac912
         return render_template('home.html', title='Home', search= True)
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
