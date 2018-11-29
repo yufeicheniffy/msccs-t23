@@ -1,5 +1,5 @@
 body.search_page {
-    background-image: url(../images/1.jpg);
+    background-image: url(../images/emergency.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     z-index: -1;
@@ -35,6 +35,83 @@ body.search_page {
 	padding:25px 0;
 	font-size:13px;
 	display:block;
+}
+
+.home_form{
+    max-width: 50%;
+    margin-left: 25%;
+    margin-top: 10%;
+}
+.home_title{
+    color: #d3d3d3;
+    margin-left: 37%;
+}
+.container{
+    color: white;
+}
+#custom-search-input{
+    padding: 3px;
+    border: solid 1px #E4E4E4;
+    border-radius: 6px;
+    background-color: #fff;
+}
+
+#custom-search-input input{
+    border: 0;
+    box-shadow: none;
+}
+
+#custom-search-input button{
+    margin: 2px 0 0 0;
+    background: none;
+    box-shadow: none;
+    border: 0;
+    color: #666666;
+    padding: 0 8px 0 10px;
+}
+
+#custom-search-input button:hover{
+    border: 0;
+    box-shadow: none;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+#custom-search-input .glyphicon-search{
+    font-size: 23px;
+}
+
+.numberCircle {
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: initial;
+    width: 21px;
+    height: 21px;
+    padding: 8px;
+    background: #0069d9;
+    color: white;
+    text-align: center;
+    font: 19px Arial, sans-serif;
+}
+
+.step {
+    vertical-align: middle;
+    margin-left: 10px;
+}
+#list-wrapper {
+    width: 500px;
+    overflow: hidden; /* will contain if #first is longer than #second */
+}
+#first {
+    width: 50px;
+    float:left; /* add this */
+}
+#second {
+    overflow: hidden; /* if you don't want #second to wrap below #first */
+    margin-bottom: 20px;
+}
+#jumbotron-homepage {
+    background-color: rgba(89, 130, 173, 0.2);
 }
 
 	@media only screen and (max-width: 768px) {
