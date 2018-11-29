@@ -61,3 +61,5 @@ with open(output_name, 'w') as f:
     d_write.writeheader()
     d_write.writerows(evals)
 
+# save classifier
+clas.save_classifier()

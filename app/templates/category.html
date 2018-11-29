@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
+<<<<<<< HEAD
 <br>
+=======
+>>>>>>> e9811c7f07a4e6bbc0ca25c8282893699afac912
 <div class="row">
 	<div class="col-md-9">
 			<br><br><br><br>
@@ -135,6 +138,7 @@
 		</div>
 
 		<div class="col-md-3">
+<<<<<<< HEAD
 				<div class="card" style="width: 15rem;">
 					<div class="card-header">
 							Filters
@@ -159,5 +163,30 @@
 				</div>
 				
 				</div>
+=======
+				<h4>Filters</h4>
+				<div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
+						<div class="btn-group" role="group">
+								<button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Priority Level
+								</button>
+								<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+								<a class="dropdown-item" href="/category_html">High</a>
+								<a class="dropdown-item" href="/category_html">Medium</a>
+								<a class="dropdown-item" href="/category_html">Low</a>
+								</div>
+							</div>
+						<button type="button" class="btn btn-light">Time</button>
+						<button type="button" class="btn btn-light">Media</button>
+						<button type="button" class="btn btn-light">Incident Type</button>
+						<a class="btn btn-light" href="/tweetapi">Retrieve Tweets</a>
+						 <a class="btn btn-light" href="/priority_html">Search_by_priority</a>
+						 <a class="btn btn-light" href="/category_html">Filter_by_Category</a>
+						 <a class="btn btn-light" href="/eventfilter_html">Filter by event</a>
+						
+						
+				</div>
+			</div>
+>>>>>>> e9811c7f07a4e6bbc0ca25c8282893699afac912
 </div>
 {% endblock content %}

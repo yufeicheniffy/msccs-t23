@@ -4,13 +4,18 @@
       .home_form{
         max-width: 50%;
         margin-left: 25%;
+<<<<<<< HEAD
         margin-top: 10%;
+=======
+        margin-top: 20%;
+>>>>>>> e9811c7f07a4e6bbc0ca25c8282893699afac912
       }
       .home_title{
           color: #d3d3d3;
           margin-left: 37%;
       }
     </style>
+<<<<<<< HEAD
     <br>
     <div class="alert alert-info" role="alert">
             <h4 class="alert-heading">Hello and Welcome to Help Me.</h4>
@@ -21,6 +26,14 @@
                 <label for="name"> </label>
                 <label for="other">Help Me is an app, that helps it users search through query and category specific emergency events and incidents. Try it out, search for anything.</label>
                 <input class="btn btn-primary btn-xs search_button" type="submit" value="Go to search" />
+=======
+    <div class="container">
+            <form class="home_form" action="/search" method="POST">
+                <h1 class="home_title">Help Me!!!</h1>
+                <label for="name"> </label>
+                <input class="form-control search_input" type="text" id="name" name="query" placeholder="Search an emergency" /><br/>
+                <input class="btn btn-primary btn-xs search_button" type="submit" value="Search" />
+>>>>>>> e9811c7f07a4e6bbc0ca25c8282893699afac912
             </form>
     </div>
 {% endblock body_content %}
