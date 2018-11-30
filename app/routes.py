@@ -31,7 +31,7 @@ def search():
         #create a list to hold all the data returned
         html_tweets= []
         # use the name that you gave to your collection
-        database=G_collection.set_collection(collectionname='Test_Panos')
+        database=G_collection.set_collection(collectionname='TweetsData')
         results, tweetids, dic_cates= rest.query_search(query)
         # query the db based on the query from front-end
         for tweetid in tweetids:
@@ -98,8 +98,8 @@ def api_filter():
         initdatabase()
         query= request.form['query']
         # use the name that you gave to your collection
-        database=G_collection.set_collection(collectionname='Test_Panos')
-        results, ids = rest.query_search(query)
+        database=G_collection.set_collection(collectionname='TweetsData')
+        results, ids,dic_cates = rest.query_search(query)
         database.insert(results)
         return jsonify({"name": ids})
 
