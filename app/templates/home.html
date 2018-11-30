@@ -18,12 +18,14 @@
  
     <div id="custom-search-input">
         <div class="input-group col-md-12">
-            <input type="text" class="form-control input-lg" placeholder="Search emergency" />
-            <span class="input-group-btn">
-                <button class="btn btn-info btn-lg" type="button">
-                    <i class="fas fa-search"></i>
-                </button>
-            </span>
+            <form action="/search" method="POST">
+                <input type="text" name=query class="form-control input-lg" placeholder="Search emergency" />
+                <span class="input-group-btn">
+                    <button class="btn btn-info btn-lg" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </span>
+            </form>
         </div>
     </div>
 </div>

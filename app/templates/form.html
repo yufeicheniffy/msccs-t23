@@ -2,31 +2,22 @@
 {% block content %}
 <br>
 <!-- <div class="container"> -->
-	<div class="row">
-		<div class="col-md-9">
-				<br><br><br><br>
-				<form class="form-inline">
-				  <div class="form-group">
-					<label class="sr-only" for="query">Query</label>
-					<input type="text" class="form-control" id="query" placeholder="query">
-				  </div>
-				  <button type="submit" class="btn btn-default">Submit</button>
-				</form>
-				<br>
-				<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
-				<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
-				<!-- {% for tweet in tweets %}
-			  <blockquote>
 
-				</blockquote>
-				<blockquote class="twitter-tweet" data-lang="en">
-					<p lang="en" dir="ltr">just setting up my twttr</p>&mdash; Jack (@jack) <a href="https://twitter.com/jack/status/20">March 21, 2006</a>
-				</blockquote>
-					<a href="'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'"{{ tweet.postID }}></a>
-				{% endfor %} -->
-		</div>
+                <!-- loop through the list passed from app.py -->
 
-		<div class="col-md-3">
+<div class="row">
+	
+
+
+</div>
+        {% for tweet in tweets %}
+            <div>
+              <!-- show each html but for each html, you have to strip the quotes by using |safe -->
+                {{tweet| safe}}
+            </div>
+        {% endfor %}
+
+<!-- 		<div class="col-md-3">
 				<div class="card" style="width: 15rem;">
 					<div class="card-header">
 							Filters
@@ -51,7 +42,6 @@
 					</div>
 				</div>
 				
-				</div>
-	</div>
+	</div> -->
 <!-- </div> -->
 {% endblock content %}

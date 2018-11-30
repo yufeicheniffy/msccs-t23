@@ -3,6 +3,7 @@ from app import app
 from classifier.data_files_scripts import MongoCollection
 from app.searchForm import searchForm
 import json
+import urllib.request
 from bson import json_util, ObjectId
 import app.search_rest as rest
 #from classifier.test_classifier_with_evaluation import clas
@@ -21,6 +22,40 @@ def initdatabase(): #!!!!A function to ensure the database is connected. Add thi
 def home2():
         initdatabase()
         return render_template('home.html', title='Home', search= True)
+
+
+@app.route("/search", methods= ['POST'])
+def search():
+        #first to collect a query from front-end and store in a variable
+        query= request.form['query']
+        #create a list to hold all the data returned
+        html_tweets= []
+        # use the name that you gave to your collection
+        database=G_collection.set_collection(collectionname='Test_Panos')
+        results, tweetids = rest.query_search(query)
+        # query the db based on the query from front-end
+        for tweetid in tweetids:
+                # building the url to use for the http get request
+                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweetid
+                # using the get request
+                response = urllib.request.urlopen(url)
+                print(response)
+                data = json.load(response)
+                html_tweets.append(data['html'])
+
+
+                # some ids get back empty because maybe the tweet is deleted, so only get json if true
+                # if page:
+                # #return the response of the get request in json form
+                #         tweet= page.json()
+                #         # target the field html from the json response
+                #         tweet_tag= tweet['html']
+                #         print(tweet_tag)
+                #         #append all the html responses to a list to make to loop with in the html
+                #         tweet_html.append(tweet_tag)
+        
+        return render_template('form.html', tweets=html_tweets) 
+
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
 def tweetapi():
