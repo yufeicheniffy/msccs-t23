@@ -44,9 +44,8 @@ def category_to_priority(categories):
 def categories_from_prediction(prediction_matrix):
     categories_list = []
     list_cata = list(catadictionary)
-    for i in range(prediction_matrix.shape[0]):
-
-        if(prediction_matrix[0][i]==1):
+    for i in range(prediction_matrix.shape[1]):
+        if(prediction_matrix[0,i]==1):
             categories_list.append(list_cata[i])
     return categories_list
 
@@ -63,12 +62,28 @@ def query_search(query):
     time_started = time.time()
     result_list = []
     id_list = []
+    catagories_=[]
+    matrix_allcate=np.zeros((1,25)) 
+    dic_catagories={'Request':[],'Calls':[],'Report':[],'Others':[]}
+    # all the catagories for each search
     # You can change the cound the time limit of search.
     # moreover we can use Stream to be realy real_life project
     for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=5).items():
         if(time.time()> time_started+5):
             sort_result = sorted(result_list, key=lambda k: k['Retweets'], reverse=True)
-            return sort_result, id_list
+            matrix_allcate=np.where(matrix_allcate>0,1,0)
+            for cat in categories_from_prediction(matrix_allcate):
+                if cat in ['GoodsServices', 'SearchAndRescue','InformationWanted']:
+                    dic_catagories['Request'].append(cat)
+                if cat in ['Volunteer','Donations','MovePeople']:
+                    dic_catagories['Calls'].append(cat)
+                if cat in ['FirstPartyObservation', 'ThirdPartyObservation', 'Weather', 'EmergingThreats','SignificantEventChange', 'MultimediaShare', 'ServiceAvailable', 'Factoid', 'Official','CleanUp', 'Hashtags']:
+                    dic_catagories['Report'].append(cat)
+                if cat in ['PastNews', 'ContinuingNews', 'Advice','Sentiment', 'Discussion', 'Irrelevant', 'Unknown', 'KnownAlready']:
+                    dic_catagories['Others'].append(cat)
+                    
+            print('test for dic_cates',dic_catagories)
+            return sort_result, id_list , dic_catagories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
         if ("media" in tweet._json["entities"]):
             tweet_media = True
@@ -76,9 +91,15 @@ def query_search(query):
             tweet_media = False
 
         prediction_matrix= (classifier_.predict([tweet._json["text"]]))
-        print(prediction_matrix)
-        categories_ =categories_from_prediction(prediction_matrix)
+        #print(prediction_matrix.shape)
+        matrix_allcate+=prediction_matrix
+        if np.sum(prediction_matrix)==0:
+            categories_=['Irrelevant']
+        else:
+            categories_ =categories_from_prediction(prediction_matrix)
+        #print(categories_)
         priority_ = category_to_priority(categories_)
+        #print(priority_)
         retweets_counter = tweet._json["retweet_count"]
         datetime_created = parser.parse(tweet._json["created_at"])
         result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": calendar.timegm(parser.parse(tweet._json["created_at"]).timetuple()), "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})

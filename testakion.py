@@ -3,6 +3,7 @@ import numpy as np
 import sys
 #sys.path.insert(0, '../')
 #from classifier.Classify_with_evaluation import Classify
+### This is a file used to test function, will be deleted later.. 
 print("hello")
 print(rest.query_search("PICS"))
 catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
