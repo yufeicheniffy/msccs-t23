@@ -11,7 +11,7 @@ catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Vo
                 'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
                 'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                 }
-
+#comment
 # a = np.random.randint(2,size=(25,))
 # classifier = Classify(list(), pretrained='./classifier/pretrained/')
 # mat_ = classifier.predict(["this is a text that got earthquake and help"])
