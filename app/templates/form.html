@@ -27,29 +27,31 @@
 		</div>
 
 		<div class="col-md-3">
-			<h4>Filters</h4>
-			<div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
-					<div class="btn-group" role="group">
-							<button id="btnGroupDrop1" type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Priority Level
-							</button>
-							<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-							<a class="dropdown-item" href="/category_html">High</a>
-							<a class="dropdown-item" href="/category_html">Medium</a>
-							<a class="dropdown-item" href="/category_html">Low</a>
-							</div>
-						</div>
-					<button type="button" class="btn btn-light">Time</button>
-					<button type="button" class="btn btn-light">Media</button>
-					<button type="button" class="btn btn-light">Incident Type</button>
-					<a class="btn btn-light" href="/tweetapi">Retrieve Tweets</a>
-					 <a class="btn btn-light" href="/priority_html">Search_by_priority</a>
-					 <a class="btn btn-light" href="/category_html">Filter_by_Category</a>
-					 <a class="btn btn-light" href="/eventfilter_html">Filter by event</a>
-					
-					
-			</div>
-		</div>
+				<div class="card" style="width: 15rem;">
+					<div class="card-header">
+							Filters
+					</div>
+					<div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
+							<div class="btn-group" role="group">
+									<button id="btnGroupDrop1" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Priority Level
+									</button>
+									<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+									<a class="dropdown-item" href="/category_html">High</a>
+									<a class="dropdown-item" href="/category_html">Medium</a>
+									<a class="dropdown-item" href="/category_html">Low</a>
+									</div>
+								</div>
+							<button type="button" class="btn btn-outline-dark">Time</button>
+							<button type="button" class="btn btn-outline-dark">Media</button>
+							<button type="button" class="btn btn-outline-dark">Incident Type</button>
+
+							
+							
+					</div>
+				</div>
+				
+				</div>
 	</div>
 <!-- </div> -->
 {% endblock content %}

@@ -7,6 +7,7 @@
   
       <!-- Bootstrap CSS -->
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
       <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'css/style.css')}}">
       <script>
             window.twttr = (function(d, s, id) {
@@ -25,6 +26,7 @@
             }(document, "script", "twitter-wjs"));
         </script>
         <script src="{{ url_for('static', filename='js/form.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/priority.js') }}"></script>
 </head>
 
 <!-- code to add class to body tag if its the search page -->
@@ -36,17 +38,20 @@
     {% block body_content %}
         <header class="site-header">
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="#">Help Me!</a>
+                <a class="navbar-brand" href="/home">Help Me!</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav">
                     <li class="nav-item active">
-                        <a class="nav-link" href="/">Home </a>
+                        <a class="nav-link" href="/home">Home </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/category_html">Category</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tweetapi">Retrieve</a>
                     </li>
                     </ul>
                 </div>
