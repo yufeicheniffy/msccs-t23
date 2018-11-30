@@ -5,11 +5,11 @@ import pymongo
 from dateutil import parser
 import calendar
 import numpy as np
-#sys.path.insert(0, '../')
-#from classifier.Classify_with_evaluation import Classify
+sys.path.insert(0, '../')
+from classifier.Classify_with_evaluation import Classify
 
 
-#classifier_ = Classify(list(), pretrained='../classifier/pretrained')
+classifier_ = Classify(list(), pretrained='./classifier/pretrained/')
 #classifier_.predict([lala])
 #git example
 catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
@@ -45,7 +45,8 @@ def categories_from_prediction(prediction_matrix):
     categories_list = []
     list_cata = list(catadictionary)
     for i in range(prediction_matrix.shape[0]):
-        if(prediction_matrix[i]==1):
+
+        if(prediction_matrix[0][i]==1):
             categories_list.append(list_cata[i])
     return categories_list
 
@@ -73,9 +74,9 @@ def query_search(query):
             tweet_media = True
         else:
             tweet_media = False
-        # prediction
-        #categories_ = categories_from_prediction(classifier_.predict([t["Text"]]))
-        prediction_matrix= np.random.randint(2,size=(25,))
+
+        prediction_matrix= (classifier_.predict([tweet._json["text"]]))
+        print(prediction_matrix)
         categories_ =categories_from_prediction(prediction_matrix)
         priority_ = category_to_priority(categories_)
         retweets_counter = tweet._json["retweet_count"]
