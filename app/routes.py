@@ -33,6 +33,7 @@ def search():
         # use the name that you gave to your collection
         database=G_collection.set_collection(collectionname='Test_Panos')
         results, tweetids = rest.query_search(query)
+        print(results)
         # query the db based on the query from front-end
         for tweetid in tweetids:
                 # building the url to use for the http get request
@@ -140,6 +141,11 @@ def api_filter_category():
 def event():
         initdatabase()
         return render_template('eventfilter_html')
+
+@app.route('/test', methods=['GET'])# a route to call tweet api,by a seatch form
+def test():
+        initdatabase()
+        return render_template('form.html')
 
 @app.route('/eventfilter', methods=['POST'])
 def api_filter_event():

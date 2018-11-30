@@ -1,32 +1,154 @@
 {% extends "layout.html" %}
 {% block content %}
 <br>
+<style type="text/css">
+	.container{
+		color: black;
+	}
+</style>
 <!-- <div class="container"> -->
 
                 <!-- loop through the list passed from app.py -->
-
-<div class="row">
-	<div class="btn-group-toggle" data-toggle="buttons">
-	  <label class="btn btn-secondary active">
-	    <input type="checkbox" checked autocomplete="off"> Checked
-	  </label>
-	  <label class="btn btn-secondary active">
-	    <input type="checkbox" checked autocomplete="off"> Checked
-	  </label>
-	  <label class="btn btn-secondary active">
-	    <input type="checkbox" checked autocomplete="off"> Checked
-	  </label>
-	  <label class="btn btn-secondary active">
-	    <input type="checkbox" checked autocomplete="off"> Checked
-	  </label>
-	  <label class="btn btn-secondary active">
-	    <input type="checkbox" checked autocomplete="off"> Checked
-	  </label>
-	  <label class="btn btn-secondary active">
-	    <input type="checkbox" checked autocomplete="off"> Checked
-	  </label>
+<div class="container">
+	<div class="row">
+		<div class="col-sm">
+			<h2>Categories:</h2>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm">
+			<h4>Requests:</h4>
+			<div class="btn-group-toggle" data-toggle="buttons">
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+			</div>
+		</div>
+		<div class="col-sm">
+			<h4>Calls:</h4>
+			<div class="btn-group-toggle" data-toggle="buttons">
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+			</div>
+		</div>
+		<div class="col-sm">
+			<h4>Reports:</h4>
+			<div class="btn-group-toggle" data-toggle="buttons">
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+			</div>
+		</div>
+		<div class="col-sm">
+			<h4>Others:</h4>
+			<div class="btn-group-toggle" data-toggle="buttons">
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+				<label class="btn btn-secondary active">
+					<input type="checkbox" checked autocomplete="off"> Checked
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Priority
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a class="dropdown-item" href="#">Action</a>
+					<a class="dropdown-item" href="#">Another action</a>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Media
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a class="dropdown-item" href="#">Action</a>
+					<a class="dropdown-item" href="#">Another action</a>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Order
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a class="dropdown-item" href="#">Action</a>
+					<a class="dropdown-item" href="#">Another action</a>
+					<a class="dropdown-item" href="#">Something else here</a>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
+
 {% for tweet in tweets %}
     <div>
       <!-- show each html but for each html, you have to strip the quotes by using |safe -->
