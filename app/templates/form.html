@@ -6,16 +6,33 @@
                 <!-- loop through the list passed from app.py -->
 
 <div class="row">
-	
-
-
+	<div class="btn-group-toggle" data-toggle="buttons">
+	  <label class="btn btn-secondary active">
+	    <input type="checkbox" checked autocomplete="off"> Checked
+	  </label>
+	  <label class="btn btn-secondary active">
+	    <input type="checkbox" checked autocomplete="off"> Checked
+	  </label>
+	  <label class="btn btn-secondary active">
+	    <input type="checkbox" checked autocomplete="off"> Checked
+	  </label>
+	  <label class="btn btn-secondary active">
+	    <input type="checkbox" checked autocomplete="off"> Checked
+	  </label>
+	  <label class="btn btn-secondary active">
+	    <input type="checkbox" checked autocomplete="off"> Checked
+	  </label>
+	  <label class="btn btn-secondary active">
+	    <input type="checkbox" checked autocomplete="off"> Checked
+	  </label>
+	</div>
 </div>
-        {% for tweet in tweets %}
-            <div>
-              <!-- show each html but for each html, you have to strip the quotes by using |safe -->
-                {{tweet| safe}}
-            </div>
-        {% endfor %}
+{% for tweet in tweets %}
+    <div>
+      <!-- show each html but for each html, you have to strip the quotes by using |safe -->
+        {{tweet| safe}}
+    </div>
+{% endfor %}
 
 <!-- 		<div class="col-md-3">
 				<div class="card" style="width: 15rem;">
