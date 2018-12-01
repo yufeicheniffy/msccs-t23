@@ -55,7 +55,7 @@ class Classify:
             print(type(self.stemmed_train[0]))
             #print(self.stemmed_train.shape)
             self.vectorizer = CountVectorizer(stop_words=stopwords.words(), \
-                binary=True, max_features=vocab_size)
+                binary=True, max_features=vocab_size, token_pattern=r'\b[^\d\W]+\b')
             self.vect_train = self.vectorizer.fit_transform(self.stemmed_train)
             #print(self.vectorizer.get_feature_names())
             self.train()
