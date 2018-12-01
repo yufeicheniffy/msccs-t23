@@ -2,7 +2,8 @@
 **/__pycache__
 .DS_Store
 __pycache__
-classifier/**/.csv
+classifier/**/*.csv
+clasifier/*.csv
 **/flask/Lib/__pycache__
 **/classifier/__pycache__
 **/app/__pycache__
