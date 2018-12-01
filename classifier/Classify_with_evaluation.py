@@ -11,7 +11,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_sc
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.base import clone
-from nltk.stem import SnowballStemmer
+from nltk.stem import WordNetLemmatizer
 
 class Classify:
     """
@@ -37,7 +37,7 @@ class Classify:
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
-        self.stemmer = SnowballStemmer('english')
+        self.stemmer = WordNetLemmatizer()
 
         self.classifiers = list()
         
@@ -48,7 +48,7 @@ class Classify:
             #print(self.text.shape)
             self.stemmed_train = self.text.copy()
             for n in range(0, len(self.text)):
-                self.stemmed_train[n] = ' '.join([self.stemmer.stem(word) \
+                self.stemmed_train[n] = ' '.join([self.stemmer.lemmatize(word) \
                     for word in self.text[n].split(' ')])
             print(type(self.stemmed_train))
             print(len(self.stemmed_train))
@@ -57,6 +57,7 @@ class Classify:
             self.vectorizer = CountVectorizer(stop_words=stopwords.words(), \
                 binary=True, max_features=vocab_size)
             self.vect_train = self.vectorizer.fit_transform(self.stemmed_train)
+            #print(self.vectorizer.get_feature_names())
             self.train()
         else:
             for f in sorted(os.listdir(pretrained)):
@@ -177,7 +178,7 @@ class Classify:
 
         stemmed = tweets.copy()
         for n in range(0, len(tweets)):
-            stemmed[n] = ' '.join([self.stemmer.stem(word) \
+            stemmed[n] = ' '.join([self.stemmer.lemmatize(word) \
                 for word in tweets[n].split(' ')])
         tokenized = self.vectorizer.transform(stemmed)
         predictions = np.zeros((len(tweets), len(self.classifiers)))
