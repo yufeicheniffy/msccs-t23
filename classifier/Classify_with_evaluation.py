@@ -11,6 +11,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_sc
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.base import clone
+from nltk.stem import SnowballStemmer
 
 class Classify:
     """
@@ -36,12 +37,26 @@ class Classify:
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
+        self.stemmer = SnowballStemmer('english')
+
         self.classifiers = list()
         
         if pretrained is None:
-            self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+            print(type(self.text))
+            print(len(self.text))
+            print(type(self.text[0]))
+            #print(self.text.shape)
+            self.stemmed_train = self.text.copy()
+            for n in range(0, len(self.text)):
+                self.stemmed_train[n] = ' '.join([self.stemmer.stem(word) \
+                    for word in self.text[n].split(' ')])
+            print(type(self.stemmed_train))
+            print(len(self.stemmed_train))
+            print(type(self.stemmed_train[0]))
+            #print(self.stemmed_train.shape)
+            self.vectorizer = CountVectorizer(stop_words=stopwords.words(), \
                 binary=True, max_features=vocab_size)
-            self.vect_train = self.vectorizer.fit_transform(self.text)
+            self.vect_train = self.vectorizer.fit_transform(self.stemmed_train)
             self.train()
         else:
             for f in sorted(os.listdir(pretrained)):
@@ -159,7 +174,12 @@ class Classify:
         """
         if len(self.classifiers) == 0:
             raise RuntimeError("Classifiers have not been trained!")
-        tokenized = self.vectorizer.transform(tweets)
+
+        stemmed = tweets.copy()
+        for n in range(0, len(tweets)):
+            stemmed[n] = ' '.join([self.stemmer.stem(word) \
+                for word in tweets[n].split(' ')])
+        tokenized = self.vectorizer.transform(stemmed)
         predictions = np.zeros((len(tweets), len(self.classifiers)))
 
         for i in range(0, len(self.classifiers)):
