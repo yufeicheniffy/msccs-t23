@@ -6,6 +6,38 @@
 		color: black;
 	}
 </style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	var active_categories = []
+	$('.category-filters').children('label').each(function(i) {
+		if ($(this).hasClass('active')) {
+			active_categories.push($(this).attr('id'))
+		}
+	});
+	$(document).on('click', '.category', function () {
+		var check_val = $.inArray($(this).attr('id'), active_categories)
+		if (check_val == -1) {
+			active_categories.push($(this).attr('id'))
+		} else {
+			active_categories.splice(check_val, 1)
+		}
+
+		console.log(active_categories)
+		$.ajax({
+			url: "/filter_tweets",
+			type: "get",
+			data: {categories: active_categories.join(',')},
+			success: function(response) {
+			$("#tweet-grid").html(response);
+			},
+			error: function(xhr) {
+			//Do Something to handle error
+			}
+		});
+	});
+});
+</script>
 <!-- <div class="container"> -->
 
                 <!-- loop through the list passed from app.py -->
@@ -16,30 +48,22 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm">
-			<h4>Requests:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
+		{% for key, value in categories.items() %}
+			{% if value is defined and value|length > 0 %}
+			<div class="col-sm">
+				<h4>{{key| safe}}</h4>
+				<div class="category-filters btn-group-toggle" data-toggle="buttons">
+					{% for category in value %}
+					<label id="{{category| safe}}" class="category btn btn-secondary active">
+						<input type="checkbox" checked autocomplete="off"> {{category| safe}}
+					</label>
+		        	{% endfor %}
+				</div>
 			</div>
-		</div>
-		<div class="col-sm">
+			{% endif %}
+		{% endfor %}
+
+<!-- 		<div class="col-sm">
 			<h4>Calls:</h4>
 			<div class="btn-group-toggle" data-toggle="buttons">
 				<label class="btn btn-secondary active">
@@ -61,53 +85,7 @@
 					<input type="checkbox" checked autocomplete="off"> Checked
 				</label>
 			</div>
-		</div>
-		<div class="col-sm">
-			<h4>Reports:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-			</div>
-		</div>
-		<div class="col-sm">
-			<h4>Others:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-			</div>
-		</div>
+		</div> -->
 	</div>
 	<div class="row">
 		<div class="col-sm">
@@ -149,12 +127,13 @@
 	</div>
 </div>
 
-{% for tweet in tweets %}
-    <div>
-      <!-- show each html but for each html, you have to strip the quotes by using |safe -->
-        {{tweet| safe}}
-    </div>
-{% endfor %}
+
+<div id="tweet-grid">
+	{% for tweet in tweets %}
+	      <!-- show each html but for each html, you have to strip the quotes by using |safe -->
+	        {{tweet['html']| safe}}
+	{% endfor %}
+</div>
 
 <!-- 		<div class="col-md-3">
 				<div class="card" style="width: 15rem;">
