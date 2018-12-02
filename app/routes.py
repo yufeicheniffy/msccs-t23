@@ -64,7 +64,10 @@ def search():
         query= request.form['query']
         # use the name that you gave to your collection
         database=G_collection.set_collection(collectionname='TweetsData')
-        tweets, tweetids, categories = rest.query_search(query)
+        try:
+                tweets, tweetids, categories = rest.query_search(query)
+        except Exception:
+                return render_template('errorpage.html')
         # query the db based on the query from front-end
         for tweet in tweets:
                 # building the url to use for the http get request
@@ -131,8 +134,12 @@ def api_filter():
         query= request.form['query']
         # use the name that you gave to your collection
         database=G_collection.set_collection(collectionname='TweetsData')
-        results, ids,dic_cates = rest.query_search(query)
-        database.insert(results)
+        try:
+                results, ids,dic_cates = rest.query_search(query)
+                database.insert(results)
+        except Exception:
+                print('no result found!')
+                return render_template('errorpage.html')
         return jsonify({"name": ids})
 
 @app.route('/priority_html', methods=['GET'])# a route to call tweet api,by a seatch form
