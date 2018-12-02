@@ -64,7 +64,7 @@ def query_search(query):
     id_list = []
     catagories_=[]
     matrix_allcate=np.zeros((1,25)) 
-    dic_catagories={'Request':[],'Calls':[],'Report':[],'Others':[]}
+    dic_catagories={'Request':[],'Calls':[],'Report':[],'Others':[]} 
     # all the catagories for each search
     # You can change the cound the time limit of search.
     # moreover we can use Stream to be realy real_life project
@@ -82,7 +82,7 @@ def query_search(query):
                 if cat in ['PastNews', 'ContinuingNews', 'Advice','Sentiment', 'Discussion', 'Irrelevant', 'Unknown', 'KnownAlready']:
                     dic_catagories['Others'].append(cat)
                     
-            print('test for dic_cates',dic_catagories)
+            print('This search contain following catagories:/n',dic_catagories)
             return sort_result, id_list , dic_catagories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
         if ("media" in tweet._json["entities"]):
@@ -94,7 +94,7 @@ def query_search(query):
         #print(prediction_matrix.shape)
         matrix_allcate+=prediction_matrix
         if np.sum(prediction_matrix)==0:
-            categories_=['Irrelevant']
+            categories_=['Unknown']
         else:
             categories_ =categories_from_prediction(prediction_matrix)
         #print(categories_)
