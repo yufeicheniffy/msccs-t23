@@ -34,15 +34,20 @@ def search():
         database=G_collection.set_collection(collectionname='TweetsData')
         results, tweetids, dic_cates= rest.query_search(query)
         # query the db based on the query from front-end
-        for tweetid in tweetids:
-                # building the url to use for the http get request
-                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweetid
-                # using the get request
-                response = urllib.request.urlopen(url)
-                print(response)
-                data = json.load(response)
-                html_tweets.append(data['html'])
 
+        clicked_list=['FirstPartyObservation','Irrelevant'] #store all the catagories clicked.
+
+        for i,tweetid in enumerate(tweetids):#filter tweets by catagories
+                for cat in results[i]['Category']:
+                        if cat in clicked_list:
+                        # building the url to use for the http get request
+                                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweetid
+                                # using the get request
+                                response = urllib.request.urlopen(url)
+                                print(response)
+                                data = json.load(response)
+                                html_tweets.append(data['html'])
+                                break
 
                 # some ids get back empty because maybe the tweet is deleted, so only get json if true
                 # if page:
