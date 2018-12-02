@@ -11,6 +11,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_sc
 import pandas as pd
 from sklearn.externals import joblib
 from sklearn.base import clone
+from sklearn.dummy import DummyClassifier
 
 class Classify:
     """
@@ -58,7 +59,11 @@ class Classify:
         """
         #len(categories)
         for i in range(0, len(self.cat_arr[0])):
-            m = clone(self.model)
+            # unknown should not be predicted unless no other category found
+            if i == self.catadictionary['Unknown']:
+                m = DummyClassifier('constant', constant=0)
+            else:
+                m = clone(self.model)
             c = m.fit(self.vect_train, self.cat_arr[:,i])
             self.classifiers.append(c)
 
@@ -146,6 +151,11 @@ class Classify:
 
         for i in range(0, len(self.classifiers)):
             predictions[:,i] = self.classifiers[i].predict(tokenized)
+        
+        # if nothing predicted, category should be unknown
+        for row in predictions:
+            if np.sum(row) == 0:
+                row[self.catadictionary['Unknown']] = 1
         return(predictions)
 
     def return_predict_categories(self,tweets):
