@@ -13,3 +13,6 @@ clasifier/*.csv
 **\app\__pycache__
 **\flask\Lib
 **/*.pyc
+build/helpme/helpme.exe.manifest
+helpme.spec
+build/helpme/base_library.zip
