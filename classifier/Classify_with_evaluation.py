@@ -10,10 +10,7 @@ import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 from sklearn.externals import joblib
 from sklearn.base import clone
-
-from nltk.stem import WordNetLemmatizer
 from sklearn.dummy import DummyClassifier
-
 
 class Classify:
     """
@@ -38,27 +35,12 @@ class Classify:
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
-        self.stemmer = WordNetLemmatizer()
-
         self.classifiers = list()
         
         if pretrained is None:
-            print(type(self.text))
-            print(len(self.text))
-            print(type(self.text[0]))
-            #print(self.text.shape)
-            self.stemmed_train = self.text.copy()
-            for n in range(0, len(self.text)):
-                self.stemmed_train[n] = ' '.join([self.stemmer.lemmatize(word) \
-                    for word in self.text[n].split(' ')])
-            print(type(self.stemmed_train))
-            print(len(self.stemmed_train))
-            print(type(self.stemmed_train[0]))
-            #print(self.stemmed_train.shape)
-            self.vectorizer = CountVectorizer(stop_words=stopwords.words(), \
-                binary=True, max_features=vocab_size, token_pattern=r'\b[^\d\W]+\b')
-            self.vect_train = self.vectorizer.fit_transform(self.stemmed_train)
-            #print(self.vectorizer.get_feature_names())
+            self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+                binary=True, max_features=vocab_size)
+            self.vect_train = self.vectorizer.fit_transform(self.text)
             self.train()
         else:
             for f in sorted(os.listdir(pretrained)):
@@ -195,12 +177,7 @@ class Classify:
         """
         if len(self.classifiers) == 0:
             raise RuntimeError("Classifiers have not been trained!")
-
-        stemmed = tweets.copy()
-        for n in range(0, len(tweets)):
-            stemmed[n] = ' '.join([self.stemmer.lemmatize(word) \
-                for word in tweets[n].split(' ')])
-        tokenized = self.vectorizer.transform(stemmed)
+        tokenized = self.vectorizer.transform(tweets)
         predictions = np.zeros((len(tweets), len(self.classifiers)))
 
         for i in range(0, len(self.classifiers)):
