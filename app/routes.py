@@ -15,7 +15,8 @@ tweets = None
 def initdatabase(): #!!!!A function to ensure the database is connected. Add this in EVERY routes function please.
         global G_collection
         if G_collection is None:
-                G_collection=MongoCollection.MongoCollection(collectionname='TweetsData', MongoURI="mongodb://localhost:27017/") #create the instance in the home page. Each time the project should run start with home page.
+                G_collection=MongoCollection.MongoCollection(collectionname='TweetsData')#MongoURI="mongodb://localhost:27017/"
+                 #create the instance in the home page. Each time the project should run start with home page.
         else:
                 return
 
