@@ -19,8 +19,37 @@ function filterTweets(active_categories, active_filters, chronological) {
 		complete: function(){
 			$('#refreshing-anim').hide();
 			$('#tweet-grid').show();
+			//waitGrid();
 		}
 	});
+}
+
+function setGrid() {
+	var COL_COUNT = 2; // set this to however many columns you want
+	var col_heights = [], 
+		container = document.getElementById('block-contain');
+	for (var i = 0; i <= COL_COUNT; i++) {
+		col_heights.push(0);
+	}
+	for (var i = 0; i < container.children.length; i++) {
+		console.log(parseFloat(container.children[i].offsetHeight))
+		var order = (i + 1) % COL_COUNT || COL_COUNT;
+		container.children[i].style.order = order;
+		col_heights[order] += parseFloat(container.children[i].offsetHeight);
+	}
+	var highest = Math.max.apply(Math, col_heights);
+	container.style.height = highest+'px';
+}
+
+function waitGrid() {
+	var checkExist = setInterval(function() {
+		console.log('check')
+		console.log($("#block-contain").children().length)
+		if ($("#block-contain").children().length > 4) {
+		    setGrid()
+		    clearInterval(checkExist);
+		}
+	}, 1000);
 }
 
 $(document).ready(function() {
@@ -113,29 +142,6 @@ $(document).ready(function() {
 			{% endif %}
 		{% endfor %}
 
-<!-- 		<div class="col-sm">
-			<h4>Calls:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-			</div>
-		</div> -->
 	</div>
 	<div class="row" style="margin-top: 25px">
 		<div class="col-sm text-center">
@@ -181,39 +187,14 @@ $(document).ready(function() {
 	<h4>Refreshing..</h4>
 </div>
 
-
 <div id="tweet-grid">
-	{% for tweet in tweets %}
-	      <!-- show each html but for each html, you have to strip the quotes by using |safe -->
-	        {{tweet['html']| safe}}
+	{% for tweet_row in tweets | batch(2, '&nbsp;') %}
+	<div class="row">
+	    {% for tweet in tweet_row %}
+	    <div class="col-sm">{{tweet['html']| safe}}</div>
+	    {% endfor %}
+	</div>
 	{% endfor %}
 </div>
 
-<!-- 		<div class="col-md-3">
-				<div class="card" style="width: 15rem;">
-					<div class="card-header">
-							Filters
-					</div>
-					<div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
-							<div class="btn-group" role="group">
-									<button id="btnGroupDrop1" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									Priority Level
-									</button>
-									<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-									<a class="dropdown-item" href="/category_html">High</a>
-									<a class="dropdown-item" href="/category_html">Medium</a>
-									<a class="dropdown-item" href="/category_html">Low</a>
-									</div>
-								</div>
-							<button type="button" class="btn btn-outline-dark">Time</button>
-							<button type="button" class="btn btn-outline-dark">Media</button>
-							<button type="button" class="btn btn-outline-dark">Incident Type</button>
-
-							
-							
-					</div>
-				</div>
-				
-	</div> -->
-<!-- </div> -->
 {% endblock content %}
