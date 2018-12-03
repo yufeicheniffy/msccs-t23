@@ -8,7 +8,6 @@ from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 import numpy as np
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
-import pandas as pd
 from sklearn.externals import joblib
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
