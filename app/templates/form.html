@@ -1,11 +1,122 @@
 {% extends "layout.html" %}
 {% block content %}
 <br>
-<style type="text/css">
-	.container{
-		color: black;
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+function filterTweets(active_categories, active_filters, chronological) {
+	$('#tweet-grid').hide();
+	$('#refreshing-anim').show();
+	$.ajax({
+		url: "/filter_tweets",
+		type: "get",
+		data: {categories: active_categories.join(','), filters: active_filters.join(','), chronological: chronological},
+		success: function(response) {
+			$("#tweet-grid").html(response);
+		},
+		error: function(xhr) {
+		//Do Something to handle error
+		},
+		complete: function(){
+			$('#refreshing-anim').hide();
+			$('#tweet-grid').show();
+			//waitGrid();
+		}
+	});
+}
+
+function setGrid() {
+	var COL_COUNT = 2; // set this to however many columns you want
+	var col_heights = [], 
+		container = document.getElementById('block-contain');
+	for (var i = 0; i <= COL_COUNT; i++) {
+		col_heights.push(0);
 	}
-</style>
+	for (var i = 0; i < container.children.length; i++) {
+		console.log(parseFloat(container.children[i].offsetHeight))
+		var order = (i + 1) % COL_COUNT || COL_COUNT;
+		container.children[i].style.order = order;
+		col_heights[order] += parseFloat(container.children[i].offsetHeight);
+	}
+	var highest = Math.max.apply(Math, col_heights);
+	container.style.height = highest+'px';
+}
+
+function waitGrid() {
+	var checkExist = setInterval(function() {
+		console.log('check')
+		console.log($("#block-contain").children().length)
+		if ($("#block-contain").children().length > 4) {
+		    setGrid()
+		    clearInterval(checkExist);
+		}
+	}, 1000);
+}
+
+$(document).ready(function() {
+	var active_categories = []
+	var active_filters = []
+	var chronological = true
+
+	$('.category-filters').children('label').each(function(i) {
+		if ($(this).hasClass('active')) {
+			active_categories.push($(this).attr('id'))
+		}
+	});
+	$('.filters').children('.filter').each(function(i) {
+		if ($(this).hasClass('active')) {
+			active_filters.push($(this).attr('id'))
+		}
+	});
+
+	$(document).on('click', '.category', function () {
+		var check_val = $.inArray($(this).attr('id'), active_categories)
+		if (check_val == -1) {
+			active_categories.push($(this).attr('id'))
+		} else {
+			active_categories.splice(check_val, 1)
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '.filter', function () {
+		var check_val = $.inArray($(this).attr('id'), active_filters)
+		if (check_val == -1) {
+			active_filters.push($(this).attr('id'))
+		} else {
+			active_filters.splice(check_val, 1)
+		}
+
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active')
+		} else {
+			$(this).addClass('active')
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '#chronological', function () {
+		if (!$(this).hasClass('active')) {
+			chronological = true
+			$(this).addClass('active')
+			$('#reverse-chronological').removeClass('active')
+		}
+		
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '#reverse-chronological', function () {
+		if (!$(this).hasClass('active')) {
+			chronological = false
+			$(this).addClass('active')
+			$('#chronological').removeClass('active')
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+});
+</script>
 <!-- <div class="container"> -->
 
                 <!-- loop through the list passed from app.py -->
@@ -16,171 +127,74 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm">
-			<h4>Requests:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
+		{% for key, value in categories.items() %}
+			{% if value is defined and value|length > 0 %}
+			<div class="col-sm">
+				<h4>{{key| safe}}</h4>
+				<div class="category-filters btn-group-toggle" data-toggle="buttons">
+					{% for category in value %}
+					<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
+						<input type="checkbox" checked autocomplete="off"> {{category| safe}}
+					</label>
+		        	{% endfor %}
+				</div>
 			</div>
-		</div>
-		<div class="col-sm">
-			<h4>Calls:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-			</div>
-		</div>
-		<div class="col-sm">
-			<h4>Reports:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-			</div>
-		</div>
-		<div class="col-sm">
-			<h4>Others:</h4>
-			<div class="btn-group-toggle" data-toggle="buttons">
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-				<label class="btn btn-secondary active">
-					<input type="checkbox" checked autocomplete="off"> Checked
-				</label>
-			</div>
-		</div>
+			{% endif %}
+		{% endfor %}
+
 	</div>
-	<div class="row">
-		<div class="col-sm">
+	<div class="row" style="margin-top: 25px">
+		<div class="col-sm text-center">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Priority
 				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another action</a>
-					<a class="dropdown-item" href="#">Something else here</a>
+				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
+					<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
+					<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
 				</div>
 			</div>
 		</div>
-		<div class="col-sm">
+		<div class="col-sm text-center">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Media
 				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another action</a>
-					<a class="dropdown-item" href="#">Something else here</a>
+				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
+					<a id="media-no" class="filter dropdown-item active" href="#">No</a>
 				</div>
 			</div>
 		</div>
-		<div class="col-sm">
+		<div class="col-sm text-center">
 			<div class="dropdown">
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Order
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another action</a>
-					<a class="dropdown-item" href="#">Something else here</a>
+					<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
+					<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-{% for tweet in tweets %}
-    <div>
-      <!-- show each html but for each html, you have to strip the quotes by using |safe -->
-        {{tweet| safe}}
-    </div>
-{% endfor %}
 
-<!-- 		<div class="col-md-3">
-				<div class="card" style="width: 15rem;">
-					<div class="card-header">
-							Filters
-					</div>
-					<div class="btn-group-vertical" role="group" aria-label="Button group with nested dropdown" style="">
-							<div class="btn-group" role="group">
-									<button id="btnGroupDrop1" type="button" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-									Priority Level
-									</button>
-									<div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-									<a class="dropdown-item" href="/category_html">High</a>
-									<a class="dropdown-item" href="/category_html">Medium</a>
-									<a class="dropdown-item" href="/category_html">Low</a>
-									</div>
-								</div>
-							<button type="button" class="btn btn-outline-dark">Time</button>
-							<button type="button" class="btn btn-outline-dark">Media</button>
-							<button type="button" class="btn btn-outline-dark">Incident Type</button>
+<div class="text-center" id="refreshing-anim">
+	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+	<h4>Refreshing..</h4>
+</div>
 
-							
-							
-					</div>
-				</div>
-				
-	</div> -->
-<!-- </div> -->
+<div id="tweet-grid">
+	{% for tweet_row in tweets | batch(2, '&nbsp;') %}
+	<div class="row">
+	    {% for tweet in tweet_row %}
+	    <div class="col-sm">{{tweet['html']| safe}}</div>
+	    {% endfor %}
+	</div>
+	{% endfor %}
+</div>
+
 {% endblock content %}
