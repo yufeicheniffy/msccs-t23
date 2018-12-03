@@ -66,7 +66,8 @@ else:
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))
-clas.simple_evaluation(cat_test,predict)
+simp = clas.simple_evaluation(cat_test,predict)
+print(simp)
 
 keys = evals[0].keys()
 with open(output_name, 'w') as f:
