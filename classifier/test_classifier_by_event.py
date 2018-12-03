@@ -84,7 +84,9 @@ for event in set(event_dict.values()):
 	else: 
 		clas = Classify(cat_train, text_train, 2000)
 	predict = clas.predict(text_test)
-	clas.simple_evaluation(cat_test,predict)
+	simp = clas.simple_evaluation(cat_test,predict)
+	for key in simp:
+		print(key, ": ", simp[key])
 
 if save:
 	clas.save_classifier()

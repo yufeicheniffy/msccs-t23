@@ -102,36 +102,46 @@ class Classify:
 
     def simple_evaluation(self, actual, prediction):
         """
-        Simple evaluator, printing overal confusion matrix, accuracy
+        Simple evaluator, returning overal confusion matrix, accuracy
         recall, precision, f1
         """
+        eval = dict()
+        eval['Number of Predictions'] = len(actual)*len(actual[0])
+        eval['True Positive'] = 0
+        eval['True Negative'] = 0
+        eval['False Positive'] = 0
+        eval['False Negative'] = 0
+        eval['One Label'] = 0
+        eval['Perfect Match'] = 0
 
-        true_pos = 0
-        true_neg = 0
-        false_pos = 0
-        false_neg = 0
+        one_lab = False
+
         for x in range(0, len(actual)):
+            if np.array_equal(actual[x], prediction[x]):
+                eval['Perfect Match'] += 1
             for y in range(0, len(actual[x])):
                 if actual[x][y] == 1:
                     if prediction[x][y] == 1:
-                        true_pos += 1
+                        eval['True Positive'] += 1
+                        one_lab = True
                     else: 
-                        false_neg +=1
+                        eval['False Negative'] +=1
                 else:
                     if prediction[x][y] == 1:
-                        false_pos += 1
+                        eval['False Positive'] += 1
                     else:
-                        true_neg += 1
-        print("true positive ", true_pos)
-        print("false positive ", false_pos)
-        print("true negative ", true_neg)
-        print("false negative ", false_neg)
-        print("overall accuracy ", (true_pos+true_neg)/(true_pos+true_neg+false_pos+false_neg))
-        p = true_pos/(true_pos+false_pos)
-        r = true_pos/(true_pos+false_neg)
-        print("overall recall ", r)
-        print("overall precision ", p)
-        print("overall f1 ", 2*(p*r)/(p+r))
+                        eval['True Negative'] += 1
+            if one_lab:
+                eval['One Label'] += 1
+            one_lab = False
+        eval['One Label Score'] = eval['One Label']/len(actual)
+        eval['Perfect Match Score'] = eval['Perfect Match']/len(actual)
+        eval['Accuracy'] = (eval['True Positive']+eval['True Negative'])/(eval['True Positive']+eval['True Negative']+eval['False Positive']+eval['False Negative'])
+        eval['Precision'] = eval['True Positive']/(eval['True Positive']+eval['False Positive'])
+        eval['Recall'] = eval['True Positive']/(eval['True Positive']+eval['False Negative'])
+        eval['F1 Score'] = (2*(eval['Precision']*eval['Recall']))/(eval['Precision']+eval['Recall'])
+        #print(eval)
+        return eval
 
     def predict(self,tweets):
         """
