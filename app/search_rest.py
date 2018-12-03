@@ -82,6 +82,7 @@ def query_search(query):
                     dic_catagories['Report'].append(cat)
                 if cat in ['PastNews', 'ContinuingNews', 'Advice','Sentiment', 'Discussion', 'Irrelevant', 'Unknown', 'KnownAlready']:
                     dic_catagories['Others'].append(cat)
+                    
             print('This search contain following catagories:/n',dic_catagories)
             return sort_result, id_list , dic_catagories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
@@ -108,4 +109,3 @@ def query_search(query):
             datetime_created = parser.parse(tweet._json["created_at"])
             result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": timestamp, "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})
             id_list.append(tweet._json["id_str"])
-        

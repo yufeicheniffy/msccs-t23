@@ -61,6 +61,22 @@ def order_reverse_chronological(tweets):
     return sorted(tweets, key=lambda k: k['timestamp']) 
 
 
+def beautify_html(tweets):
+    html = '<div class="row">'
+
+    for i in range(0, len(tweets)):
+        if i == len(tweets) - 1:
+            html += '</div>'
+            break
+
+        if i % 2 == 0 and i != 0:
+            html += '</div><div class="row">'
+
+        html += '<div class="col-sm">' + tweets[i]['html'] + '</div>'
+
+    return html
+
+
 @app.route('/filter_tweets')
 def filter_tweets():
     global tweets
@@ -93,7 +109,7 @@ def filter_tweets():
         new_tweets = order_reverse_chronological(new_tweets)
 
 
-    return ''.join([d['html'] for d in new_tweets])
+    return beautify_html(new_tweets)
 
 
 @app.route("/search", methods= ['POST'])
@@ -113,7 +129,7 @@ def search():
         # query the db based on the query from front-end
         for tweet in tweets:
                 # building the url to use for the http get request
-                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid']
+                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid'] + '?maxwidth=220'
                 # using the get request
                 response = urllib.request.urlopen(url)
                 print(response)
