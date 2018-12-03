@@ -260,7 +260,7 @@ class MongoCollection:
             event_info = self.collection.find(projection = {'event': 1})
             #print(text_info)
             event_dict = dict()
-            for item in text_info:
+            for item in event_info:
                 #print(item)
                 event_dict[item['_id']] = item.get('event')
         except Exception as e:
