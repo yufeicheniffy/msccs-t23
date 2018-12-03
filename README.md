@@ -20,8 +20,13 @@ Part of the University of Glasgow Master's Team Project for Data Science student
  - flask #virtual environment of this project
 
 ### To run this project
-    in windows, enter msccs-t23-master folder by cmd, type following command.
-    >> flask\Scripts\python.exe helpme.py
+    in windows, enter msccs-t23 folder by cmd, type following command.
+    >> flask\Scripts\activate
+    >> python helpme.py
+    
+    in Linux/Macos, enter msccs-t23 folder by cmd, type following command.
+    >> source flask\Scripts\activate
+    >> python helpme.py
 
 FELL FREE TO RUN IT IN YOUR OWN ENVIROMENT.
 
