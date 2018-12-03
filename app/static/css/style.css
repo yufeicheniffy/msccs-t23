@@ -292,3 +292,15 @@ body.search_page {
         content: "";
         display: block;
     }
+    div#loading {
+        top: 35%;
+        left: 43%;
+        margin: inherit;
+        position: fixed;
+        z-index: 1000;
+        width: 200px;
+        height: 400px;
+        background: url(../images/load.gif) no-repeat;
+        background-size: contain;
+        cursor: wait;
+    }

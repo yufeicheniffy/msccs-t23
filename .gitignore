@@ -7,7 +7,7 @@ clasifier/*.csv
 **/flask/Lib/__pycache__
 **/classifier/__pycache__
 **/app/__pycache__
-**/flask/Lib
+**/flask/Lib/site-packages/PyInstaller
 **\flask\Lib\__pycache__
 **\classifier\__pycache__
 **\app\__pycache__
