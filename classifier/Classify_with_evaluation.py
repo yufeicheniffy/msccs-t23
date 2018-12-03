@@ -32,7 +32,6 @@ class Classify:
         self.cat = cats
         self.text = tweet_texts
         self.cat_arr = np.array(self.cat)
-
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
