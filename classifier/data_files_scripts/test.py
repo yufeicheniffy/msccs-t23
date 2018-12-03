@@ -9,14 +9,14 @@ import io
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8') 
 
-traincollection = MongoCollection(collectionname='TweetsData')#MongoURI="mongodb://localhost:27017/"
+traincollection = MongoCollection(collectionname='Test', MongoURI="mongodb://localhost:27017/")
 read=Reader()
-l1=read.read('''.\classifier\data_files_scripts\data_files\ssr1.json''')
-l2=read.read('''.\classifier\data_files_scripts\data_files\ssr2.json''')
-l3=read.read('''.\classifier\data_files_scripts\data_files\ssr3.json''')
-l4=read.read('''.\classifier\data_files_scripts\data_files\ssr4.json''')
-l5=read.read('''.\classifier\data_files_scripts\data_files\ssr5.json''')
-l6=read.read('''.\classifier\data_files_scripts\data_files\ssr6.json''')
+l1=read.read('''./classifier/data_files_scripts/data_files/ssr1.json''')
+l2=read.read('''./classifier/data_files_scripts/data_files/ssr2.json''')
+l3=read.read('''./classifier/data_files_scripts/data_files/ssr3.json''')
+l4=read.read('''./classifier/data_files_scripts/data_files/ssr4.json''')
+l5=read.read('''./classifier/data_files_scripts/data_files/ssr5.json''')
+l6=read.read('''./classifier/data_files_scripts/data_files/ssr6.json''')
 traincollection.insert(l1)
 traincollection.insert(l2)
 traincollection.insert(l3)
