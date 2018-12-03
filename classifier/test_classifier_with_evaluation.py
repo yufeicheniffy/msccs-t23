@@ -53,16 +53,16 @@ cat_test_arr = np.array(cat_test, dtype=np.float64)
 if pretrained:
 	clas = Classify(cat_train, pretrained='pretrained/')
 elif classifier == 'rf':
-	clas = Classify(cat_train, text_train, 2000,
+	clas = Classify(cat_train, text_train,
 		model=RandomForestClassifier(class_weight='balanced', n_estimators=100))
 elif classifier == 'svc':
-	clas = Classify(cat_train, text_train, 2000,
+	clas = Classify(cat_train, text_train,
 		model=SVC(class_weight='balanced'))
 elif classifier == 'linearsvc':
-	clas = Classify(cat_train, text_train, 2000,
+	clas = Classify(cat_train, text_train,
 		model=LinearSVC(class_weight='balanced'))
 else: 
-	clas = Classify(cat_train, text_train, 2000)
+	clas = Classify(cat_train, text_train)
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))
