@@ -250,6 +250,24 @@ class MongoCollection:
             print("Error", e)
         return x["event"]
 
+    def return_event_all(self):
+        """
+        Lookup event for all tweets.
+
+        :return: dictionary of id to event for all tweets
+        """
+        try:
+            event_info = self.collection.find(projection = {'event': 1})
+            #print(text_info)
+            event_dict = dict()
+            for item in text_info:
+                #print(item)
+                event_dict[item['_id']] = item.get('event')
+        except Exception as e:
+            raise
+            #print('Error',e)
+        return event_dict
+
 
     def return_classfier_dic(self):
         """
