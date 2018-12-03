@@ -90,6 +90,7 @@ def query_search(query):
                 tweet_media = True
             else:
                 tweet_media = False
+
             prediction_matrix= (classifier_.predict([tweet._json["text"]]))
             #print(prediction_matrix.shape)
             matrix_allcate+=prediction_matrix
@@ -100,7 +101,10 @@ def query_search(query):
             #print(categories_)
             priority_ = category_to_priority(categories_)
             #print(priority_)
+            timestamp = calendar.timegm(parser.parse(tweet._json["created_at"]).timetuple())
+            if "retweeted_status" in tweet._json:
+                timestamp = calendar.timegm(parser.parse(tweet._json["retweeted_status"]["created_at"]).timetuple())
             retweets_counter = tweet._json["retweet_count"]
             datetime_created = parser.parse(tweet._json["created_at"])
-            result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": calendar.timegm(parser.parse(tweet._json["created_at"]).timetuple()), "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})
+            result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": timestamp, "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})
             id_list.append(tweet._json["id_str"])

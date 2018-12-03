@@ -8,13 +8,38 @@
 </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script type="text/javascript">
+function filterTweets(active_categories, active_filters, chronological) {
+	$.ajax({
+		url: "/filter_tweets",
+		type: "get",
+		data: {categories: active_categories.join(','), filters: active_filters.join(','), chronological: chronological},
+		success: function(response) {
+			$("#tweet-grid").html(response);
+		},
+		error: function(xhr) {
+		//Do Something to handle error
+		}
+	});
+}
+
+
+
 $(document).ready(function() {
 	var active_categories = []
+	var active_filters = []
+	var chronological = true
+
 	$('.category-filters').children('label').each(function(i) {
 		if ($(this).hasClass('active')) {
 			active_categories.push($(this).attr('id'))
 		}
 	});
+	$('.filters').children('.filter').each(function(i) {
+		if ($(this).hasClass('active')) {
+			active_filters.push($(this).attr('id'))
+		}
+	});
+
 	$(document).on('click', '.category', function () {
 		var check_val = $.inArray($(this).attr('id'), active_categories)
 		if (check_val == -1) {
@@ -23,18 +48,44 @@ $(document).ready(function() {
 			active_categories.splice(check_val, 1)
 		}
 
-		console.log(active_categories)
-		$.ajax({
-			url: "/filter_tweets",
-			type: "get",
-			data: {categories: active_categories.join(',')},
-			success: function(response) {
-			$("#tweet-grid").html(response);
-			},
-			error: function(xhr) {
-			//Do Something to handle error
-			}
-		});
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '.filter', function () {
+		var check_val = $.inArray($(this).attr('id'), active_filters)
+		if (check_val == -1) {
+			active_filters.push($(this).attr('id'))
+		} else {
+			active_filters.splice(check_val, 1)
+		}
+
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active')
+		} else {
+			$(this).addClass('active')
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '#chronological', function () {
+		if (!$(this).hasClass('active')) {
+			chronological = true
+			$(this).addClass('active')
+			$('#reverse-chronological').removeClass('active')
+		}
+		
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '#reverse-chronological', function () {
+		if (!$(this).hasClass('active')) {
+			chronological = false
+			$(this).addClass('active')
+			$('#chronological').removeClass('active')
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
 	});
 });
 </script>
@@ -93,10 +144,10 @@ $(document).ready(function() {
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Priority
 				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another action</a>
-					<a class="dropdown-item" href="#">Something else here</a>
+				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
+					<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
+					<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
 				</div>
 			</div>
 		</div>
@@ -105,10 +156,9 @@ $(document).ready(function() {
 				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					Media
 				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another action</a>
-					<a class="dropdown-item" href="#">Something else here</a>
+				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
+					<a id="media-no" class="filter dropdown-item active" href="#">No</a>
 				</div>
 			</div>
 		</div>
@@ -118,9 +168,8 @@ $(document).ready(function() {
 					Order
 				</button>
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a class="dropdown-item" href="#">Action</a>
-					<a class="dropdown-item" href="#">Another action</a>
-					<a class="dropdown-item" href="#">Something else here</a>
+					<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
+					<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
 				</div>
 			</div>
 		</div>

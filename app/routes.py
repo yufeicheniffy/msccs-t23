@@ -9,10 +9,8 @@ import app.search_rest as rest
 #from classifier.test_classifier_with_evaluation import clas
 
 G_collection=None #the instance of MongoCollection, Don't need to create a lot of instance.
-# results = None
-# tweetids = None
-# categories = None
 tweets = None
+
 
 def initdatabase(): #!!!!A function to ensure the database is connected. Add this in EVERY routes function please.
         global G_collection
@@ -41,20 +39,61 @@ def home2():
 
 #     return new_html
 
+def media_yes(tweet):
+    return True if tweet['Media'] == True else False
+
+def media_no(tweet):
+    return False if tweet['Media'] == True else True
+
+def priority_low(tweet):
+    return True if tweet['Priority'] == 'Low' else False
+
+def priority_medium(tweet):
+    return True if tweet['Priority'] == 'Medium' else False
+
+def priority_high(tweet):
+    return True if tweet['Priority'] == 'High' else False
+
+def order_chronological(tweets):
+    return sorted(tweets, key=lambda k: k['timestamp'], reverse=True) 
+
+def order_reverse_chronological(tweets):
+    return sorted(tweets, key=lambda k: k['timestamp']) 
+
 
 @app.route('/filter_tweets')
 def filter_tweets():
     global tweets
     tweets_copy = tweets.copy()
+    active_filters = request.args.get('filters').split(',')
     active_categories = request.args.get('categories').split(',')
-    print(active_categories)
+    chronological = request.args.get('chronological')
 
-    new_html = []
+    filters = {'media-yes' : media_yes,
+               'media-no' : media_no,
+               'priority-high' : priority_high,
+               'priority-medium' : priority_medium,
+               'priority-low' : priority_low
+    }
+
+    new_tweets = []
     for tweet in tweets_copy:
         if not set(tweet['Category']).isdisjoint(active_categories):
-            new_html.append(tweet['html'])
+            tweet_filters = []
 
-    return ''.join(new_html)
+            for active_filter in active_filters:
+                tweet_filters.append(filters[active_filter](tweet))
+
+            if tweet_filters.count(True) == 2:
+                new_tweets.append(tweet)
+
+    if chronological == 'true':
+        new_tweets = order_chronological(new_tweets)
+    else:
+        new_tweets = order_reverse_chronological(new_tweets)
+
+
+    return ''.join([d['html'] for d in new_tweets])
 
 
 @app.route("/search", methods= ['POST'])
@@ -88,6 +127,7 @@ def search():
                 #         #append all the html responses to a list to make to loop with in the html
                 #         tweet_html.append(tweet_tag)
         
+        tweets = order_chronological(tweets)
         print(tweets)
         return render_template('form.html', tweets=tweets, categories=categories) 
 
