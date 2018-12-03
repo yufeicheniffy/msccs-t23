@@ -46,8 +46,8 @@ body.search_page {
     color: #d3d3d3;
     margin-left: 37%;
 }
-.container{
-    color: white;
+.home{
+    color: white !important;
 }
 #custom-search-input{
     padding: 3px;
@@ -113,6 +113,90 @@ body.search_page {
 #jumbotron-homepage {
     background-color: rgba(89, 130, 173, 0.2);
 }
+
+.container{
+    color: black;
+}
+
+.category {
+    border: none !important;
+    margin-bottom: 5px !important;
+}
+
+.Report.active {
+    background-color: #28a745 !important;
+}
+
+.Report {
+    background-color: rgba(33, 136, 56, 0.5) !important;
+}
+
+.Others.active {
+    background-color: #dc3545 !important;
+}
+
+.Others {
+    background-color: rgba(200, 35, 51, 0.5) !important;
+}
+
+.Calls.active {
+    background-color: #ffc107 !important;
+}
+
+.Calls {
+    background-color: rgba(224, 168, 0, 0.5) !important;
+}
+
+.Request.active {
+    background-color: #17a2b8 !important;
+}
+
+.Request {
+    background-color: rgba(19, 132, 150, 0.5) !important;
+}
+
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 64px;
+  height: 64px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 51px;
+  height: 51px;
+  margin: 6px;
+  border: 6px solid #6c757d;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #6c757d transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+#refreshing-anim {
+    display: none;
+    margin-top: 120px;
+}
+
+
 
 	@media only screen and (max-width: 768px) {
 		#footer .footer-gallery {
