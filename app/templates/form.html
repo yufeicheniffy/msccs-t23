@@ -1,43 +1,200 @@
-<!DOCTYPE html>
-<html>
-		<head>
-				{% if title %}
-				<title>{{ title }} - HelpMe</title>
-				{% else %}
-				<title>Welcome to Helpme</title>
-				{% endif %}
+{% extends "layout.html" %}
+{% block content %}
+<br>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript">
+function filterTweets(active_categories, active_filters, chronological) {
+	$('#tweet-grid').hide();
+	$('#refreshing-anim').show();
+	$.ajax({
+		url: "/filter_tweets",
+		type: "get",
+		data: {categories: active_categories.join(','), filters: active_filters.join(','), chronological: chronological},
+		success: function(response) {
+			$("#tweet-grid").html(response);
+		},
+		error: function(xhr) {
+		//Do Something to handle error
+		},
+		complete: function(){
+			$('#refreshing-anim').hide();
+			$('#tweet-grid').show();
+			//waitGrid();
+		}
+	});
+}
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+function setGrid() {
+	var COL_COUNT = 2; // set this to however many columns you want
+	var col_heights = [], 
+		container = document.getElementById('block-contain');
+	for (var i = 0; i <= COL_COUNT; i++) {
+		col_heights.push(0);
+	}
+	for (var i = 0; i < container.children.length; i++) {
+		console.log(parseFloat(container.children[i].offsetHeight))
+		var order = (i + 1) % COL_COUNT || COL_COUNT;
+		container.children[i].style.order = order;
+		col_heights[order] += parseFloat(container.children[i].offsetHeight);
+	}
+	var highest = Math.max.apply(Math, col_heights);
+	container.style.height = highest+'px';
+}
 
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+function waitGrid() {
+	var checkExist = setInterval(function() {
+		console.log('check')
+		console.log($("#block-contain").children().length)
+		if ($("#block-contain").children().length > 4) {
+		    setGrid()
+		    clearInterval(checkExist);
+		}
+	}, 1000);
+}
 
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+$(document).ready(function() {
+	var active_categories = []
+	var active_filters = []
+	var chronological = true
 
-	<script src="{{ url_for('static', filename='js/form.js') }}"></script>
-</head>
-<body>
-			<div>
-					Helpme:
-					 <a href="/index">Home</a>
-					 <a href="/tweetapi">Retrieve Tweets</a>
-					 <a href="/priority_html">Search_by_priority</a>
-					 <a href="/category_html">Filter_by_Category</a>
-					 <a href="/eventfilter_html">Filter by event</a>
-			</div>
-			<hr>
+	$('.category-filters').children('label').each(function(i) {
+		if ($(this).hasClass('active')) {
+			active_categories.push($(this).attr('id'))
+		}
+	});
+	$('.filters').children('.filter').each(function(i) {
+		if ($(this).hasClass('active')) {
+			active_filters.push($(this).attr('id'))
+		}
+	});
+
+	$(document).on('click', '.category', function () {
+		var check_val = $.inArray($(this).attr('id'), active_categories)
+		if (check_val == -1) {
+			active_categories.push($(this).attr('id'))
+		} else {
+			active_categories.splice(check_val, 1)
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '.filter', function () {
+		var check_val = $.inArray($(this).attr('id'), active_filters)
+		if (check_val == -1) {
+			active_filters.push($(this).attr('id'))
+		} else {
+			active_filters.splice(check_val, 1)
+		}
+
+		if ($(this).hasClass('active')) {
+			$(this).removeClass('active')
+		} else {
+			$(this).addClass('active')
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '#chronological', function () {
+		if (!$(this).hasClass('active')) {
+			chronological = true
+			$(this).addClass('active')
+			$('#reverse-chronological').removeClass('active')
+		}
+		
+		filterTweets(active_categories, active_filters, chronological)
+	});
+
+	$(document).on('click', '#reverse-chronological', function () {
+		if (!$(this).hasClass('active')) {
+			chronological = false
+			$(this).addClass('active')
+			$('#chronological').removeClass('active')
+		}
+
+		filterTweets(active_categories, active_filters, chronological)
+	});
+});
+</script>
+<!-- <div class="container"> -->
+
+                <!-- loop through the list passed from app.py -->
 <div class="container">
-	<br><br><br><br>
-	<form class="form-inline">
-	  <div class="form-group">
-	    <label class="sr-only" for="query">Query</label>
-	    <input type="text" class="form-control" id="query" placeholder="query">
-	  </div>
-	  <button type="submit" class="btn btn-default">Submit</button>
-	</form>
-	<br>
-	<div id="successAlert" class="alert alert-success" role="alert" style="display:none;"></div>
-	<div id="errorAlert" class="alert alert-danger" role="alert" style="display:none;"></div>
+	<div class="row">
+		<div class="col-sm">
+			<h2>Categories:</h2>
+		</div>
+	</div>
+	<div class="row">
+		{% for key, value in categories.items() %}
+			{% if value is defined and value|length > 0 %}
+			<div class="col-sm">
+				<h4>{{key| safe}}</h4>
+				<div class="category-filters btn-group-toggle" data-toggle="buttons">
+					{% for category in value %}
+					<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
+						<input type="checkbox" checked autocomplete="off"> {{category| safe}}
+					</label>
+		        	{% endfor %}
+				</div>
+			</div>
+			{% endif %}
+		{% endfor %}
+
+	</div>
+	<div class="row" style="margin-top: 25px">
+		<div class="col-sm text-center">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Priority
+				</button>
+				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
+					<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
+					<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm text-center">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Media
+				</button>
+				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
+					<a id="media-no" class="filter dropdown-item active" href="#">No</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm text-center">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Order
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
+					<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
-</body>
-</html>
+
+
+<div class="text-center" id="refreshing-anim">
+	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+	<h4>Refreshing..</h4>
+</div>
+
+<div id="tweet-grid">
+	{% for tweet_row in tweets | batch(2, '&nbsp;') %}
+	<div class="row">
+	    {% for tweet in tweet_row %}
+	    <div class="col-sm">{{tweet['html']| safe}}</div>
+	    {% endfor %}
+	</div>
+	{% endfor %}
+</div>
+
+{% endblock content %}
