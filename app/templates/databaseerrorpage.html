@@ -2,6 +2,10 @@
 {% block body_content %}
 <br>
 <div class="container">
+    <div class="alert alert-info" role="alert">
+                <h4 class="alert-heading">Cannot connected to the database!.</h4>
+                <p>Please check you network, or use our guide to set a local database.</p>
+    </div>
     <div id="jumbotron-homepage" class="jumbotron">
         <h1 class="display-3">Help me!</h1>
         <p>Help me! is a tool to help public safety officers in retrieving information from Twitter during an emergency. This tool collects data from Twitter and runs a classifier to retrieve valuable knowledge from this data. Classified data is visualised to enable the user to get information he or she wants. Help me! involves two simple steps:</p>
@@ -17,11 +21,11 @@
 
  
     <div id="custom-search-input">
-        <div class="input-group col-md-12 form-inline">
-            <form style="width: 100%" action="/search" method="POST">
-                <input style="width: 95%" type="text" name=query class="form-control input-lg" placeholder="Search emergency" />
-                <span style="float: right" class="input-group-btn">
-                    <button type="submit"class="btn btn-info btn-lg" type="button">
+        <div class="input-group col-md-12">
+            <form action="/search" method="POST">
+                <input type="text" name=query class="form-control input-lg" placeholder="Search emergency" />
+                <span class="input-group-btn">
+                    <button class="btn btn-info btn-lg" type="button">
                         <i class="fas fa-search"></i>
                     </button>
                 </span>

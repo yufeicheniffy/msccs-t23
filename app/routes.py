@@ -9,6 +9,8 @@ import app.search_rest as rest
 #from classifier.test_classifier_with_evaluation import clas
 
 G_collection=None #the instance of MongoCollection, Don't need to create a lot of instance.
+tweets = None
+
 
 def initdatabase(): #!!!!A function to ensure the database is connected. Add this in EVERY routes function please.
         global G_collection
@@ -23,31 +25,100 @@ def home2():
         initdatabase()
         return render_template('home.html', title='Home', search= True)
 
+# def remove_html(postids):
+#     global results
+#     global tweetids
+#     global categories
+#     global html_tweets
+#     new_html = []
+#     for html_tweet in html_tweets:
+#         for postid in postids:
+#             if postid in html_tweet:
+#                 new_html.append(html_tweet)
+#                 break
+
+#     return new_html
+
+def media_yes(tweet):
+    return True if tweet['Media'] == True else False
+
+def media_no(tweet):
+    return False if tweet['Media'] == True else True
+
+def priority_low(tweet):
+    return True if tweet['Priority'] == 'Low' else False
+
+def priority_medium(tweet):
+    return True if tweet['Priority'] == 'Medium' else False
+
+def priority_high(tweet):
+    return True if tweet['Priority'] == 'High' else False
+
+def order_chronological(tweets):
+    return sorted(tweets, key=lambda k: k['timestamp'], reverse=True) 
+
+def order_reverse_chronological(tweets):
+    return sorted(tweets, key=lambda k: k['timestamp']) 
+
+
+@app.route('/filter_tweets')
+def filter_tweets():
+    global tweets
+    tweets_copy = tweets.copy()
+    active_filters = request.args.get('filters').split(',')
+    active_categories = request.args.get('categories').split(',')
+    chronological = request.args.get('chronological')
+
+    filters = {'media-yes' : media_yes,
+               'media-no' : media_no,
+               'priority-high' : priority_high,
+               'priority-medium' : priority_medium,
+               'priority-low' : priority_low
+    }
+
+    new_tweets = []
+    for tweet in tweets_copy:
+        if not set(tweet['Category']).isdisjoint(active_categories):
+            tweet_filters = []
+
+            for active_filter in active_filters:
+                tweet_filters.append(filters[active_filter](tweet))
+
+            if tweet_filters.count(True) == 2:
+                new_tweets.append(tweet)
+
+    if chronological == 'true':
+        new_tweets = order_chronological(new_tweets)
+    else:
+        new_tweets = order_reverse_chronological(new_tweets)
+
+
+    return ''.join([d['html'] for d in new_tweets])
+
 
 @app.route("/search", methods= ['POST'])
 def search():
+        global tweets
         #first to collect a query from front-end and store in a variable
         query= request.form['query']
-        #create a list to hold all the data returned
-        html_tweets= []
         # use the name that you gave to your collection
-        database=G_collection.set_collection(collectionname='TweetsData')
-        results, tweetids, dic_cates= rest.query_search(query)
+        try:
+                database=G_collection.set_collection(collectionname='TweetsData')
+        except:
+                return render_template('databaseerrorpage.html')
+        try:
+                tweets, tweetids, categories = rest.query_search(query)
+        except Exception:
+                return render_template('searcherrorpage.html')
         # query the db based on the query from front-end
-
-        clicked_list=['FirstPartyObservation','Irrelevant'] #store all the catagories clicked.
-
-        for i,tweetid in enumerate(tweetids):#filter tweets by catagories
-                for cat in results[i]['Category']:
-                        if cat in clicked_list:
-                        # building the url to use for the http get request
-                                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweetid
-                                # using the get request
-                                response = urllib.request.urlopen(url)
-                                print(response)
-                                data = json.load(response)
-                                html_tweets.append(data['html'])
-                                break
+        for tweet in tweets:
+                # building the url to use for the http get request
+                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid']
+                # using the get request
+                response = urllib.request.urlopen(url)
+                print(response)
+                data = json.load(response)
+                tweet['html'] = data['html']
 
                 # some ids get back empty because maybe the tweet is deleted, so only get json if true
                 # if page:
@@ -59,7 +130,9 @@ def search():
                 #         #append all the html responses to a list to make to loop with in the html
                 #         tweet_html.append(tweet_tag)
         
-        return render_template('form.html', tweets=html_tweets) 
+        tweets = order_chronological(tweets)
+        print(tweets)
+        return render_template('form.html', tweets=tweets, categories=categories) 
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
@@ -104,8 +177,12 @@ def api_filter():
         query= request.form['query']
         # use the name that you gave to your collection
         database=G_collection.set_collection(collectionname='TweetsData')
-        results, ids,dic_cates = rest.query_search(query)
-        database.insert(results)
+        try:
+                results, ids,dic_cates = rest.query_search(query)
+                database.insert(results)
+        except Exception:
+                print('no result found!')
+                return render_template('errorpage.html')
         return jsonify({"name": ids})
 
 @app.route('/priority_html', methods=['GET'])# a route to call tweet api,by a seatch form

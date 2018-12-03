@@ -68,8 +68,9 @@ def query_search(query):
     # all the catagories for each search
     # You can change the cound the time limit of search.
     # moreover we can use Stream to be realy real_life project
-    for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=5).items():
-        if(time.time()> time_started+5):
+    for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=60).items():
+        if(time.time()> time_started+60 or len(id_list)==10):# search 5 seconds, then return the Tweets.
+            print('\n now have \n',len(id_list))
             sort_result = sorted(result_list, key=lambda k: k['Retweets'], reverse=True)
             matrix_allcate=np.where(matrix_allcate>0,1,0)
             for cat in categories_from_prediction(matrix_allcate):
@@ -81,26 +82,30 @@ def query_search(query):
                     dic_catagories['Report'].append(cat)
                 if cat in ['PastNews', 'ContinuingNews', 'Advice','Sentiment', 'Discussion', 'Irrelevant', 'Unknown', 'KnownAlready']:
                     dic_catagories['Others'].append(cat)
-                    
             print('This search contain following catagories:/n',dic_catagories)
             return sort_result, id_list , dic_catagories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
-        if ("media" in tweet._json["entities"]):
-            tweet_media = True
-        else:
-            tweet_media = False
+        if  ('RT @' not in tweet._json['text']):
+            if ("media" in tweet._json["entities"]):
+                tweet_media = True
+            else:
+                tweet_media = False
 
-        prediction_matrix= (classifier_.predict([tweet._json["text"]]))
-        #print(prediction_matrix.shape)
-        matrix_allcate+=prediction_matrix
-        if np.sum(prediction_matrix)==0:
-            categories_=['Unknown']
-        else:
-            categories_ =categories_from_prediction(prediction_matrix)
-        #print(categories_)
-        priority_ = category_to_priority(categories_)
-        #print(priority_)
-        retweets_counter = tweet._json["retweet_count"]
-        datetime_created = parser.parse(tweet._json["created_at"])
-        result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": calendar.timegm(parser.parse(tweet._json["created_at"]).timetuple()), "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})
-        id_list.append(tweet._json["id_str"])
+            prediction_matrix= (classifier_.predict([tweet._json["text"]]))
+            #print(prediction_matrix.shape)
+            matrix_allcate+=prediction_matrix
+            if np.sum(prediction_matrix)==0:
+                categories_=['Unknown']
+            else:
+                categories_ =categories_from_prediction(prediction_matrix)
+            #print(categories_)
+            priority_ = category_to_priority(categories_)
+            #print(priority_)
+            timestamp = calendar.timegm(parser.parse(tweet._json["created_at"]).timetuple())
+            if "retweeted_status" in tweet._json:
+                timestamp = calendar.timegm(parser.parse(tweet._json["retweeted_status"]["created_at"]).timetuple())
+            retweets_counter = tweet._json["retweet_count"]
+            datetime_created = parser.parse(tweet._json["created_at"])
+            result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": timestamp, "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})
+            id_list.append(tweet._json["id_str"])
+        
