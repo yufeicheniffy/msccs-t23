@@ -101,13 +101,14 @@ def search():
         global tweets
         #first to collect a query from front-end and store in a variable
         query= request.form['query']
+        tweet_num= request.form['tweet_num']
         # use the name that you gave to your collection
         try:
                 database=G_collection.set_collection(collectionname='TweetsData')
         except:
                 return render_template('databaseerrorpage.html')
         try:
-                tweets, tweetids, categories = rest.query_search(query)
+                tweets, tweetids, categories = rest.query_search(query, tweet_num)
         except Exception:
                 return render_template('searcherrorpage.html')
         # query the db based on the query from front-end

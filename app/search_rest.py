@@ -50,7 +50,7 @@ def categories_from_prediction(prediction_matrix):
     return categories_list
 
 
-def query_search(query):
+def query_search(query, tweet_num):
     api_key = "CdyttfRtpEkoJqvDnhsJOY7pj"
     api_key_secret = "dtIeA7h9P6gQdfL6jsh2xI9dOLunBQfji5xI6Up6nrN1t9M6Zu"
     auth = tweepy.AppAuthHandler(api_key, api_key_secret)
@@ -69,7 +69,7 @@ def query_search(query):
     # You can change the cound the time limit of search.
     # moreover we can use Stream to be realy real_life project
     for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=60).items():
-        if(time.time()> time_started+60 or len(id_list)==10):# search 5 seconds, then return the Tweets.
+        if(time.time()> time_started+60 or len(id_list)==tweet_num):# search 5 seconds, then return the Tweets.
             print('\n now have \n',len(id_list))
             sort_result = sorted(result_list, key=lambda k: k['Retweets'], reverse=True)
             matrix_allcate=np.where(matrix_allcate>0,1,0)
