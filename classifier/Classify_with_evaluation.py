@@ -28,6 +28,8 @@ class Classify:
         """
         Create and train classifier. Can specify path to pretrained
         classifiers using "pretrained"
+
+        :param cats:
         """
         self.cat = cats
         self.text = tweet_texts
@@ -38,9 +40,6 @@ class Classify:
         self.classifiers = list()
         
         if pretrained is None:
-            self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
-                binary=True, max_features=vocab_size)
-            self.vect_train = self.vectorizer.fit_transform(self.text)
             self.train()
         else:
             for f in sorted(os.listdir(pretrained)):
@@ -51,11 +50,20 @@ class Classify:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
 
-    def train(self):
+    def train(self, tweets=self.text, vocab_size = 2000):
         """
-        Fits classifiers to the training data we already have.
+        Fits classifiers to the training data provided.
+
+        :param tweets: tweets to train on. defaults to tweets provided
+            on creation
+        :param vocab_size: number of words as max features
         """
-        #len(categories)
+        # fit vectorizer
+        self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+            binary=True, max_features=vocab_size)
+        self.vect_train = self.vectorizer.fit_transform(self.text)
+
+        # train
         for i in range(0, len(self.cat_arr[0])):
             # unknown should not be predicted unless no other category found
             if i == self.catadictionary['Unknown']:
@@ -66,7 +74,6 @@ class Classify:
             self.classifiers.append(c)
 
         print("Training complete!")
-
 
     def save_classifier(self, path='pretrained/'):
         """
@@ -114,6 +121,7 @@ class Classify:
         for x in range(0, len(actual)):
             if np.array_equal(actual[x], prediction[x]):
                 eval['Perfect Match'] += 1
+                print()
             for y in range(0, len(actual[x])):
                 if actual[x][y] == 1:
                     if prediction[x][y] == 1:
