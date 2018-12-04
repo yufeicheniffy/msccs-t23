@@ -151,7 +151,7 @@ def search():
         
         tweets = order_chronological(tweets)
         print(tweets)
-        return render_template('form.html', tweets=tweets, categories=categories) 
+        return render_template('form.html', tweets=tweets, categories=categories, tweet_num=tweet_num, query= query) 
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form

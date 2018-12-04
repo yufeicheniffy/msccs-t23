@@ -59,6 +59,31 @@
                 </div>
             </nav>
         </header> -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a class="navbar-brand" href="/home" style="margin-right: 10%;">
+                    HelpMe
+                </a>
+                <div class="col-md-12">
+                    <form action="/search" method="POST" name="theForm">
+                        <div class="row form-inline" >
+                            
+                                <div class="col-md-6" id="custom-search-input">
+                                    
+                                    <input type="text" id="query_input" name="query" class="form-control input-lg search_input" value="{{query}}" placeholder="Search emergency" width="100%"/>
+                                    
+                                </div>
+                                <div class="col-md-2 " id="custom-search-input">
+                                    <input type="number" id="tweet_num" name="tweet_num" class="form-control input-lg search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
+                                </div>
+                                <div class="col-md-2" >
+                                        <button class="btn btn-light btn-lg" type="button" id="load_button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                </div>
+                        </div>
+                    </form>
+                </div>
+            </nav>
     <div class="container">
         {% block content %}{% endblock content %}
     </div>
