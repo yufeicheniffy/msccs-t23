@@ -132,7 +132,6 @@ class Classify:
         for x in range(0, len(actual)):
             if np.array_equal(actual[x], prediction[x]):
                 eval['Perfect Match'] += 1
-                print()
             for y in range(0, len(actual[x])):
                 if actual[x][y] == 1:
                     if prediction[x][y] == 1:
