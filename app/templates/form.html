@@ -190,8 +190,11 @@ $(document).ready(function() {
 <div id="tweet-grid">
 	{% for tweet_row in tweets | batch(2, '&nbsp;') %}
 	<div class="row">
-	    {% for tweet in tweet_row %}
-	    <div class="col-sm">{{tweet['html']| safe}}</div>
+		
+		{% for tweet in tweet_row %}
+		<div class="col-md-6 col-sm-12">
+			<div class="col-sm">{{tweet['html']| safe}}</div>
+		</div>
 	    {% endfor %}
 	</div>
 	{% endfor %}

@@ -26,41 +26,45 @@
 </div>
 
 <div class="container">
-    <!-- <div class="row col-md-12"> -->
-            <form action="/search" method="POST">
-                <div class="row form-inline" >
-                        <div class="col-md-8 col-sm-12" id="custom-search-input">
-                            <input type="text" name="query" class="form-control input-lg search_input" placeholder="Search emergency" width="100%"/>
-                        </div>
-                        <div class="col-md-2 col-sm-12" id="custom-search-input">
-                            <input type="number" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
-                        </div>
-                        <div lass="col-md-2 col-sm-12" >
-                            <!-- <span style="float: right" class="input-group-btn"> -->
-                                <button class="btn btn-light btn-lg" type="submit"  onclick="$('#loading').show();">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            <!-- </span> -->
-                        </div>
-                </div>
+        <form action="/search" method="POST" name="theForm">
+            <div class="row form-inline" >
+                    <div class="col-md-8 col-sm-12" id="custom-search-input">
+                        <input type="text" id="query_input" name="query" class="form-control input-lg search_input" placeholder="Search emergency" width="100%"/>
+                    </div>
+                    <div class="col-md-2 col-sm-12" id="custom-search-input">
+                        <input type="number" id="tweet_num" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
+                    </div>
+                    <div lass="col-md-2 col-sm-12" >
+                            <button class="btn btn-light btn-lg" type="button" id="load_button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                    </div>
+            </div>
                
-                
-               
-                <!-- <span style="float: right" class="input-group-btn">
-                    <button class="btn btn-info btn-lg" type="submit"  onclick="$('#loading').show();">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </span> -->
+             
             </form>
-        <!-- </div> -->
     </div>
-</div>
-<!-- <div class="container">
-    <form class="home_form" action="/tweetapi" method="POST">
-        <h1 class="home_title">Help Me!!!</h1>
-        <label for="name"> </label>
-        <label for="other">Help Me is an app, that helps it users search through query and category specific emergency events and incidents. Try it out, search for anything.</label>
-        <input class="btn btn-primary btn-xs search_button" type="submit" value="Go to search" />
-    </form>
-</div> -->
+<script>
+    $('#load_button').click(function(){
+        query= $('#query_input').val();
+        tweetnum= $('#tweet_num').val();
+        console.log(query+' '+tweetnum)
+        if(query == '' || tweetnum == ''){
+            if(query == '' ){
+                $('#query_input').focus();
+                $('#query_input').css("background-color", "red");
+            }
+            if(tweetnum == '' ){
+                $('#tweet_num').focus();
+                $('#tweet_num').css("background-color", "red");
+            }
+            
+        }else{
+            $('#loading').show();
+            $('#query_input').prop('readonly', true);
+            $('#tweet_num').prop('readonly', true);
+            document.theForm.submit();
+        }
+    })
+</script>
 {% endblock body_content %}
