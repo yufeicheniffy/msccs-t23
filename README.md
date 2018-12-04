@@ -55,7 +55,11 @@ Sometimes the virtual enviroment can not be used in some machines. In this case,
 - dateutil:>> python -m pip install python-dateutil
 
 ### Database
+
+** This project is based on a could database and connect to it automaticlly**
+
 Database: MongoDB
+
 DatabaseName: Helpme
 
 CollectionName:
