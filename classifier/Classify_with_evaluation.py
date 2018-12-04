@@ -196,8 +196,12 @@ class Classify:
         """
         ret = dict()
         n = tp + tn + fp + fn
-        ret['One Label Score'] = one_lab/n
-        ret['Perfect Match Score'] = perf_match/n
+
+        # one label/perfect match is out of number of 
+        # tweets, not predictions
+        t = n/len(catadictionary)
+        ret['One Label Score'] = one_lab/t
+        ret['Perfect Match Score'] = perf_match/t
         ret['Accuracy'] = (tp+tn)/n
         ret['Precision'] = tp/(tp+fp)
         ret['Recall'] = tp/(tp+fn)
