@@ -33,7 +33,6 @@ class Classify:
         """
         self.cat = cats
         self.text = tweet_texts
-        self.cat_arr = np.array(self.cat)
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
@@ -50,7 +49,7 @@ class Classify:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
 
-    def train(self, text=self.text, cat_arr = self.cat_arr,
+    def train(self, text=self.text, cats = self.cat,
         vocab_size = 2000):
         """
         Fits classifiers to the training data provided. If
@@ -58,7 +57,7 @@ class Classify:
 
         :param text: tweets to train on. defaults to tweets provided
             on creation
-        :param cat_arr: actual label array
+        :param cats: actual labels
         :param vocab_size: number of words as max features
         """
         # fit vectorizer
@@ -68,6 +67,8 @@ class Classify:
         
         # clear classifiers (in case retraining)
         self.classifiers = list()
+
+        cat_arr = np.array(cats)
 
         # train
         for i in range(0, len(cat_arr[0])):
