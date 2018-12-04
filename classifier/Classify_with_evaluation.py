@@ -23,7 +23,7 @@ class Classify:
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
 
-    def __init__(self, cats=None, tweet_texts=None, vocab_size=2000, model=BernoulliNB(), 
+    def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(), 
         pretrained=None):
         """
         Create and train classifier. Can specify path to pretrained
@@ -49,7 +49,7 @@ class Classify:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
 
-    def train(self, text=None, cats=None, vocab_size = 2000):
+    def train(self, text = None, cats = None, vocab_size = 2000):
         """
         Fits classifiers to the training data provided. If
         already trained, clears classifiers and retrains.
