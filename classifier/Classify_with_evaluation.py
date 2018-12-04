@@ -49,8 +49,7 @@ class Classify:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
 
-    def train(self, text=self.text, cats = self.cat,
-        vocab_size = 2000):
+    def train(self, text=None, cats=None, vocab_size = 2000):
         """
         Fits classifiers to the training data provided. If
         already trained, clears classifiers and retrains.
@@ -60,6 +59,11 @@ class Classify:
         :param cats: actual labels
         :param vocab_size: number of words as max features
         """
+        if text is None:
+            text = self.text
+        if cats is None:
+            cats = self.cat
+
         # fit vectorizer
         self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
             binary=True, max_features=vocab_size)
