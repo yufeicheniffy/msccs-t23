@@ -56,7 +56,7 @@ Sometimes the virtual enviroment can not be used in some machines. In this case,
 
 ### Database
 
-** This project is based on a could database and connect to it automaticlly**
+** This project is based on a could database and connect to it automaticlly **
 
 Database: MongoDB
 
