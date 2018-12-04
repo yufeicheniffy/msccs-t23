@@ -105,15 +105,10 @@ class Classify:
         Simple evaluator, returning overal confusion matrix, accuracy
         recall, precision, f1
         """
-        eval = dict()
-        eval['Number of Predictions'] = len(actual)*len(actual[0])
-        eval['True Positive'] = 0
-        eval['True Negative'] = 0
-        eval['False Positive'] = 0
-        eval['False Negative'] = 0
-        eval['One Label'] = 0
-        eval['Perfect Match'] = 0
-
+        eval = {'Number of Predictions': len(actual)*len(actual[0]),
+                'True Positive': 0, 'True Negative': 0,
+                'False Positive': 0, 'False Negative': 0,
+                'One Label': 0, 'Perfect Match': 0}
         one_lab = False
 
         for x in range(0, len(actual)):
