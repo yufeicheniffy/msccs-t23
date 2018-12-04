@@ -68,7 +68,10 @@ def query_search(query, tweet_num):
     # all the catagories for each search
     # You can change the cound the time limit of search.
     # moreover we can use Stream to be realy real_life project
+    counter=0.0
     for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=60).items():
+        
+        
         if(time.time()> time_started+60 or len(id_list)==int(tweet_num)):# search 5 seconds, then return the Tweets.
             print('\n now have \n',len(id_list))
             sort_result = sorted(result_list, key=lambda k: k['Retweets'], reverse=True)
@@ -87,6 +90,8 @@ def query_search(query, tweet_num):
             return sort_result, id_list , dic_catagories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
         if  ('RT @' not in tweet._json['text']):
+            counter+=1
+            print(counter/(int(tweet_num)))
             if ("media" in tweet._json["entities"]):
                 tweet_media = True
             else:
