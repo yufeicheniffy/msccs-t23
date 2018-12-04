@@ -129,12 +129,11 @@ class Classify:
             if one_lab:
                 eval['One Label'] += 1
             one_lab = False
-        eval['One Label Score'] = eval['One Label']/len(actual)
-        eval['Perfect Match Score'] = eval['Perfect Match']/len(actual)
-        eval['Accuracy'] = (eval['True Positive']+eval['True Negative'])/(eval['True Positive']+eval['True Negative']+eval['False Positive']+eval['False Negative'])
-        eval['Precision'] = eval['True Positive']/(eval['True Positive']+eval['False Positive'])
-        eval['Recall'] = eval['True Positive']/(eval['True Positive']+eval['False Negative'])
-        eval['F1 Score'] = (2*(eval['Precision']*eval['Recall']))/(eval['Precision']+eval['Recall'])
+        stats = self.stats_calc(eval['True Positive'], 
+            eval['True Negative'], eval['False Positive'], 
+            eval['False Negative'], eval['One Label'], 
+            eval['Perfect Match']):
+        eval = {**eval, **stats}
         #print(eval)
         return eval
 
@@ -181,3 +180,26 @@ class Classify:
             #predictions_cateindex=np.argwhere(predictions[i,:])
             #predictions_categories=self.catadictionary.keys
         return(predictions)
+
+    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match):
+        """
+        Calculate summary statistics, return as dict.
+
+        :param tp: # of true postitives
+        :param tn: # of true negatives
+        :param fp: # of false positives
+        :param fn: # of false negatives
+        :param one_lab: # with 1 true positive
+        :param perf_match: # with all labels correct
+
+        :return: dict of scores
+        """
+        ret = dict()
+        n = tp + tn + fp + fn
+        ret['One Label Score'] = one_lab/n
+        ret['Perfect Match Score'] = perf_match/n
+        ret['Accuracy'] = (tp+tn)/n
+        ret['Precision'] = tp/(tp+fp)
+        ret['Recall'] = tp/(tp+fn)
+        ret['F1 Score'] = (2*(ret['Precision']*ret['Recall']))/(ret['Precision']+ret['Recall'])
+        return ret
