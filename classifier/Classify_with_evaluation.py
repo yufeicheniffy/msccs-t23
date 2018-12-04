@@ -199,7 +199,7 @@ class Classify:
 
         # one label/perfect match is out of number of 
         # tweets, not predictions
-        t = n/len(catadictionary)
+        t = n/len(self.catadictionary)
         ret['One Label Score'] = one_lab/t
         ret['Perfect Match Score'] = perf_match/t
         ret['Accuracy'] = (tp+tn)/n
