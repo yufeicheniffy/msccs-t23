@@ -32,31 +32,39 @@ Part of the University of Glasgow Master's Team Project for Data Science student
 #### Use your own enviroment.
 Sometimes the virtual enviroment can not be used in some machines. In this case, please use your python enviroment and run this project after you intalled these dependences:
 
-- Flask:>> python -m pip install Flask
+- Flask:
+    >> python -m pip install Flask
 
-- Pymongo:>> python -m pip install pymongo
+- Pymongo:
+    >> python -m pip install pymongo
 
-- flask_wtf:>> python -m pip install flask_wtf
+- flask_wtf:
+    >> python -m pip install flask_wtf
 
-- numpy:>> python -m pip install numpy
+- numpy:
+    >> python -m pip install numpy
 
-- sklearn:>> python -m pip install sklearn
+- sklearn:
+    >> python -m pip install sklearn
 
-- nltk:>> python -m pip install nltk
+- nltk:
+    >> python -m pip install nltk
 
-- nltk data:>> python 
+- nltk data:
+    >> python 
+    >> import nltk
+    >> nltk.download('stopwords')
+    >> exit()
            
-           >> import nltk
-           >> nltk.download('stopwords')
-           >> exit()
-           
-- Tweepy:>> python -m pip install tweepy
+- Tweepy:
+    >> python -m pip install tweepy
 
-- dateutil:>> python -m pip install python-dateutil
+- dateutil:
+    >> python -m pip install python-dateutil
 
 ### Database
 
-** This project is based on a could database and connect to it automaticlly **
+**This project is based on a could database and connect to it automaticlly**
 
 Database: MongoDB
 
