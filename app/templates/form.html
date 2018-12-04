@@ -105,6 +105,12 @@ $(document).ready(function() {
 	});
 });
 </script>
+ <!-- loading effect -->
+ <div id="loading" style="display:none;"><p style="margin-top: 45%; margin-left: 18%">Loading Tweets!!!!!</p></div>
+<!-- <div class="container">
+       
+</div> -->
+
 <!-- <div class="container"> -->
 
                 <!-- loop through the list passed from app.py -->
@@ -178,8 +184,11 @@ $(document).ready(function() {
 <div id="tweet-grid">
 	{% for tweet_row in tweets | batch(2, '&nbsp;') %}
 	<div class="row">
-	    {% for tweet in tweet_row %}
-	    <div class="col-sm">{{tweet['html']| safe}}</div>
+		
+		{% for tweet in tweet_row %}
+		<div class="col-md-6 col-sm-12">
+			<div class="col-sm">{{tweet['html']| safe}}</div>
+		</div>
 	    {% endfor %}
 	</div>
 	{% endfor %}
