@@ -41,19 +41,19 @@ def home2():
 #     return new_html
 
 def media_yes(tweet):
-    return True if tweet['Media'] == True else False
+    return tweet['Media']
 
 def media_no(tweet):
-    return False if tweet['Media'] == True else True
+    return not tweet['Media']
 
 def priority_low(tweet):
-    return True if tweet['Priority'] == 'Low' else False
+    return tweet['Priority'] == 'Low'
 
 def priority_medium(tweet):
-    return True if tweet['Priority'] == 'Medium' else False
+    return tweet['Priority'] == 'Medium'
 
 def priority_high(tweet):
-    return True if tweet['Priority'] == 'High' else False
+    return tweet['Priority'] == 'High'
 
 def order_chronological(tweets):
     return sorted(tweets, key=lambda k: k['timestamp'], reverse=True) 

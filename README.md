@@ -24,8 +24,8 @@ Part of the University of Glasgow Master's Team Project for Data Science student
     >> flask\Scripts\activate
     >> python helpme.py
     
-    in Linux/Macos, enter msccs-t23 folder by cmd, type following command.
-    >> source flask\Scripts\activate
+    in Linux/Macos, enter msccs-t23 folder by cd, type following command.
+    >> source flask/Scripts/activate
     >> python helpme.py
 
 FELL FREE TO RUN IT IN YOUR OWN ENVIROMENT.

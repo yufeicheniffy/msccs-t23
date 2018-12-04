@@ -23,24 +23,22 @@ class Classify:
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
 
-    def __init__(self, cats=None, tweet_texts=None, vocab_size=2000, model=BernoulliNB(), 
+    def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(), 
         pretrained=None):
         """
         Create and train classifier. Can specify path to pretrained
         classifiers using "pretrained"
+
+        :param cats:
         """
         self.cat = cats
         self.text = tweet_texts
-        self.cat_arr = np.array(self.cat)
         #print(self.vectorizer.get_feature_names())
         self.model = model
 
         self.classifiers = list()
         
         if pretrained is None:
-            self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
-                binary=True, max_features=vocab_size)
-            self.vect_train = self.vectorizer.fit_transform(self.text)
             self.train()
         else:
             for f in sorted(os.listdir(pretrained)):
@@ -51,22 +49,42 @@ class Classify:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
 
-    def train(self):
+    def train(self, text = None, cats = None, vocab_size = 2000):
         """
-        Fits classifiers to the training data we already have.
+        Fits classifiers to the training data provided. If
+        already trained, clears classifiers and retrains.
+
+        :param text: tweets to train on. defaults to tweets provided
+            on creation
+        :param cats: actual labels
+        :param vocab_size: number of words as max features
         """
-        #len(categories)
-        for i in range(0, len(self.cat_arr[0])):
+        if text is None:
+            text = self.text
+        if cats is None:
+            cats = self.cat
+
+        # fit vectorizer
+        self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
+            binary=True, max_features=vocab_size)
+        self.vect_train = self.vectorizer.fit_transform(text)
+        
+        # clear classifiers (in case retraining)
+        self.classifiers = list()
+
+        cat_arr = np.array(cats)
+
+        # train
+        for i in range(0, len(cat_arr[0])):
             # unknown should not be predicted unless no other category found
             if i == self.catadictionary['Unknown']:
                 m = DummyClassifier('constant', constant=0)
             else:
                 m = clone(self.model)
-            c = m.fit(self.vect_train, self.cat_arr[:,i])
+            c = m.fit(self.vect_train, cat_arr[:,i])
             self.classifiers.append(c)
 
         print("Training complete!")
-
 
     def save_classifier(self, path='pretrained/'):
         """
@@ -105,15 +123,10 @@ class Classify:
         Simple evaluator, returning overal confusion matrix, accuracy
         recall, precision, f1
         """
-        eval = dict()
-        eval['Number of Predictions'] = len(actual)*len(actual[0])
-        eval['True Positive'] = 0
-        eval['True Negative'] = 0
-        eval['False Positive'] = 0
-        eval['False Negative'] = 0
-        eval['One Label'] = 0
-        eval['Perfect Match'] = 0
-
+        eval = {'Number of Predictions': len(actual)*len(actual[0]),
+                'True Positive': 0, 'True Negative': 0,
+                'False Positive': 0, 'False Negative': 0,
+                'One Label': 0, 'Perfect Match': 0}
         one_lab = False
 
         for x in range(0, len(actual)):
@@ -134,12 +147,11 @@ class Classify:
             if one_lab:
                 eval['One Label'] += 1
             one_lab = False
-        eval['One Label Score'] = eval['One Label']/len(actual)
-        eval['Perfect Match Score'] = eval['Perfect Match']/len(actual)
-        eval['Accuracy'] = (eval['True Positive']+eval['True Negative'])/(eval['True Positive']+eval['True Negative']+eval['False Positive']+eval['False Negative'])
-        eval['Precision'] = eval['True Positive']/(eval['True Positive']+eval['False Positive'])
-        eval['Recall'] = eval['True Positive']/(eval['True Positive']+eval['False Negative'])
-        eval['F1 Score'] = (2*(eval['Precision']*eval['Recall']))/(eval['Precision']+eval['Recall'])
+        stats = self.stats_calc(eval['True Positive'], 
+            eval['True Negative'], eval['False Positive'], 
+            eval['False Negative'], eval['One Label'], 
+            eval['Perfect Match'])
+        eval = {**eval, **stats}
         #print(eval)
         return eval
 
@@ -186,3 +198,30 @@ class Classify:
             #predictions_cateindex=np.argwhere(predictions[i,:])
             #predictions_categories=self.catadictionary.keys
         return(predictions)
+
+    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match):
+        """
+        Calculate summary statistics, return as dict.
+
+        :param tp: # of true postitives
+        :param tn: # of true negatives
+        :param fp: # of false positives
+        :param fn: # of false negatives
+        :param one_lab: # with 1 true positive
+        :param perf_match: # with all labels correct
+
+        :return: dict of scores
+        """
+        ret = dict()
+        n = tp + tn + fp + fn
+
+        # one label/perfect match is out of number of 
+        # tweets, not predictions
+        t = n/len(self.catadictionary)
+        ret['One Label Score'] = one_lab/t
+        ret['Perfect Match Score'] = perf_match/t
+        ret['Accuracy'] = (tp+tn)/n
+        ret['Precision'] = tp/(tp+fp)
+        ret['Recall'] = tp/(tp+fn)
+        ret['F1 Score'] = (2*(ret['Precision']*ret['Recall']))/(ret['Precision']+ret['Recall'])
+        return ret
