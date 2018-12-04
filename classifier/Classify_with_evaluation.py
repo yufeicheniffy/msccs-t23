@@ -50,27 +50,33 @@ class Classify:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
 
-    def train(self, tweets=self.text, vocab_size = 2000):
+    def train(self, text=self.text, cat_arr = self.cat_arr,
+        vocab_size = 2000):
         """
-        Fits classifiers to the training data provided.
+        Fits classifiers to the training data provided. If
+        already trained, clears classifiers and retrains.
 
-        :param tweets: tweets to train on. defaults to tweets provided
+        :param text: tweets to train on. defaults to tweets provided
             on creation
+        :param cat_arr: actual label array
         :param vocab_size: number of words as max features
         """
         # fit vectorizer
         self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
             binary=True, max_features=vocab_size)
-        self.vect_train = self.vectorizer.fit_transform(self.text)
+        self.vect_train = self.vectorizer.fit_transform(text)
+        
+        # clear classifiers (in case retraining)
+        self.classifiers = list()
 
         # train
-        for i in range(0, len(self.cat_arr[0])):
+        for i in range(0, len(cat_arr[0])):
             # unknown should not be predicted unless no other category found
             if i == self.catadictionary['Unknown']:
                 m = DummyClassifier('constant', constant=0)
             else:
                 m = clone(self.model)
-            c = m.fit(self.vect_train, self.cat_arr[:,i])
+            c = m.fit(self.vect_train, cat_arr[:,i])
             self.classifiers.append(c)
 
         print("Training complete!")
