@@ -2,7 +2,20 @@
 {% block content %}
 <br>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://platform.twitter.com/widgets.js"></script>
 <script type="text/javascript">
+function waitGrid() {
+	var checkExist = setInterval(function() {
+		console.log('check')
+		console.log($("#tweet-grid").children().length)
+		if ($("#tweet-grid").children().length > 0) {
+			$('#refreshing-anim').hide();
+			$('#tweet-grid').show();
+		    clearInterval(checkExist);
+		}
+	}, 1000);
+}
+
 function filterTweets(active_categories, active_filters, chronological) {
 	$('#tweet-grid').hide();
 	$('#refreshing-anim').show();
@@ -17,40 +30,15 @@ function filterTweets(active_categories, active_filters, chronological) {
 		//Do Something to handle error
 		},
 		complete: function(){
-			$('#refreshing-anim').hide();
-			$('#tweet-grid').show();
-			//waitGrid();
+			waitGrid();
 		}
 	});
 }
 
-function setGrid() {
-	var COL_COUNT = 2; // set this to however many columns you want
-	var col_heights = [], 
-		container = document.getElementById('block-contain');
-	for (var i = 0; i <= COL_COUNT; i++) {
-		col_heights.push(0);
-	}
-	for (var i = 0; i < container.children.length; i++) {
-		console.log(parseFloat(container.children[i].offsetHeight))
-		var order = (i + 1) % COL_COUNT || COL_COUNT;
-		container.children[i].style.order = order;
-		col_heights[order] += parseFloat(container.children[i].offsetHeight);
-	}
-	var highest = Math.max.apply(Math, col_heights);
-	container.style.height = highest+'px';
-}
-
-function waitGrid() {
-	var checkExist = setInterval(function() {
-		console.log('check')
-		console.log($("#block-contain").children().length)
-		if ($("#block-contain").children().length > 4) {
-		    setGrid()
-		    clearInterval(checkExist);
-		}
-	}, 1000);
-}
+$(window).on('load', function() {
+	$('#refreshing-anim').hide();
+	$('#tweet-grid').show();
+});
 
 $(document).ready(function() {
 	var active_categories = []
@@ -190,7 +178,7 @@ $(document).ready(function() {
 
 <div class="text-center" id="refreshing-anim">
 	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-	<h4>Refreshing..</h4>
+	<h4>Loading..</h4>
 </div>
 
 <div id="tweet-grid">

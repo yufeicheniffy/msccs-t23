@@ -47,22 +47,23 @@ for id in (sorted(text_dict.keys())):
 text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_cat, 
 	test_size = .1, random_state=1)
 
+print(text_train[0])
 
 cat_test_arr = np.array(cat_test, dtype=np.float64)
 
 if pretrained:
-	clas = Classify(cat_train, pretrained='pretrained/')
+	clas = Classify(pretrained='pretrained/')
 elif classifier == 'rf':
-	clas = Classify(cat_train, text_train,
+	clas = Classify(text_train, cat_train, 
 		model=RandomForestClassifier(class_weight='balanced', n_estimators=100))
 elif classifier == 'svc':
-	clas = Classify(cat_train, text_train,
+	clas = Classify(text_train, cat_train, 
 		model=SVC(class_weight='balanced'))
 elif classifier == 'linearsvc':
-	clas = Classify(cat_train, text_train,
+	clas = Classify(text_train, cat_train, 
 		model=LinearSVC(class_weight='balanced'))
 else: 
-	clas = Classify(cat_train, text_train)
+	clas = Classify(text_train, cat_train)
 predict = clas.predict(text_test)
 evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
 	key=training_connect.catadictionary.__getitem__))

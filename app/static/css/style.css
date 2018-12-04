@@ -192,7 +192,6 @@ body.search_page {
 }
 
 #refreshing-anim {
-    display: none;
     margin-top: 120px;
 }
 
@@ -222,6 +221,7 @@ body.search_page {
 }
 
 #tweet-grid {
+    display: none;
     margin: 40px 0 40px 0 !important;
 }
 
