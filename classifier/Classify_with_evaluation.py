@@ -132,7 +132,7 @@ class Classify:
         stats = self.stats_calc(eval['True Positive'], 
             eval['True Negative'], eval['False Positive'], 
             eval['False Negative'], eval['One Label'], 
-            eval['Perfect Match']):
+            eval['Perfect Match'])
         eval = {**eval, **stats}
         #print(eval)
         return eval
