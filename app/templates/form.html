@@ -1,8 +1,40 @@
 {% extends "layout.html" %}
 {% block content %}
 <br>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- scripts for filters -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://platform.twitter.com/widgets.js"></script>
+<script>
+var paginationHandler = function(){
+    // store pagination container so we only select it once
+    var $paginationContainer = $(".pagination-container"),
+        $pagination = $paginationContainer.find('.pagination ul');
+    // click event
+    $pagination.find("li a").on('click.pageChange',function(e){
+        e.preventDefault();
+        // get parent li's data-page attribute and current page
+    var parentLiPage = $(this).parent('li').data("page"),
+    currentPage = parseInt( $(".pagination-container div[data-page]:visible").data('page') ),
+    numPages = $paginationContainer.find("div[data-page]").length;
+    // make sure they aren't clicking the current page
+    if ( parseInt(parentLiPage) !== parseInt(currentPage) ) {
+    // hide the current page
+    $paginationContainer.find("div[data-page]:visible").hide();
+    if ( parentLiPage === '+' ) {
+                // next page
+        $paginationContainer.find("div[data-page="+( currentPage+1>numPages ? numPages : currentPage+1 )+"]").show();
+    } else if ( parentLiPage === '-' ) {
+                // previous page
+        $paginationContainer.find("div[data-page="+( currentPage-1<1 ? 1 : currentPage-1 )+"]").show();
+    } else {
+        // specific page
+        $paginationContainer.find("div[data-page="+parseInt(parentLiPage)+"]").show();
+            }
+        }
+    });
+};
+$( document ).ready( paginationHandler );
+</script>
 <script type="text/javascript">
 function waitGrid() {
 	var checkExist = setInterval(function() {
@@ -44,6 +76,10 @@ $(document).ready(function() {
 	var active_categories = []
 	var active_filters = []
 	var chronological = true
+
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
 
 	$('.category-filters').children('label').each(function(i) {
 		if ($(this).hasClass('active')) {
@@ -106,92 +142,95 @@ $(document).ready(function() {
 });
 </script>
  <!-- loading effect -->
- <div id="loading" style="display:none;"><p style="margin-top: 45%; margin-left: 18%">Loading Tweets!!!!!</p></div>
-<!-- <div class="container">
-       
-</div> -->
-
-<!-- <div class="container"> -->
-
-                <!-- loop through the list passed from app.py -->
-<div class="container">
-	<div class="row">
-		<div class="col-sm">
-			<h2>Categories:</h2>
-		</div>
-	</div>
-	<div class="row">
-		{% for key, value in categories.items() %}
-			{% if value is defined and value|length > 0 %}
-			<div class="col-sm">
-				<h4>{{key| safe}}</h4>
-				<div class="category-filters btn-group-toggle" data-toggle="buttons">
-					{% for category in value %}
-					<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
-						<input type="checkbox" checked autocomplete="off"> {{category| safe}}
-					</label>
-		        	{% endfor %}
-				</div>
-			</div>
-			{% endif %}
-		{% endfor %}
-
-	</div>
-	<div class="row" style="margin-top: 25px">
-		<div class="col-sm text-center">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Priority
-				</button>
-				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
-					<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
-					<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm text-center">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Media
-				</button>
-				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
-					<a id="media-no" class="filter dropdown-item active" href="#">No</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm text-center">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Order
-				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
-					<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="text-center" id="loading">
+    <div id="inner-div-loading">
+        <div id="home-anim" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <h4>Loading tweets...</h4>
+    </div>
 </div>
 
-
-<div class="text-center" id="refreshing-anim">
-	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-	<h4>Loading..</h4>
-</div>
-
-<div id="tweet-grid">
-	{% for tweet_row in tweets | batch(2, '&nbsp;') %}
-	<div class="row">
+ <section class="fixed-top " style=" margin-left: 0% !important; z-index: 2; padding-top: 33px !important">
+		<div class="row breadcrumb" style="margin-top: 25px">
+				<div class="col-sm text-center">
+						<h5 style="margin:3%;">Filters:</h5>
+					</div>
+				<div class="col-sm text-center">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+							Priority
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px !important;">
+							<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
+							<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
+							<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm text-center">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle  btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Media
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px !important;">
+							<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
+							<a id="media-no" class="filter dropdown-item active" href="#">No</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm text-center">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Order
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px !important;">
+							<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
+							<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		
-		{% for tweet in tweet_row %}
-		<div class="col-md-6 col-sm-12">
-			<div class="col-sm">{{tweet['html']| safe}}</div>
-		</div>
-	    {% endfor %}
+
+</section>
+<!-- <div class="container"> -->
+<br><br>
+
+	<div>
+			<div class="sidenav">
+				<br><br><br>
+					<div class="card" style="margin-top:50px;">
+							<div class="card-header">Categories</div>
+							<div class="card-body">
+								<div class="row">
+										{% for key, value in categories.items() %}
+											{% if value is defined and value|length > 0 %}
+											<div class="col-sm">
+												<h4>{{key| safe}}</h4>
+												<div class="category-filters btn-group-toggle" data-toggle="buttons">
+													{% for category in value %}
+													<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active" data-toggle="tooltip" data-placement="top" title="{{tooltips[category]}}">
+														<input type="checkbox" checked autocomplete="off"> {{category| safe}}
+													</label>
+													{% endfor %}
+												</div>
+											</div>
+											<hr>
+											{% endif %}
+										{% endfor %}
+								
+								</div>
+							</div>
+						</div>
+			</div>
+			<div class="main">
+				<div class="text-center" id="refreshing-anim">
+					<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+					<h4>Loading..</h4>
+				</div>
+				<div id="tweet-grid">
+					{{tweets|safe}}
+				</div>
+			</div>
 	</div>
-	{% endfor %}
-</div>
 
 {% endblock content %}

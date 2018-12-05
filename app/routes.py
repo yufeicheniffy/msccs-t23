@@ -10,6 +10,19 @@ import app.search_rest as rest
 
 G_collection=None #the instance of MongoCollection, Don't need to create a lot of instance.
 tweets = None
+tooltips = {'GoodsServices':'The user is asking for a particular service or physical good.', 'SearchAndRescue':'The user is requesting a rescue (for themselves or others)',
+            'InformationWanted':'The user is requesting information', 'CallToAction':'The user is asking people to volunteer to help the response effort',
+            'Donations':'The user is asking people to donate goods/money','MovePeople':'The user is asking people to leave an area or go to another area',
+            'FirstPartyObservation':'The user is giving an eye-witness account','ThirdPartyObservation':'The user is reporting a information that they recieved from someone else',
+            'Weather':'The user is providing a weather report (current or forcast)','EmergingThreats':'The user is reporting a potential problem that may cause future loss of life or damage',
+            'SignificantEventChange':'The user is reporting a new occurence that public safety officers need to respond to.', 'MultimediaShare':'The user is sharing images or video',
+            'ServiceAvailable':'The user is reporting that they or someone else is providing a service', 'Factoid':'The user is relating some facts, typically numerical',
+            'Official':'An official report by a government or public safety representative', 'CleanUp':'A report of the clean up after the event',
+            'Hashtags':'Reporting which hashtags correspond to each event', 'PastNews':'The post is generic news, e.g. reporting that the event occured',
+            'ContinuingNews':'The post providing/linking to continious coverage of the event', 'Advice':'The author is providing some advice to the public',
+            'Sentiment':'The post is expressing some sentiment about the event', 'Discussion':'Users are discussing the event',
+            'Irrelevant':'The post is irrelevant, contains no information', 'Unknown':'Does not fit into any other category',
+            'KnownAlready':'The Responder already knows this information'}
 
 
 def initdatabase(): #!!!!A function to ensure the database is connected. Add this in EVERY routes function please.
@@ -61,19 +74,38 @@ def order_chronological(tweets):
 def order_reverse_chronological(tweets):
     return sorted(tweets, key=lambda k: k['timestamp']) 
 
-
 def beautify_html(tweets):
-    html = '<div class="row">'
+    data_page = 1
+    html = '<div class="pagination-container"><div data-page="1"><div class="row">'
 
     for i in range(0, len(tweets)):
         if i == len(tweets) - 1:
-            html += '</div>'
+            html += '</div></div>'
             break
 
-        if i % 2 == 0 and i != 0:
+        if i % 20 == 0  and i != 0:
+            data_page += 1
+            html += '</div></div><div data-page="' + str(data_page) + '" style="display:none;"><div class="row">'
+
+        if i % 2 == 0 and i != 0 and i % 20 != 0:
             html += '</div><div class="row">'
 
         html += '<div class="col-sm">' + tweets[i]['html'] + '</div>'
+
+    html += """<div class="text-center">
+                <div class="pagination pagination-centered">
+                  <ul class="pagination ">
+                    <li data-page="-" ><a href="#" class="page-link">&lt;</a></li>
+                    <li data-page="1"><a href="#" class="page-link">1</a></li>"""
+
+    for i in range(2, data_page + 1):
+        html += '<li data-page="' + str(i) + '"><a href="#" class="page-link">' + str(i) + '</a></li>'
+
+    html += """     <li data-page="+"><a href="#" class="page-link">&gt;</a></li>
+                   </ul>
+                  </div>
+                 </div>
+                </div>"""
 
     return html
 
@@ -115,43 +147,45 @@ def filter_tweets():
 
 @app.route("/search", methods= ['POST'])
 def search():
-        global tweets
-        #first to collect a query from front-end and store in a variable
-        query= request.form['query']
-        tweet_num= request.form['tweet_num']
-        print('here',query,tweet_num)
-        # use the name that you gave to your collection
-        try:
-                database=G_collection.set_collection(collectionname='TweetsData')
-        except:
-                return render_template('databaseerrorpage.html', search= True)
-        try:
-                tweets, tweetids, categories = rest.query_search(query, tweet_num)
-        except Exception:
-                return render_template('searcherrorpage.html', search= True)
-        # query the db based on the query from front-end
-        for tweet in tweets:
-                # building the url to use for the http get request
-                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid'] + '?maxwidth=220'
-                # using the get request
-                response = urllib.request.urlopen(url)
-                print(response)
-                data = json.load(response)
-                tweet['html'] = data['html']
+    global tweets
+    global tooltips
+    #first to collect a query from front-end and store in a variable
+    query= request.form['query']
+    tweet_num= request.form['tweet_num']
+    print('here',query,tweet_num)
+    # use the name that you gave to your collection
+    try:
+            database=G_collection.set_collection(collectionname='TweetsData')
+    except:
+            return render_template('databaseerrorpage.html', search= True)
+    try:
+            tweets, tweetids, categories = rest.query_search(query, tweet_num)
+    except Exception:
+            return render_template('searcherrorpage.html', search= True)
+    # query the db based on the query from front-end
+    for tweet in tweets:
+            # building the url to use for the http get request
+            url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid'] + '?maxwidth=220'
+            # using the get request
+            response = urllib.request.urlopen(url)
+            print(response)
+            data = json.load(response)
+            tweet['html'] = data['html']
 
-                # some ids get back empty because maybe the tweet is deleted, so only get json if true
-                # if page:
-                # #return the response of the get request in json form
-                #         tweet= page.json()
-                #         # target the field html from the json response
-                #         tweet_tag= tweet['html']
-                #         print(tweet_tag)
-                #         #append all the html responses to a list to make to loop with in the html
-                #         tweet_html.append(tweet_tag)
-        
-        tweets = order_chronological(tweets)
-        print(tweets)
-        return render_template('form.html', tweets=tweets, categories=categories, tweet_num=tweet_num, query= query) 
+            # some ids get back empty because maybe the tweet is deleted, so only get json if true
+            # if page:
+            # #return the response of the get request in json form
+            #         tweet= page.json()
+            #         # target the field html from the json response
+            #         tweet_tag= tweet['html']
+            #         print(tweet_tag)
+            #         #append all the html responses to a list to make to loop with in the html
+            #         tweet_html.append(tweet_tag)
+    
+    tweets = order_chronological(tweets)
+    html = beautify_html(tweets.copy())
+    print(tweets)
+    return render_template('form.html', tweets=html, categories=categories, tooltips=tooltips, tweet_num=tweet_num, query= query) 
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
