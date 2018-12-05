@@ -29,6 +29,7 @@
         </script>
         <script src="{{ url_for('static', filename='js/form.js') }}"></script>
         <script src="{{ url_for('static', filename='js/priority.js') }}"></script>
+
 </head>
 
 <!-- code to add class to body tag if its the search page -->
@@ -60,33 +61,52 @@
             </nav>
         </header> -->
         <nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #828386;">
-                <a class="navbar-brand" href="/home" style="margin-right: 10%;">
-                    HelpMe
-                </a>
-                <div class="col-md-12">
-                    <form action="/search" method="POST" name="theForm">
-                        <div class="row form-inline" >
-                            
-                                <div class="col-md-6" id="custom-search-input">
-                                    
-                                    <input type="text" id="query_input" name="query" class="form-control input-lg search_input" value="{{query}}" placeholder="Search emergency" width="100%"/>
-                                    
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a class="navbar-brand" href="/home" style="margin-right: 10%;">
+                            HelpMe
+                        </a>
+                    </div>
+                    <div class="col-md-10">
+                            <div class="col-md-12">
+                                    <form action="/search" method="POST" name="theForm">
+                                        <div class="row form-inline" >
+                                            
+                                                <div class="col-md-6 col-sm-6" id="custom-search-input">
+                                                    
+                                                    <input type="text" id="query_input" name="query" class="form-control input-lg search_input" value="{{query}}" placeholder="Search emergency" width="100%"/>
+                                                    
+                                                </div>
+                                                <div class="col-md-2 col-sm-3" id="custom-search-input">
+                                                    <input type="number" id="tweet_num" name="tweet_num" min="0" class="form-control input-lg search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
+                                                </div>
+                                                <div class="col-md-2 col-sm-2" >
+                                                        <button class="btn btn-light btn-lg" type="button" id="load_button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                </div>
+                                        </div>
+                                    </form>
                                 </div>
-                                <div class="col-md-2 " id="custom-search-input">
-                                    <input type="number" id="tweet_num" name="tweet_num" class="form-control input-lg search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
-                                </div>
-                                <div class="col-md-2" >
-                                        <button class="btn btn-light btn-lg" type="button" id="load_button">
-                                            <i class="fa fa-search"></i>
-                                        </button>
-                                </div>
-                        </div>
-                    </form>
+                    </div>
                 </div>
+            </div>
+                
+               
+                <!-- <div aria-label="breadcrumb" style="margin:5%; margin-bottom: 20px;" class="fixed-top">
+                        <ol class="breadcrumb">
+                          <li class="breadcrumb-item active" aria-current="page">Home</li>
+                        </ol>
+                    </div> -->
+                    
             </nav>
-    <div class="container">
+            <br>
+           
+        
+    <!-- <div class="container"> -->
         {% block content %}{% endblock content %}
-    </div>
+    <!-- </div> -->
     {% endblock body_content %}
     
 <!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
