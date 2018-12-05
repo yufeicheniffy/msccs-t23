@@ -61,21 +61,56 @@ def order_chronological(tweets):
 def order_reverse_chronological(tweets):
     return sorted(tweets, key=lambda k: k['timestamp']) 
 
-
 def beautify_html(tweets):
-    html = '<div class="row">'
+    data_page = 1
+    html = '<div class="pagination-container"><div data-page="1"><div class="row">'
 
     for i in range(0, len(tweets)):
         if i == len(tweets) - 1:
-            html += '</div>'
+            html += '</div></div>'
             break
 
-        if i % 2 == 0 and i != 0:
+        if i % 20 == 0  and i != 0:
+            data_page += 1
+            html += '</div></div><div data-page="' + str(data_page) + '" style="display:none;"><div class="row">'
+
+        if i % 2 == 0 and i != 0 and i % 20 != 0:
             html += '</div><div class="row">'
 
         html += '<div class="col-sm">' + tweets[i]['html'] + '</div>'
 
+    html += """<div class="text-center">
+                <div class="pagination pagination-centered">
+                  <ul class="pagination ">
+                    <li data-page="-" ><a href="#" class="page-link">&lt;</a></li>
+                    <li data-page="1"><a href="#" class="page-link">1</a></li>"""
+
+    for i in range(2, data_page + 1):
+        html += '<li data-page="' + str(i) + '"><a href="#" class="page-link">' + str(i) + '</a></li>'
+
+    html += """     <li data-page="+"><a href="#" class="page-link">&gt;</a></li>
+                   </ul>
+                  </div>
+                 </div>
+                </div>"""
+
     return html
+
+
+# def beautify_html(tweets):
+#     html = '<div class="row">'
+
+#     for i in range(0, len(tweets)):
+#         if i == len(tweets) - 1:
+#             html += '</div>'
+#             break
+
+#         if i % 2 == 0 and i != 0:
+#             html += '</div><div class="row">'
+
+#         html += '<div class="col-sm">' + tweets[i]['html'] + '</div>'
+
+#     return html
 
 
 @app.route('/filter_tweets')
@@ -150,8 +185,9 @@ def search():
                 #         tweet_html.append(tweet_tag)
         
         tweets = order_chronological(tweets)
+        html = beautify_html(tweets.copy())
         print(tweets)
-        return render_template('form.html', tweets=tweets, categories=categories, tweet_num=tweet_num, query= query) 
+        return render_template('form.html', tweets=html, categories=categories, tweet_num=tweet_num, query= query) 
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
