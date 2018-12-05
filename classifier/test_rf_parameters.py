@@ -1,13 +1,13 @@
 import sys
 sys.path.insert(0, './data_files_scripts')
-import sys
 sys.path.insert(0, './classifier')
 
 from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.ensemble import RandomForestClassifier
+import csv
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -40,7 +40,18 @@ for id in (sorted(text_dict.keys())):
 full_event = np.array(full_event)
 full_res = list()
 
-for alpha in [0, .001, .01, .1, 1]:
+estimators = [1, 10, 25, 50]
+class_weight = ['balanced']
+criterion = ['gini']
+bootstrap = [True]
+
+params = [(e, cw, c, b) \
+			for e in estimators
+				for cw in class_weight
+					for c in criterion
+						for b in bootstrap]
+
+for estimators, weight, criterion, bootstrap in params:
 
 	model_res = {'Number of Predictions': 0, 'True Positive': 0,
 				'True Negative': 0, 'False Positive': 0,
@@ -59,7 +70,12 @@ for alpha in [0, .001, .01, .1, 1]:
 
 		cat_test_arr = np.array(cat_test, dtype=np.float64)
 		clas = Classify(text_train, cat_train, 2000, 
-			model = BernoulliNB(alpha=alpha))
+			model = RandomForestClassifier(random_state = 1,
+				n_jobs = 4,
+				n_estimators = estimators,
+				class_weight = weight,
+				criterion = criterion,
+				bootstrap = bootstrap))
 
 		predict = clas.predict(text_test)
 		simp = clas.simple_evaluation(cat_test, predict)
@@ -73,8 +89,19 @@ for alpha in [0, .001, .01, .1, 1]:
 	            model_res['False Negative'], model_res['One Label'], 
 	            model_res['Perfect Match'])
 
-	model_res = {**model_res, **stats}
+	model_res = {**model_res, **stats, 
+				'n_estimators': estimators,
+				'class_weight': weight,
+				'criterion': criterion,
+				'bootstrap': bootstrap}
+
 	print("\n\nModel Results: ")
 	for key in model_res:
 			print(key, ": ", model_res[key])
 	full_res.append(model_res)
+
+keys = full_res[0].keys()
+with open('results/rf_param_results.csv', 'wb') as f:
+    dict_writer = csv.DictWriter(f, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(full_res)

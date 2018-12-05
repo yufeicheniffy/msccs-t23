@@ -1,13 +1,13 @@
 import sys
 sys.path.insert(0, './data_files_scripts')
-import sys
 sys.path.insert(0, './classifier')
 
 from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.svm import SVC
+import csv
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -40,7 +40,18 @@ for id in (sorted(text_dict.keys())):
 full_event = np.array(full_event)
 full_res = list()
 
-for alpha in [0, .001, .01, .1, 1]:
+c = [0.01, 0.1, 1, 10, 100]
+class_weight = [None, 'balanced']
+shrinking = [True, False]
+kernel = ['rbf', 'linear', 'poly', 'sigmoid']
+
+params = [(cv, cw, s, k) \
+			for cv in c
+				for cw in class_weight
+					for s in shrinking
+					 	for k in kernel]
+
+for c, weight, shrinking, kernel in params:
 
 	model_res = {'Number of Predictions': 0, 'True Positive': 0,
 				'True Negative': 0, 'False Positive': 0,
@@ -59,7 +70,10 @@ for alpha in [0, .001, .01, .1, 1]:
 
 		cat_test_arr = np.array(cat_test, dtype=np.float64)
 		clas = Classify(text_train, cat_train, 2000, 
-			model = BernoulliNB(alpha=alpha))
+			model = SVC(C = c,
+				kernel=kernel,
+				class_weight = weight,
+				shrinking = shrinking))
 
 		predict = clas.predict(text_test)
 		simp = clas.simple_evaluation(cat_test, predict)
@@ -73,8 +87,18 @@ for alpha in [0, .001, .01, .1, 1]:
 	            model_res['False Negative'], model_res['One Label'], 
 	            model_res['Perfect Match'])
 
-	model_res = {**model_res, **stats}
+	model_res = {**model_res, **stats, 'C': c, 
+		'kernel': kernel,
+		'weight': weight,
+		'shrinking': shrinking}
+
 	print("\n\nModel Results: ")
 	for key in model_res:
 			print(key, ": ", model_res[key])
 	full_res.append(model_res)
+
+keys = full_res[0].keys()
+with open('results/svm_param_results.csv', 'w') as f:
+    dict_writer = csv.DictWriter(f, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(full_res)
