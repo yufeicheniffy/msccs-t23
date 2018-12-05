@@ -6,7 +6,7 @@ from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 import csv
 
 # runs locally
@@ -40,10 +40,10 @@ for id in (sorted(text_dict.keys())):
 full_event = np.array(full_event)
 full_res = list()
 
-c = [0.001, 0.01, 0.1, 1, 10, 100, 1000]
-class_weight = [None, 'balanced']
+k = [1, 5, 10, 25]
+weights = ['uniform', 'distance']
 
-for c, weight in [(x, y) for x in c for y in class_weight]:
+for k, weight in [(x, y) for x in k for y in weights]:
 
 	model_res = {'Number of Predictions': 0, 'True Positive': 0,
 				'True Negative': 0, 'False Positive': 0,
@@ -61,8 +61,9 @@ for c, weight in [(x, y) for x in c for y in class_weight]:
 		cat_train = [full_cat[n[0]] for n in train_rows]
 
 		cat_test_arr = np.array(cat_test, dtype=np.float64)
-		clas = Classify(text_train, cat_train, 2000, 
-			model = LogisticRegression(C=c, class_weight=weight))
+		clas = Classify(text_train, cat_train, 1000, 
+			model = KNeighborsClassifier(n_neighbors = k, 
+				weights = weight, n_jobs = 2))
 
 		predict = clas.predict(text_test)
 		simp = clas.simple_evaluation(cat_test, predict)
@@ -76,14 +77,14 @@ for c, weight in [(x, y) for x in c for y in class_weight]:
 	            model_res['False Negative'], model_res['One Label'], 
 	            model_res['Perfect Match'])
 
-	model_res = {**model_res, **stats, 'C': c, 'weight': weight}
+	model_res = {**model_res, **stats, 'K': k, 'weight': weight}
 	print("\n\nModel Results: ")
 	for key in model_res:
 			print(key, ": ", model_res[key])
 	full_res.append(model_res)
 
 keys = full_res[0].keys()
-with open('results/logreg_param_results.csv', 'w') as f:
+with open('results/knn_param_results.csv', 'w') as f:
     dict_writer = csv.DictWriter(f, keys)
     dict_writer.writeheader()
     dict_writer.writerows(full_res)

@@ -101,7 +101,7 @@ for estimators, weight, criterion, bootstrap in params:
 	full_res.append(model_res)
 
 keys = full_res[0].keys()
-with open('results/rf_param_results.csv', 'wb') as f:
+with open('results/rf_param_results.csv', 'w') as f:
     dict_writer = csv.DictWriter(f, keys)
     dict_writer.writeheader()
     dict_writer.writerows(full_res)

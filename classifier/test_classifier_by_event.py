@@ -11,6 +11,7 @@ import csv, argparse
 from sklearn.svm import *
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
 
 parser = argparse.ArgumentParser(description='Test classification.')
 parser.add_argument('--out', action='store', default='eval.csv', required=False, dest='output_name')
@@ -90,7 +91,10 @@ for event in set(event_dict.values()):
 	elif classifier == 'linearsvc':
 		clas = Classify(text_train, cat_train, 2000,
 			model=LinearSVC(class_weight='balanced'))
-	else: 
+	elif classifier == 'log':
+		clas = Classify(text_train, cat_train, 2000,
+			model=LogisticRegression(class_weight='balanced'))
+	else:
 		clas = Classify(text_train, cat_train, 2000)
 	predict = clas.predict(text_test)
 	simp = clas.simple_evaluation(cat_test, predict)

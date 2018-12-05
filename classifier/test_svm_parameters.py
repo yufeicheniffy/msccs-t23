@@ -6,7 +6,7 @@ from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 import csv
 
 # runs locally
@@ -42,16 +42,14 @@ full_res = list()
 
 c = [0.01, 0.1, 1, 10, 100]
 class_weight = [None, 'balanced']
-shrinking = [True, False]
-kernel = ['rbf', 'linear', 'poly', 'sigmoid']
+loss = ['hinge', 'squared_hinge']
 
-params = [(cv, cw, s, k) \
+params = [(cv, cw, l) \
 			for cv in c
 				for cw in class_weight
-					for s in shrinking
-					 	for k in kernel]
+					for l in loss]
 
-for c, weight, shrinking, kernel in params:
+for c, weight, loss in params:
 
 	model_res = {'Number of Predictions': 0, 'True Positive': 0,
 				'True Negative': 0, 'False Positive': 0,
@@ -70,10 +68,10 @@ for c, weight, shrinking, kernel in params:
 
 		cat_test_arr = np.array(cat_test, dtype=np.float64)
 		clas = Classify(text_train, cat_train, 2000, 
-			model = SVC(C = c,
-				kernel=kernel,
+			model = LinearSVC(C = c,
 				class_weight = weight,
-				shrinking = shrinking))
+				loss = loss,
+				random_state=1))
 
 		predict = clas.predict(text_test)
 		simp = clas.simple_evaluation(cat_test, predict)
@@ -88,9 +86,8 @@ for c, weight, shrinking, kernel in params:
 	            model_res['Perfect Match'])
 
 	model_res = {**model_res, **stats, 'C': c, 
-		'kernel': kernel,
 		'weight': weight,
-		'shrinking': shrinking}
+		'loss': loss}
 
 	print("\n\nModel Results: ")
 	for key in model_res:
@@ -98,7 +95,7 @@ for c, weight, shrinking, kernel in params:
 	full_res.append(model_res)
 
 keys = full_res[0].keys()
-with open('results/svm_param_results.csv', 'w') as f:
+with open('results/lsvc_param_results.csv', 'w') as f:
     dict_writer = csv.DictWriter(f, keys)
     dict_writer.writeheader()
     dict_writer.writerows(full_res)

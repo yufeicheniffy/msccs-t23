@@ -47,7 +47,6 @@ for id in (sorted(text_dict.keys())):
 text_train, text_test, cat_train, cat_test = train_test_split(full_text, full_cat, 
 	test_size = .1, random_state=1)
 
-print(text_train[0])
 
 cat_test_arr = np.array(cat_test, dtype=np.float64)
 
