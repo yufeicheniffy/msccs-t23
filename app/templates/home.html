@@ -35,13 +35,13 @@
 <div class="container">
         <form action="/search" method="POST" name="theForm">
             <div class="row form-inline" >
-                    <div class="col-md-8 col-sm-12" id="custom-search-input">
+                    <div class="col-md-8 col-sm-6" id="custom-search-input">
                         <input type="text" id="query_input" name="query" class="form-control input-lg search_input" placeholder="Search emergency" width="100%"/>
                     </div>
-                    <div class="col-md-2 col-sm-12" id="custom-search-input">
-                        <input type="number" id="tweet_num" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
+                    <div class="col-md-2 col-sm-3" id="custom-search-input">
+                        <input type="number" id="tweet_num" min="0" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
                     </div>
-                    <div lass="col-md-2 col-sm-12" >
+                    <div lass="col-md-2 col-sm-3" >
                             <button class="btn btn-light btn-lg" type="button" id="load_button">
                                 <i class="fa fa-search"></i>
                             </button>

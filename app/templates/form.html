@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block content %}
 <br>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- scripts for filters -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://platform.twitter.com/widgets.js"></script>
 <script>
 var paginationHandler = function(){
@@ -144,111 +145,95 @@ $(document).ready(function() {
     </div>
 </div>
 
-       
-
-<div class="container">
-	<div class="row">
-		<div class="col-sm">
-			<h2>Categories:</h2>
-		</div>
-	</div>
-	<div class="row">
-		{% for key, value in categories.items() %}
-			{% if value is defined and value|length > 0 %}
-			<div class="col-sm">
-				<h4>{{key| safe}}</h4>
-				<div class="category-filters btn-group-toggle" data-toggle="buttons">
-					{% for category in value %}
-					<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
-						<input type="checkbox" checked autocomplete="off"> {{category| safe}}
-					</label>
-		        	{% endfor %}
+ <section class="fixed-top " style=" margin-left: 0% !important; z-index: 2; padding-top: 33px !important">
+		<div class="row breadcrumb" style="margin-top: 25px">
+				<div class="col-sm text-center">
+						<h5>Filters:</h5>
+					</div>
+				<div class="col-sm text-center">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+							Priority
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px !important;">
+							<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
+							<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
+							<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm text-center">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle  btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Media
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px !important;">
+							<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
+							<a id="media-no" class="filter dropdown-item active" href="#">No</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm text-center">
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Order
+						</button>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 250px !important;">
+							<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
+							<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
+						</div>
+					</div>
 				</div>
 			</div>
-			{% endif %}
-		{% endfor %}
+		
 
-	</div>
-	<div class="row" style="margin-top: 25px">
-		<div class="col-sm text-center">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Priority
-				</button>
-				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a id="priority-low" class="filter dropdown-item active" href="#">Low</a>
-					<a id="priority-medium" class="filter dropdown-item active" href="#">Medium</a>
-					<a id="priority-high" class="filter dropdown-item active" href="#">High</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm text-center">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Media
-				</button>
-				<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a id="media-yes" class="filter dropdown-item active" href="#">Yes</a>
-					<a id="media-no" class="filter dropdown-item active" href="#">No</a>
-				</div>
-			</div>
-		</div>
-		<div class="col-sm text-center">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					Order
-				</button>
-				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-					<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
-					<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-
-
+</section>
+<!-- <div class="container"> -->
+<br><br>
 <div class="text-center" id="refreshing-anim">
-	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-	<h4>Loading..</h4>
-</div>
-
-
-<!-- <div class="pagination-container" >
-   <div data-page="1" >
-      <p>Content for Div Number 1</p>
-   </div>
-   <div data-page="2" style="display:none;">
-      <p>Content for Div Number 2</p>
-   </div>
-   <div data-page="3" style="display:none;">
-      <p>Content for Div Number 3</p>
-   </div>
-   <div data-page="4" style="display:none;">
-      <p>Content for Div Number 4</p>
-   </div>
-   <div data-page="5" style="display:none;">
-      <p>Content for Div Number 5</p>
-   </div>
-
-   <div class="text-center">
-	   <div class="pagination pagination-centered">
-	       <ul class="pagination ">
-	            <li data-page="-" ><a href="#" >&lt;</a></li>
-	            <li data-page="1"><a href="#" >1</a></li>
-	            <li data-page="2"><a href="#" >2</a></li>
-	            <li data-page="3"><a href="#" >3</a></li>
-	            <li data-page="4"><a href="#" >4</a></li>
-	            <li data-page="5"><a href="#" >5</a></li>
-	            <li data-page="+"><a href="#" >&gt;</a></li>
-	      </ul>
-	   </div>
+		<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+		<h4>Loading..</h4>
 	</div>
-</div> -->
 
 
-<div id="tweet-grid">
-	{{tweets|safe}}
-</div>
+
+	<div>
+			<div class="sidenav">
+				<br><br><br>
+					<div class="card" style="margin-top:50px;">
+							<div class="card-header">Categories</div>
+							<div class="card-body">
+								<div class="row">
+										{% for key, value in categories.items() %}
+											{% if value is defined and value|length > 0 %}
+											<div class="col-sm">
+												<h4>{{key| safe}}</h4>
+												<div class="category-filters btn-group-toggle" data-toggle="buttons">
+													{% for category in value %}
+													<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
+														<input type="checkbox" checked autocomplete="off"> {{category| safe}}
+													</label>
+													{% endfor %}
+												</div>
+											</div>
+											<hr>
+											{% endif %}
+										{% endfor %}
+								
+								</div>
+							</div>
+						</div>
+			</div>
+			<div class="main">
+					<div id="tweet-grid">
+						<div class="row">
+							<div class="col-md-6">
+									{{tweets|safe}}
+							</div>
+						</div>
+						
+					</div>
+			</div>
+	</div>
 
 {% endblock content %}
