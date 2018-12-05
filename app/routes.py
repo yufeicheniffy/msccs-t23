@@ -150,44 +150,44 @@ def filter_tweets():
 
 @app.route("/search", methods= ['POST'])
 def search():
-        global tweets
-        #first to collect a query from front-end and store in a variable
-        query= request.form['query']
-        tweet_num= request.form['tweet_num']
-        print('here',query,tweet_num)
-        # use the name that you gave to your collection
-        try:
-                database=G_collection.set_collection(collectionname='TweetsData')
-        except:
-                return render_template('databaseerrorpage.html', search= True)
-        try:
-                tweets, tweetids, categories = rest.query_search(query, tweet_num)
-        except Exception:
-                return render_template('searcherrorpage.html', search= True)
-        # query the db based on the query from front-end
-        for tweet in tweets:
-                # building the url to use for the http get request
-                url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid'] + '?maxwidth=220'
-                # using the get request
-                response = urllib.request.urlopen(url)
-                print(response)
-                data = json.load(response)
-                tweet['html'] = data['html']
+    global tweets
+    #first to collect a query from front-end and store in a variable
+    query= request.form['query']
+    tweet_num= request.form['tweet_num']
+    print('here',query,tweet_num)
+    # use the name that you gave to your collection
+    try:
+            database=G_collection.set_collection(collectionname='TweetsData')
+    except:
+            return render_template('databaseerrorpage.html', search= True)
+    try:
+            tweets, tweetids, categories = rest.query_search(query, tweet_num)
+    except Exception:
+            return render_template('searcherrorpage.html', search= True)
+    # query the db based on the query from front-end
+    for tweet in tweets:
+            # building the url to use for the http get request
+            url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid'] + '?maxwidth=220'
+            # using the get request
+            response = urllib.request.urlopen(url)
+            print(response)
+            data = json.load(response)
+            tweet['html'] = data['html']
 
-                # some ids get back empty because maybe the tweet is deleted, so only get json if true
-                # if page:
-                # #return the response of the get request in json form
-                #         tweet= page.json()
-                #         # target the field html from the json response
-                #         tweet_tag= tweet['html']
-                #         print(tweet_tag)
-                #         #append all the html responses to a list to make to loop with in the html
-                #         tweet_html.append(tweet_tag)
-        
-        tweets = order_chronological(tweets)
-        html = beautify_html(tweets.copy())
-        print(tweets)
-        return render_template('form.html', tweets=html, categories=categories, tweet_num=tweet_num, query= query) 
+            # some ids get back empty because maybe the tweet is deleted, so only get json if true
+            # if page:
+            # #return the response of the get request in json form
+            #         tweet= page.json()
+            #         # target the field html from the json response
+            #         tweet_tag= tweet['html']
+            #         print(tweet_tag)
+            #         #append all the html responses to a list to make to loop with in the html
+            #         tweet_html.append(tweet_tag)
+    
+    tweets = order_chronological(tweets)
+    html = beautify_html(tweets.copy())
+    print(tweets)
+    return render_template('form.html', tweets=html, categories=categories, tweet_num=tweet_num, query= query) 
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form

@@ -226,6 +226,17 @@ body.search_page {
 }
 
 
+#home-anim div{
+    border: 6px solid #FFF !important;
+    border-color: #FFF transparent transparent transparent !important;
+}
+
+#inner-div-loading{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
 
 	@media only screen and (max-width: 768px) {
 		#footer .footer-gallery {
@@ -293,16 +304,16 @@ body.search_page {
         display: block;
     }
     div#loading {
-        top: 35%;
-        left: 43%;
-        margin: inherit;
-        position: fixed;
-        z-index: 1000;
-        width: 200px;
-        height: 400px;
-        background: url(../images/load.gif) no-repeat;
-        background-size: contain;
-        cursor: wait;
+        position:
+        absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        display: none;
+        background-color: rgba(29, 161, 242, 0.8);
+        color: white;
+        z-index: 1040;
     }
 
     .container-home{
