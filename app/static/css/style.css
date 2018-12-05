@@ -333,7 +333,7 @@ a:active{
     /* side bar */
     .sidenav {
         height: 100%;
-        width: 200px;
+        width: 25%;
         position: fixed;
         z-index: 1;
         top: 0;
@@ -357,9 +357,8 @@ a:active{
     }
     
     .main {
-        margin-left: 200px; /* Same as the width of the sidenav */
-        font-size: 28px; /* Increased text to enable scrolling */
-        padding: 0px 10px;
+        margin-left: 25%; /* Same as the width of the sidenav */
+        padding: 0px 10px 0px 20px;
     }
     
     @media screen and (max-height: 450px) {
