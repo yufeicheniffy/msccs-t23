@@ -1,13 +1,13 @@
 import sys
 sys.path.insert(0, './data_files_scripts')
-import sys
 sys.path.insert(0, './classifier')
 
 from Classify_with_evaluation import Classify
 from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
-from sklearn.naive_bayes import BernoulliNB
+from sklearn.neighbors import KNeighborsClassifier
+import csv
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -40,7 +40,10 @@ for id in (sorted(text_dict.keys())):
 full_event = np.array(full_event)
 full_res = list()
 
-for alpha in [0, .001, .01, .1, 1]:
+k = [1, 5, 10, 25]
+weights = ['uniform', 'distance']
+
+for k, weight in [(x, y) for x in k for y in weights]:
 
 	model_res = {'Number of Predictions': 0, 'True Positive': 0,
 				'True Negative': 0, 'False Positive': 0,
@@ -58,8 +61,9 @@ for alpha in [0, .001, .01, .1, 1]:
 		cat_train = [full_cat[n[0]] for n in train_rows]
 
 		cat_test_arr = np.array(cat_test, dtype=np.float64)
-		clas = Classify(text_train, cat_train, 2000, 
-			model = BernoulliNB(alpha=alpha))
+		clas = Classify(text_train, cat_train, 1000, 
+			model = KNeighborsClassifier(n_neighbors = k, 
+				weights = weight, n_jobs = 2))
 
 		predict = clas.predict(text_test)
 		simp = clas.simple_evaluation(cat_test, predict)
@@ -73,8 +77,14 @@ for alpha in [0, .001, .01, .1, 1]:
 	            model_res['False Negative'], model_res['One Label'], 
 	            model_res['Perfect Match'])
 
-	model_res = {**model_res, **stats}
+	model_res = {**model_res, **stats, 'K': k, 'weight': weight}
 	print("\n\nModel Results: ")
 	for key in model_res:
 			print(key, ": ", model_res[key])
 	full_res.append(model_res)
+
+keys = full_res[0].keys()
+with open('results/knn_param_results.csv', 'w') as f:
+    dict_writer = csv.DictWriter(f, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(full_res)

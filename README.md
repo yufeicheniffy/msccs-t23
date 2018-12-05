@@ -20,6 +20,7 @@ Part of the University of Glasgow Master's Team Project for Data Science student
  - flask #virtual environment of this project
 
 ### To run this project
+**first you need have a python 3.5++ installed**
 #### Use the virtual enviroment built in this project.
     in windows, enter msccs-t23 folder by cmd, type following command.
     >> flask\Scripts\activate
