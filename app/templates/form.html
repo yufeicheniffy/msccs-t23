@@ -139,7 +139,6 @@ $(document).ready(function() {
 </script>
  <!-- loading effect -->
  <div id="loading" style="display:none;"><p style="margin-top: 45%; margin-left: 18%">Loading Tweets!!!!!</p></div>
-<<<<<<< HEAD
 
  <section class="fixed-top " style=" margin-left: 0% !important; z-index: 2; padding-top: 33px !important">
 		<div class="row breadcrumb" style="margin-top: 25px">
@@ -179,28 +178,6 @@ $(document).ready(function() {
 							<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
 						</div>
 					</div>
-=======
-
-       
-
-<div class="container">
-	<div class="row">
-		<div class="col-sm">
-			<h2>Categories:</h2>
-		</div>
-	</div>
-	<div class="row">
-		{% for key, value in categories.items() %}
-			{% if value is defined and value|length > 0 %}
-			<div class="col-sm">
-				<h4>{{key| safe}}</h4>
-				<div class="category-filters btn-group-toggle" data-toggle="buttons">
-					{% for category in value %}
-					<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
-						<input type="checkbox" checked autocomplete="off"> {{category| safe}}
-					</label>
-		        	{% endfor %}
->>>>>>> 9ef9a66baab9b0fa4091ea055da9838fb3924b8d
 				</div>
 			</div>
 		
@@ -208,64 +185,14 @@ $(document).ready(function() {
 </section>
 <!-- <div class="container"> -->
 <br><br>
-            
-<!-- <div class="container">
-	<div class="text-center" id="refreshing-anim">
+<div class="text-center" id="refreshing-anim">
 		<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 		<h4>Loading..</h4>
 	</div>
-	<div class="col-md-12">
-		<div class="row">
-			<div class="col-md-3 sidenav">
-					<div class="row">
-						<div class="card" style="margin-top:50px;">
-							<div class="card-header">Categories</div>
-							<div class="card-body">
-								<div class="row">
-										{% for key, value in categories.items() %}
-											{% if value is defined and value|length > 0 %}
-											<div class="col-sm">
-												<h4>{{key| safe}}</h4>
-												<div class="category-filters btn-group-toggle" data-toggle="buttons">
-													{% for category in value %}
-													<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
-														<input type="checkbox" checked autocomplete="off"> {{category| safe}}
-													</label>
-													{% endfor %}
-												</div>
-											</div>
-											<hr>
-											{% endif %}
-										{% endfor %}
-								
-								</div>
-							</div>
-						</div>
-					</div>
-					
-			</div>
 
-			<div class="col-md-9">
-					<div id="tweet-grid">
-						{% for tweet_row in tweets | batch(2, '&nbsp;') %}
-						<div class="row">
-							
-							{% for tweet in tweet_row %}
-							<div class="col-md-6 col-sm-12">
-								<div class="col-sm">{{tweet['html']| safe}}</div>
-							</div>
-							{% endfor %}
-						</div>
-						{% endfor %}
-					</div>
-			</div>
-		</div>
-	</div>
 
-<<<<<<< HEAD
-	
-</div> -->
-	<div >
+
+	<div>
 			<div class="sidenav">
 				<br><br><br>
 					<div class="card" style="margin-top:50px;">
@@ -294,62 +221,14 @@ $(document).ready(function() {
 			</div>
 			<div class="main">
 					<div id="tweet-grid">
-						{% for tweet_row in tweets | batch(2, '&nbsp;') %}
 						<div class="row">
-							
-							{% for tweet in tweet_row %}
-							<div class="col-md-6 col-sm-12">
-								<div class="col-sm">{{tweet['html']| safe}}</div>
+							<div class="col-md-6">
+									{{tweets|safe}}
 							</div>
-							{% endfor %}
 						</div>
-						{% endfor %}
+						
 					</div>
 			</div>
 	</div>
-=======
-<div class="text-center" id="refreshing-anim">
-	<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-	<h4>Loading..</h4>
-</div>
-
-
-<!-- <div class="pagination-container" >
-   <div data-page="1" >
-      <p>Content for Div Number 1</p>
-   </div>
-   <div data-page="2" style="display:none;">
-      <p>Content for Div Number 2</p>
-   </div>
-   <div data-page="3" style="display:none;">
-      <p>Content for Div Number 3</p>
-   </div>
-   <div data-page="4" style="display:none;">
-      <p>Content for Div Number 4</p>
-   </div>
-   <div data-page="5" style="display:none;">
-      <p>Content for Div Number 5</p>
-   </div>
-
-   <div class="text-center">
-	   <div class="pagination pagination-centered">
-	       <ul class="pagination ">
-	            <li data-page="-" ><a href="#" >&lt;</a></li>
-	            <li data-page="1"><a href="#" >1</a></li>
-	            <li data-page="2"><a href="#" >2</a></li>
-	            <li data-page="3"><a href="#" >3</a></li>
-	            <li data-page="4"><a href="#" >4</a></li>
-	            <li data-page="5"><a href="#" >5</a></li>
-	            <li data-page="+"><a href="#" >&gt;</a></li>
-	      </ul>
-	   </div>
-	</div>
-</div> -->
-
-
-<div id="tweet-grid">
-	{{tweets|safe}}
-</div>
->>>>>>> 9ef9a66baab9b0fa4091ea055da9838fb3924b8d
 
 {% endblock content %}
