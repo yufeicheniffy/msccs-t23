@@ -245,6 +245,10 @@ a:active{
     transform: translateY(-50%);
 }
 
+blockquote.twitter-tweet {
+    max-width: 250px !important;
+}
+
 
 	@media only screen and (max-width: 768px) {
 		#footer .footer-gallery {
@@ -358,7 +362,7 @@ a:active{
     
     .main {
         margin-left: 25%; /* Same as the width of the sidenav */
-        padding: 0px 10px 0px 20px;
+        padding: 0px 20px 0px 20px;
     }
     
     @media screen and (max-height: 450px) {

@@ -77,6 +77,10 @@ $(document).ready(function() {
 	var active_filters = []
 	var chronological = true
 
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
+
 	$('.category-filters').children('label').each(function(i) {
 		if ($(this).hasClass('active')) {
 			active_categories.push($(this).attr('id'))
@@ -190,12 +194,6 @@ $(document).ready(function() {
 </section>
 <!-- <div class="container"> -->
 <br><br>
-<div class="text-center" id="refreshing-anim">
-		<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-		<h4>Loading..</h4>
-	</div>
-
-
 
 	<div>
 			<div class="sidenav">
@@ -210,7 +208,7 @@ $(document).ready(function() {
 												<h4>{{key| safe}}</h4>
 												<div class="category-filters btn-group-toggle" data-toggle="buttons">
 													{% for category in value %}
-													<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active">
+													<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active" data-toggle="tooltip" data-placement="top" title="{{tooltips[category]}}">
 														<input type="checkbox" checked autocomplete="off"> {{category| safe}}
 													</label>
 													{% endfor %}
@@ -225,9 +223,13 @@ $(document).ready(function() {
 						</div>
 			</div>
 			<div class="main">
-					<div id="tweet-grid">
-						{{tweets|safe}}
-					</div>
+				<div class="text-center" id="refreshing-anim">
+					<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+					<h4>Loading..</h4>
+				</div>
+				<div id="tweet-grid">
+					{{tweets|safe}}
+				</div>
 			</div>
 	</div>
 

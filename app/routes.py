@@ -10,6 +10,19 @@ import app.search_rest as rest
 
 G_collection=None #the instance of MongoCollection, Don't need to create a lot of instance.
 tweets = None
+tooltips = {'GoodsServices':'The user is asking for a particular service or physical good.', 'SearchAndRescue':'The user is requesting a rescue (for themselves or others)',
+            'InformationWanted':'The user is requesting information', 'CallToAction':'The user is asking people to volunteer to help the response effort',
+            'Donations':'The user is asking people to donate goods/money','MovePeople':'The user is asking people to leave an area or go to another area',
+            'FirstPartyObservation':'The user is giving an eye-witness account','ThirdPartyObservation':'The user is reporting a information that they recieved from someone else',
+            'Weather':'The user is providing a weather report (current or forcast)','EmergingThreats':'The user is reporting a potential problem that may cause future loss of life or damage',
+            'SignificantEventChange':'The user is reporting a new occurence that public safety officers need to respond to.', 'MultimediaShare':'The user is sharing images or video',
+            'ServiceAvailable':'The user is reporting that they or someone else is providing a service', 'Factoid':'The user is relating some facts, typically numerical',
+            'Official':'An official report by a government or public safety representative', 'CleanUp':'A report of the clean up after the event',
+            'Hashtags':'Reporting which hashtags correspond to each event', 'PastNews':'The post is generic news, e.g. reporting that the event occured',
+            'ContinuingNews':'The post providing/linking to continious coverage of the event', 'Advice':'The author is providing some advice to the public',
+            'Sentiment':'The post is expressing some sentiment about the event', 'Discussion':'Users are discussing the event',
+            'Irrelevant':'The post is irrelevant, contains no information', 'Unknown':'Does not fit into any other category',
+            'KnownAlready':'The Responder already knows this information'}
 
 
 def initdatabase(): #!!!!A function to ensure the database is connected. Add this in EVERY routes function please.
@@ -97,22 +110,6 @@ def beautify_html(tweets):
     return html
 
 
-# def beautify_html(tweets):
-#     html = '<div class="row">'
-
-#     for i in range(0, len(tweets)):
-#         if i == len(tweets) - 1:
-#             html += '</div>'
-#             break
-
-#         if i % 2 == 0 and i != 0:
-#             html += '</div><div class="row">'
-
-#         html += '<div class="col-sm">' + tweets[i]['html'] + '</div>'
-
-#     return html
-
-
 @app.route('/filter_tweets')
 def filter_tweets():
     global tweets
@@ -151,6 +148,7 @@ def filter_tweets():
 @app.route("/search", methods= ['POST'])
 def search():
     global tweets
+    global tooltips
     #first to collect a query from front-end and store in a variable
     query= request.form['query']
     tweet_num= request.form['tweet_num']
@@ -187,7 +185,7 @@ def search():
     tweets = order_chronological(tweets)
     html = beautify_html(tweets.copy())
     print(tweets)
-    return render_template('form.html', tweets=html, categories=categories, tweet_num=tweet_num, query= query) 
+    return render_template('form.html', tweets=html, categories=categories, tooltips=tooltips, tweet_num=tweet_num, query= query) 
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
