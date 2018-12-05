@@ -29,18 +29,22 @@ class Classify:
         Create and train classifier. Can specify path to pretrained
         classifiers using "pretrained"
 
-        :param cats:
+        :param tweet_texts: list of tweets to train classifier on
+        :param cats: matrix of categories that belong to the tweets
+        :param vocab_size: maximum number of words in classifier
+        :param model: model to use for classification
+        :param pretrained: path to pretained classifiers, if using
+                            pretrained classifiers
         """
         self.cat = cats
         self.text = tweet_texts
-        #print(self.vectorizer.get_feature_names())
         self.model = model
 
         self.classifiers = list()
         
         if pretrained is None:
             self.train()
-        else:
+        else: # load pretrained classifiers
             for f in sorted(os.listdir(pretrained)):
                 fn = os.fsdecode(f)
                 if fn.endswith('v.pkl'):
@@ -84,19 +88,27 @@ class Classify:
             c = m.fit(self.vect_train, cat_arr[:,i])
             self.classifiers.append(c)
 
-        print("Training complete!")
+        #print("Training complete!")
 
     def save_classifier(self, path='pretrained/'):
         """
         Saves the classifier to the specified path
+
+        :param path: directory to save classifier and vectorizer into
         """
         joblib.dump(self.vectorizer, path+'v.pkl', compress=1)
         for n in range(0,len(self.classifiers)):
             joblib.dump(self.classifiers[n], path+'c%02d.pkl' % n, compress=1)
         print("Classifiers saved to: " + path)
 
-    #retrieves the index of category eg 0 = 'Advice'
-    def map_id(self,category):
+    def map_id(self, category):
+        """
+        Return the index of the given category e.g. 0 = 'Advice'
+
+        :param category: category to lookup
+
+        :return: int index
+        """
         returner = []
         for c in category:
             for i in range(0,len(self.categories)):
@@ -104,8 +116,10 @@ class Classify:
                     returner.append(i)
         return returner
 
-#   input ytest_array,and X_test
-    def evaluation_(self,ytest_array,predict,names):
+    def evaluation_(self, ytest_array, predict, names):
+        """
+        Evaluate the gicen input 
+        """
         ytest_arr = np.array(ytest_array)
         res = list()
         for x in range(0, len(ytest_array[0])):
@@ -223,5 +237,8 @@ class Classify:
         ret['Accuracy'] = (tp+tn)/n
         ret['Precision'] = tp/(tp+fp)
         ret['Recall'] = tp/(tp+fn)
-        ret['F1 Score'] = (2*(ret['Precision']*ret['Recall']))/(ret['Precision']+ret['Recall'])
+        try:
+            ret['F1 Score'] = (2*(ret['Precision']*ret['Recall']))/(ret['Precision']+ret['Recall'])
+        except ZeroDivisionError:
+            ret['F1 Score'] = 0
         return ret
