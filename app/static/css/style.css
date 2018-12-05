@@ -245,6 +245,10 @@ a:active{
     transform: translateY(-50%);
 }
 
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #6c757d !important;
+}
+
 blockquote.twitter-tweet {
     max-width: 250px !important;
 }
