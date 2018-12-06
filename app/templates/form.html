@@ -1,146 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-<br>
-        <!-- scripts for filters -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://platform.twitter.com/widgets.js"></script>
-<script>
-var paginationHandler = function(){
-    // store pagination container so we only select it once
-    var $paginationContainer = $(".pagination-container"),
-        $pagination = $paginationContainer.find('.pagination ul');
-    // click event
-    $pagination.find("li a").on('click.pageChange',function(e){
-        e.preventDefault();
-        // get parent li's data-page attribute and current page
-    var parentLiPage = $(this).parent('li').data("page"),
-    currentPage = parseInt( $(".pagination-container div[data-page]:visible").data('page') ),
-    numPages = $paginationContainer.find("div[data-page]").length;
-    // make sure they aren't clicking the current page
-    if ( parseInt(parentLiPage) !== parseInt(currentPage) ) {
-    // hide the current page
-    $paginationContainer.find("div[data-page]:visible").hide();
-    if ( parentLiPage === '+' ) {
-                // next page
-        $paginationContainer.find("div[data-page="+( currentPage+1>numPages ? numPages : currentPage+1 )+"]").show();
-    } else if ( parentLiPage === '-' ) {
-                // previous page
-        $paginationContainer.find("div[data-page="+( currentPage-1<1 ? 1 : currentPage-1 )+"]").show();
-    } else {
-        // specific page
-        $paginationContainer.find("div[data-page="+parseInt(parentLiPage)+"]").show();
-            }
-        }
-    });
-};
-$( document ).ready( paginationHandler );
-</script>
-<script type="text/javascript">
-function waitGrid() {
-	var checkExist = setInterval(function() {
-		console.log('check')
-		console.log($("#tweet-grid").children().length)
-		if ($("#tweet-grid").children().length > 0) {
-			$('#refreshing-anim').hide();
-			$('#tweet-grid').show();
-		    clearInterval(checkExist);
-		}
-	}, 1000);
-}
-
-function filterTweets(active_categories, active_filters, chronological) {
-	$('#tweet-grid').hide();
-	$('#refreshing-anim').show();
-	$.ajax({
-		url: "/filter_tweets",
-		type: "get",
-		data: {categories: active_categories.join(','), filters: active_filters.join(','), chronological: chronological},
-		success: function(response) {
-			$("#tweet-grid").html(response);
-		},
-		error: function(xhr) {
-		//Do Something to handle error
-		},
-		complete: function(){
-			waitGrid();
-		}
-	});
-}
-
-$(window).on('load', function() {
-	$('#refreshing-anim').hide();
-	$('#tweet-grid').show();
-});
-
-$(document).ready(function() {
-	var active_categories = []
-	var active_filters = []
-	var chronological = true
-
-	$(function () {
-		$('[data-toggle="tooltip"]').tooltip()
-	})
-
-	$('.category-filters').children('label').each(function(i) {
-		if ($(this).hasClass('active')) {
-			active_categories.push($(this).attr('id'))
-		}
-	});
-	$('.filters').children('.filter').each(function(i) {
-		if ($(this).hasClass('active')) {
-			active_filters.push($(this).attr('id'))
-		}
-	});
-
-	$(document).on('click', '.category', function () {
-		var check_val = $.inArray($(this).attr('id'), active_categories)
-		if (check_val == -1) {
-			active_categories.push($(this).attr('id'))
-		} else {
-			active_categories.splice(check_val, 1)
-		}
-
-		filterTweets(active_categories, active_filters, chronological)
-	});
-
-	$(document).on('click', '.filter', function () {
-		var check_val = $.inArray($(this).attr('id'), active_filters)
-		if (check_val == -1) {
-			active_filters.push($(this).attr('id'))
-		} else {
-			active_filters.splice(check_val, 1)
-		}
-
-		if ($(this).hasClass('active')) {
-			$(this).removeClass('active')
-		} else {
-			$(this).addClass('active')
-		}
-
-		filterTweets(active_categories, active_filters, chronological)
-	});
-
-	$(document).on('click', '#chronological', function () {
-		if (!$(this).hasClass('active')) {
-			chronological = true
-			$(this).addClass('active')
-			$('#reverse-chronological').removeClass('active')
-		}
-		
-		filterTweets(active_categories, active_filters, chronological)
-	});
-
-	$(document).on('click', '#reverse-chronological', function () {
-		if (!$(this).hasClass('active')) {
-			chronological = false
-			$(this).addClass('active')
-			$('#chronological').removeClass('active')
-		}
-
-		filterTweets(active_categories, active_filters, chronological)
-	});
-});
-</script>
  <!-- loading effect -->
 <div class="text-center" id="loading">
     <div id="inner-div-loading">
@@ -148,6 +7,41 @@ $(document).ready(function() {
         <h4>Loading tweets...</h4>
     </div>
 </div>
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #828386;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-2">
+                <a class="navbar-brand" href="/home" style="margin-right: 10%;">
+                    HelpMe
+                </a>
+            </div>
+            <div class="col-md-10">
+                    <div class="col-md-12">
+                            <form action="/search" method="POST" name="theForm">
+                                <div class="row form-inline" >
+                                    
+                                        <div class="col-md-6 col-sm-6" id="custom-search-input">
+                                            
+                                            <input type="text" id="query_input" name="query" class="form-control input-lg search_input" value="{{query}}" placeholder="Search emergency" width="100%"/>
+                                            
+                                        </div>
+                                        <div class="col-md-2 col-sm-3" id="custom-search-input">
+                                            <input type="number" id="tweet_num" name="tweet_num" min="0" class="form-control input-lg search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
+                                        </div>
+                                        <div class="col-md-2 col-sm-2" >
+                                                <button class="btn btn-light btn-lg" type="button" id="load_button">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                        </div>
+                                </div>
+                            </form>
+                        </div>
+            </div>
+        </div>
+    </div>
+            
+    </nav>
 
  <section class="fixed-top " style=" margin-left: 0% !important; z-index: 2; padding-top: 33px !important">
 		<div class="row breadcrumb" style="margin-top: 25px">
@@ -192,8 +86,7 @@ $(document).ready(function() {
 		
 
 </section>
-<!-- <div class="container"> -->
-<br><br>
+
 
 	<div>
 			<div class="sidenav">
