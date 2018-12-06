@@ -1,7 +1,6 @@
 import sys
 import time
 import tweepy
-import pymongo
 from dateutil import parser
 import calendar
 import numpy as np
@@ -10,8 +9,9 @@ from classifier.Classify_with_evaluation import Classify
 
 
 classifier_ = Classify(list(), pretrained='./classifier/pretrained/')
-#classifier_.predict([lala])
-#git example
+'''
+a dictionary which provides ids at each ontology
+'''
 catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
                 'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8, 'EmergingThreats': 9,
                 'SignificantEventChange':10, 'MultimediaShare': 11, 'ServiceAvailable': 12, 'Factoid': 13, 'Official': 14,
@@ -19,7 +19,12 @@ catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Vo
                 'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                 }
 
-
+'''
+input : a list of categories
+return : the priority of the tweet
+method: transform the categories list into a priority list with the help of category priority matrix-
+        and returns the most important category of the list.
+'''
 def category_to_priority(categories):
     catadictionary_prio={'GoodsServices':'High', 'SearchAndRescue':"High",'InformationWanted':"High",'Volunteer':"Low",'Donations':"Medium",
                     'MovePeople':"High", 'FirstPartyObservation': "Low", 'ThirdPartyObservation': 'Low', 'Weather': "Low", 'EmergingThreats': "High",
@@ -40,7 +45,12 @@ def category_to_priority(categories):
 
 
 
+'''
+input : a binary np.matrix(25,1)
+return: a list of categories
+method: the input matrix contains 1 at a cell, if the classifier returned true for the category that this cell is representing.
 
+'''
 def categories_from_prediction(prediction_matrix):
     categories_list = []
     list_cata = list(catadictionary)
@@ -49,8 +59,14 @@ def categories_from_prediction(prediction_matrix):
             categories_list.append(list_cata[i])
     return categories_list
 
-
+'''
+input: keyword, number of tweets to be retrieved
+return a list of ids, a list of dictionaries with tweet attributes, a sorted list of tweets based on retweet_count
+method: fully explained at the report. section: 4.3.1.1
+'''
 def query_search(query, tweet_num):
+    time_to_search=time.time()
+    print('starting time: ',time_to_search)
     api_key = "CdyttfRtpEkoJqvDnhsJOY7pj"
     api_key_secret = "dtIeA7h9P6gQdfL6jsh2xI9dOLunBQfji5xI6Up6nrN1t9M6Zu"
     auth = tweepy.AppAuthHandler(api_key, api_key_secret)
@@ -62,15 +78,11 @@ def query_search(query, tweet_num):
     time_started = time.time()
     result_list = []
     id_list = []
-    catagories_=[]
-    matrix_allcate=np.zeros((1,25)) 
-    dic_catagories={'Request':[],'Calls':[],'Report':[],'Others':[]} 
-    # all the catagories for each search
-    # You can change the cound the time limit of search.
-    # moreover we can use Stream to be realy real_life project
+    matrix_allcate=np.zeros((1,25))
+    dic_catagories={'Request':[],'Calls':[],'Report':[],'Others':[]}
     counter=0.0
     for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=60).items():
-        if(time.time()> time_started+60 or len(id_list)==int(tweet_num)):# search 5 seconds, then return the Tweets.
+        if(time.time()> time_started+60 or len(id_list)==int(tweet_num)):
             print('\n now have \n',len(id_list))
             sort_result = sorted(result_list, key=lambda k: k['Retweets'], reverse=True)
             matrix_allcate=np.where(matrix_allcate>0,1,0)
@@ -83,28 +95,25 @@ def query_search(query, tweet_num):
                     dic_catagories['Report'].append(cat)
                 if cat in ['PastNews', 'ContinuingNews', 'Advice','Sentiment', 'Discussion', 'Irrelevant', 'Unknown', 'KnownAlready']:
                     dic_catagories['Others'].append(cat)
-                    
+
             print('This search contain following catagories:/n',dic_catagories)
-            return sort_result, id_list , dic_catagories
+            print("finished after ", time.time()-time_to_search)
+            return sort_result, id_list, dic_catagories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
         if  ('RT @' not in tweet._json['text']):
             counter+=1
-            print(counter/(int(tweet_num)))
             if ("media" in tweet._json["entities"]):
                 tweet_media = True
             else:
                 tweet_media = False
 
             prediction_matrix= (classifier_.predict([tweet._json["text"]]))
-            #print(prediction_matrix.shape)
             matrix_allcate+=prediction_matrix
             if np.sum(prediction_matrix)==0:
                 categories_=['Unknown']
             else:
                 categories_ =categories_from_prediction(prediction_matrix)
-            #print(categories_)
             priority_ = category_to_priority(categories_)
-            #print(priority_)
             timestamp = calendar.timegm(parser.parse(tweet._json["created_at"]).timetuple())
             if "retweeted_status" in tweet._json:
                 timestamp = calendar.timegm(parser.parse(tweet._json["retweeted_status"]["created_at"]).timetuple())

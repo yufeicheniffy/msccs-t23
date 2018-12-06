@@ -9,6 +9,7 @@ import json
 import urllib.request
 from bson import json_util, ObjectId
 import app.search_rest as rest
+import time
 #from classifier.test_classifier_with_evaluation import clas
 
 G_collection=None #the instance of MongoCollection, Don't need to create a lot of instance.
@@ -72,10 +73,10 @@ def priority_high(tweet):
     return tweet['Priority'] == 'High'
 
 def order_chronological(tweets):
-    return sorted(tweets, key=lambda k: k['timestamp'], reverse=True) 
+    return sorted(tweets, key=lambda k: k['timestamp'], reverse=True)
 
 def order_reverse_chronological(tweets):
-    return sorted(tweets, key=lambda k: k['timestamp']) 
+    return sorted(tweets, key=lambda k: k['timestamp'])
 
 def beautify_html(tweets):
     data_page = 1
@@ -150,6 +151,8 @@ def filter_tweets():
 
 @app.route("/search", methods= ['POST'])
 def search():
+    starting_of = time.time()
+
     global tweets
     global tooltips
     #first to collect a query from front-end and store in a variable
@@ -171,7 +174,7 @@ def search():
             url= 'https://publish.twitter.com/oembed?url=https://twitter.com/anybody/status/'+ tweet['Postid'] + '?maxwidth=220'
             # using the get request
             response = urllib.request.urlopen(url)
-            print(response)
+            #print(response)
             data = json.load(response)
             tweet['html'] = data['html']
 
@@ -184,11 +187,12 @@ def search():
             #         print(tweet_tag)
             #         #append all the html responses to a list to make to loop with in the html
             #         tweet_html.append(tweet_tag)
-    
+
     tweets = order_chronological(tweets)
     html = beautify_html(tweets.copy())
-    print(tweets)
-    return render_template('form.html', tweets=html, categories=categories, tooltips=tooltips, tweet_num=tweet_num, query= query) 
+    #print(tweets)
+    print("finished :", time.time()-starting_of)
+    return render_template('form.html', tweets=html, categories=categories, tooltips=tooltips, tweet_num=tweet_num, query= query)
 
 
 @app.route('/tweetapi', methods=['GET', 'POST'])# a route to call tweet api,by a seatch form
