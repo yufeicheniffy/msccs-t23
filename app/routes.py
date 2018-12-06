@@ -3,11 +3,8 @@ sys.path.insert(0, '..')
 
 from flask import request, jsonify, render_template
 from app import app
-from classifier.data_files_scripts import MongoCollection
-from app.searchForm import searchForm
 import json
 import urllib.request
-from bson import json_util, ObjectId
 import app.search_rest as rest
 
 # Tweets variable to store all retrieved tweets by the Twitter API.
