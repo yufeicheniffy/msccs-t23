@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '..')
+
 from flask import request, jsonify, render_template
 from app import app
 from classifier.data_files_scripts import MongoCollection
