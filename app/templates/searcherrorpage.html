@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
-{% block body_content %}
-
+{% block content %}
+<div id="home-page-container">
     <div class="alert alert-info" role="alert">
                 <h4 class="alert-heading">No Tweets found!!!</h4>
                 <p>Can not find any relevant Tweets! Please use other keywords and try again.</p>
@@ -49,14 +49,5 @@
                
               </form>
     </div>
- 
-
-<!-- <div class="container">
-    <form class="home_form" action="/tweetapi" method="POST">
-        <h1 class="home_title">Help Me!!!</h1>
-        <label for="name"> </label>
-        <label for="other">Help Me is an app, that helps it users search through query and category specific emergency events and incidents. Try it out, search for anything.</label>
-        <input class="btn btn-primary btn-xs search_button" type="submit" value="Go to search" />
-    </form>
-</div> -->
-{% endblock body_content %}
+ </div>
+{% endblock %}
