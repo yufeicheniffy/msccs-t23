@@ -14,7 +14,7 @@ class TestClassifier(unittest.TestCase):
     # note: must actually have pretrained classifiers
     # in classifier/pretrained
     def test_load_pretrained(self):
-        c = Classify(pretrained = 'classifier/pretrained')
+        c = Classify(pretrained = '../classifier/pretrained/')
 
         # check there classifiers loaded
         self.assertIsNotNone(c.classifiers)
@@ -43,18 +43,13 @@ class TestClassifier(unittest.TestCase):
                           [0, 1, 1, 0, 1],
                           [0, 1, 1, 0, 1],
                           [0, 0, 0, 0, 0]])
-        okay = np.array([[1, 1, 0, 0, 0],
-                         [0, 0, 0, 0, 1],
-                         [1, 0, 1, 1, 0],
-                         [1, 0, 0, 0, 0],
-                         [1, 1, 1, 1, 0]])
-        one_match_all = np.array([[0, 0, 1, 1, 1],
+        one_match_all = np.array([[1, 1, 1, 1, 1],
                                   [1, 1, 1, 1, 0],
-                                  [0, 1, 0, 0, 1],
                                   [0, 1, 1, 1, 1],
+                                  [1, 1, 1, 0, 1],
                                   [0, 0, 0, 0, 1]])
 
-        c = Classify(pretrained = 'classifier/pretrained')
+        c = Classify(pretrained='../classifier/pretrained/')
 
         # check perfect prediction
         t = c.simple_evaluation(base, perf)
@@ -82,7 +77,8 @@ class TestClassifier(unittest.TestCase):
             t['Recall'] == 1,
             t['F1 Score'] == 1]))
 
-        cl = c.simple_evaluation(base, close)
+        # test imperfect predictions
+        t = c.simple_evaluation(base, close)
         self.assertTrue(all([
             t['Number of Predictions'] == 25,
             t['True Positive'] == 7,
@@ -96,8 +92,53 @@ class TestClassifier(unittest.TestCase):
             t['Accuracy'] == 19/25,
             t['Precision'] == 7/8,
             t['Recall'] == 7/12,
-            t['F1 Score'] == .7]))
+            t['F1 Score'] ==
+            2*t['Precision']*t['Recall']/(t['Precision'] + t['Recall'])]))
 
+        # check all predictions wrong
+        t = c.simple_evaluation(base, worst)
+        self.assertTrue(all([
+            t['Number of Predictions'] == 25,
+            t['True Positive'] == 0,
+            t['True Negative'] == 0,
+            t['False Positive'] == 13,
+            t['False Negative'] == 12,
+            t['One Label'] == 0,
+            t['Perfect Match'] == 0,
+            t['One Label Score'] == 0,
+            t['Perfect Match Score'] == 0,
+            t['Accuracy'] == 0,
+            t['Precision'] == 0,
+            t['Recall'] == 0,
+            t['F1 Score'] == 0]))
+
+        # check 1 for each row
+        t = c.simple_evaluation(base, one_match_all)
+        self.assertTrue(all([
+            t['Number of Predictions'] == 25,
+            t['True Positive'] == 5,
+            t['True Negative'] == 0,
+            t['False Positive'] == 13,
+            t['False Negative'] == 7,
+            t['One Label'] == 5,
+            t['Perfect Match'] == 0,
+            t['One Label Score'] == 1,
+            t['Perfect Match Score'] == 0]))
+
+    # test mapid function
+    def test_mapid(self):
+        c = Classify(pretrained='../classifier/pretrained/')
+        self.assertEqual(c.map_id(['GoodsServices']), [0])
+        self.assertEqual(c.map_id(['Irrelevant']), [22])
+        self.assertEqual(c.map_id(['Unknown']), [23])
+        self.assertEqual(c.map_id(['fake']), list())
+        self.assertEqual(c.map_id(['MultimediaShare',
+                                   'InformationWanted',
+                                   'PastNews', 'Hashtags']),
+                         [11, 2, 17, 16])
+
+    # test constructor if not pretrained
+    def test_creation(self):
 
 
 
