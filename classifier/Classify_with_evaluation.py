@@ -103,17 +103,16 @@ class Classify:
 
     def map_id(self, category):
         """
-        Return the index of the given category e.g. 0 = 'Advice'
+        Return the indices of the given categories e.g. 0 = 'Advice'
 
-        :param category: category to lookup
+        :param category: categories to lookup
 
-        :return: int index
+        :return: list of int index
         """
         returner = []
         for c in category:
-            for i in range(0,len(self.categories)):
-                if(c == self.categories[i]):
-                    returner.append(i)
+            if c in self.catadictionary:
+                returner.append(self.catadictionary.get(c))
         return returner
 
     def evaluation_(self, ytest_array, predict, names):
@@ -164,7 +163,7 @@ class Classify:
         stats = self.stats_calc(eval['True Positive'], 
             eval['True Negative'], eval['False Positive'], 
             eval['False Negative'], eval['One Label'], 
-            eval['Perfect Match'])
+            eval['Perfect Match'], rows=len(actual[0]))
         eval = {**eval, **stats}
         #print(eval)
         return eval
@@ -213,7 +212,7 @@ class Classify:
             #predictions_categories=self.catadictionary.keys
         return(predictions)
 
-    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match):
+    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, rows=25):
         """
         Calculate summary statistics, return as dict.
 
@@ -231,7 +230,7 @@ class Classify:
 
         # one label/perfect match is out of number of 
         # tweets, not predictions
-        t = n/len(self.catadictionary)
+        t = n/rows
         ret['One Label Score'] = one_lab/t
         ret['Perfect Match Score'] = perf_match/t
         ret['Accuracy'] = (tp+tn)/n
