@@ -172,7 +172,7 @@ def search():
     tweets = order_chronological(tweets)
     # Add HTML of tweets to grid with pagination.
     html = beautify_html(tweets.copy())
-    return render_template('form.html', tweets=html, categories=categories, tooltips=tooltips, tweet_num=tweet_num, query= query) 
+    return render_template('result.html', tweets=html, categories=categories, tooltips=tooltips, tweet_num=tweet_num, query= query) 
 
 
 @app.errorhandler(404)
