@@ -69,11 +69,14 @@ def query_search(query, tweet_num):
     print('starting time: ',time_to_search)
     api_key = "CdyttfRtpEkoJqvDnhsJOY7pj"
     api_key_secret = "dtIeA7h9P6gQdfL6jsh2xI9dOLunBQfji5xI6Up6nrN1t9M6Zu"
-    auth = tweepy.AppAuthHandler(api_key, api_key_secret)
-    api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
-    if (not api):
-        print("Can't Authenticate")
-        sys.exit(-1)
+    try:
+        auth = tweepy.AppAuthHandler(api_key, api_key_secret)
+        api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
+        if (not api):
+            print("Can't Authenticate")
+            sys.exit(-1)
+    except Exception as e:
+        print("auth error",e)
 
     time_started = time.time()
     result_list = []
