@@ -45,13 +45,16 @@
     margin-left: 25%;
     margin-top: 10%;
 }
+
 .home_title{
     color: #d3d3d3;
     margin-left: 37%;
 }
+
 .home{
     color: white !important;
 }
+
 #custom-search-input{
     padding: 3px;
     border: solid 1px #E4E4E4;
