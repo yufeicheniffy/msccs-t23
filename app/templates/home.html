@@ -47,7 +47,7 @@
                             <input type="text" id="query_input" name="query" class="form-control input-lg search_input" placeholder="Search emergency" width="100%"/>
                         </div>
                         <div class="col-md-2 col-sm-3" id="custom-search-input">
-                            <input type="number" id="tweet_num" min="0" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
+                            <input type="number" id="tweet_num" min="0" oninput="validity.valid||(value='');" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
                         </div>
                         <div lass="col-md-2 col-sm-3" >
                                 <button class="btn btn-light btn-lg" type="button" id="load_button">
