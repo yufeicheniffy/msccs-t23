@@ -25,6 +25,7 @@ class MongoCollection:
             self.collection = self.database[collectionname]
         except pymongo.errors.ConnectionFailure:
             print("failed to connect")
+            raise pymongo.errors.ConnectionFailure
 
     def insert(self, item):
         """
@@ -56,8 +57,12 @@ class MongoCollection:
 
         :param collectionname: collection to change to
         """
-        self.collection=self.database[collectionname]
-        return self
+        if collectionname in ['Test',"Train","Training_token","TweetsData",'func_test']:
+            self.collection=self.database[collectionname]
+            return self
+        else:
+            raise collectionException
+        
 
     def find_all(self):
         """
@@ -89,7 +94,11 @@ class MongoCollection:
             x = self.collection.find_one({"postID": str(postid)})
         except Exception as e:
             print("Error", e)
-        return x["categories"]
+        try:
+            return x["categories"]
+        except TypeError:
+            print('No Tweets found, check the postID')
+            raise TypeError
 
     def find_text_by_id(self,postid):
         """
@@ -121,7 +130,9 @@ class MongoCollection:
                     x = self.collection.find_one({"postID": str(id)})
                 textlist.append(x["text"])
         except Exception as e:
-            print("Error", e)
+            print("Error\n", e)
+            print('can not find the text, please check the postidlist')
+            raise e
         return textlist
 
     def return_ids_list(self):
@@ -361,3 +372,7 @@ class MongoCollection:
                 self.collection.update_many(myquery,newvalues)
         except Exception as e:
             print("Error", e)
+    
+class collectionException(Exception):
+    print('your collection is not in our collection list, please read Readme.md to set correct collections')
+    pass
