@@ -156,7 +156,7 @@ def search():
         # Get tweets from Twitter API along with categories.
         tweets, tweetids, categories = rest.query_search(query, tweet_num)
     except Exception:
-        return render_template('searcherrorpage.html', search= True)
+        return render_template('home.html', error=True)
     # Loop over retrieved tweets to get corresponding HTML.
     for tweet in tweets:
             try:
