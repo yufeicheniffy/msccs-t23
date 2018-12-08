@@ -76,7 +76,7 @@ CollectionName:
 
 "Train" Store TrainLabels
 
-"Train_Token" Store Trainingdata.
+"Training_Token" Store Trainingdata.
 
 "func_test" collection for testing functions.
 
