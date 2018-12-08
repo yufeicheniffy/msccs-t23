@@ -124,3 +124,4 @@ def query_search(query, tweet_num):
             datetime_created = parser.parse(tweet._json["created_at"])
             result_list.append({"Postid": tweet._json["id_str"], "Text": tweet._json["text"], "Media": tweet_media, "Datetime": datetime_created, "DateString": tweet._json["created_at"], "timestamp": timestamp, "Retweets": retweets_counter,"Category": categories_, "Priority": priority_})
             id_list.append(tweet._json["id_str"])
+
