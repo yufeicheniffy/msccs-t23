@@ -1,3 +1,27 @@
+#nav {
+    background-color: #495057;
+}
+
+#row-filters {
+    margin-top: 18px;
+    padding-bottom: 10px;
+}
+
+.fa-check {
+    line-height: inherit !important;
+    float: right;
+}
+
+.fa-circle {
+    margin-top: 4px;
+    line-height: inherit !important;
+    float: right;
+}
+
+#orders {
+    min-width: 15rem;
+}
+
 #home-page-container {
     background-image: url(../images/emergency.jpg);
     background-size: cover;
@@ -9,7 +33,6 @@
 }
 .search_input {
     width: 100% !important;
-    border-radius: 10px !important;
 }
 .search_button{
     margin-left: 45%;
@@ -346,7 +369,7 @@ blockquote.twitter-tweet {
         left: 0;
         background-color: #fff;
         overflow-x: hidden;
-        padding-top: 20px;
+        padding-top: 142px;
         padding-left: 20px;
     }
     
@@ -365,9 +388,4 @@ blockquote.twitter-tweet {
     .main {
         margin-left: 25%; /* Same as the width of the sidenav */
         padding: 91px 20px 0px 20px;
-    }
-    
-    @media screen and (max-height: 450px) {
-        .sidenav {padding-top: 15px;}
-        .sidenav a {font-size: 18px;}
     }

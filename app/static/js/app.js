@@ -63,7 +63,7 @@ $(document).ready(function() {
         }
     });
     $('.filters').children('.filter').each(function(i) {
-        if ($(this).hasClass('active')) {
+        if ($(this).has('i')) {
             active_filters.push($(this).attr('id'))
         }
     });
@@ -87,35 +87,67 @@ $(document).ready(function() {
             active_filters.splice(check_val, 1)
         }
 
-        if ($(this).hasClass('active')) {
-            $(this).removeClass('active')
+        if ($(this).has('i').length) {
+            var temp = $(this).text()
+            $(this).empty()
+            $(this).html(temp)
         } else {
-            $(this).addClass('active')
+            var temp = $(this).text()
+            $(this).html(temp + '<i class="fas fa-check"></i>')
         }
 
         filterTweets(active_categories, active_filters, chronological)
     });
 
-    $(document).on('click', '#chronological', function () {
-        if (!$(this).hasClass('active')) {
+    $(document).on('click', '.order', function () {
+        var id = $(this).attr('id')
+
+        if (id == 'chronological') {
             chronological = true
-            $(this).addClass('active')
-            $('#reverse-chronological').removeClass('active')
+            var temp = $(this).text()
+            $(this).html(temp + '<i class="fas fa-circle fa-xs"></i>')
+
+            if ($('#reverse-chronological').has('i').length) {
+                var temp = $('#reverse-chronological').text()
+                $('#reverse-chronological').empty()
+                $('#reverse-chronological').html(temp)  
+            }
+        } else {
+            chronological = false
+            var temp = $(this).text()
+            $(this).html(temp + '<i class="fas fa-circle fa-xs"></i>')
+
+            if ($('#chronological').has('i').length) {
+                var temp = $('#chronological').text()
+                $('#chronological').empty()
+                $('#chronological').html(temp)  
+            }           
         }
         
         filterTweets(active_categories, active_filters, chronological)
     });
 
-    $(document).on('click', '#reverse-chronological', function () {
-        if (!$(this).hasClass('active')) {
-            chronological = false
-            $(this).addClass('active')
-            $('#chronological').removeClass('active')
-        }
+    // $(document).on('click', '#chronological', function () {
+    //     if (!$(this).hasClass('active')) {
+    //         chronological = true
+    //         $(this).addClass('active')
+    //         $('#reverse-chronological').removeClass('active')
+    //     }
+        
+    //     filterTweets(active_categories, active_filters, chronological)
+    // });
 
-        filterTweets(active_categories, active_filters, chronological)
-    });
+    // $(document).on('click', '#reverse-chronological', function () {
+    //     if (!$(this).hasClass('active')) {
+    //         chronological = false
+    //         $(this).addClass('active')
+    //         $('#chronological').removeClass('active')
+    //     }
 
+    //     filterTweets(active_categories, active_filters, chronological)
+    // });
+
+    // Source: http://www.undg.net/codemonde/2015/8/25/using-bootstrap-pagination-to-page-through-divs-on-same-page
     var paginationHandler = function(){
         // store pagination container so we only select it once
         var $paginationContainer = $(".pagination-container"),
