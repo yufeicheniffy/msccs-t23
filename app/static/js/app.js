@@ -63,7 +63,7 @@ $(document).ready(function() {
         }
     });
     $('.filters').children('.filter').each(function(i) {
-        if ($(this).hasClass('active')) {
+        if ($(this).has('i')) {
             active_filters.push($(this).attr('id'))
         }
     });
@@ -87,10 +87,10 @@ $(document).ready(function() {
             active_filters.splice(check_val, 1)
         }
 
-        if ($(this).hasClass('active')) {
-            $(this).removeClass('active')
+        if ($(this).has('i')) {
+            $(this).remove('.fas .fa-check')
         } else {
-            $(this).addClass('active')
+            $(this).append('<i class="fas fa-check"></i>')
         }
 
         filterTweets(active_categories, active_filters, chronological)
@@ -116,6 +116,7 @@ $(document).ready(function() {
         filterTweets(active_categories, active_filters, chronological)
     });
 
+    // Source: http://www.undg.net/codemonde/2015/8/25/using-bootstrap-pagination-to-page-through-divs-on-same-page
     var paginationHandler = function(){
         // store pagination container so we only select it once
         var $paginationContainer = $(".pagination-container"),

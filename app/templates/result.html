@@ -1,0 +1,113 @@
+{% extends "layout.html" %}
+{% block content %}
+<!-- Source: https://loading.io/css/ -->
+<div class="text-center" id="loading">
+    <div id="inner-div-loading">
+        <div id="home-anim" class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        <h4>Loading tweets...</h4>
+    </div>
+</div>
+
+
+<nav id="nav" class="navbar fixed-top navbar-expand-lg navbar-dark">
+	 <div class="collapse navbar-collapse flex-md-column" id="navbarCollapse">
+	 	<div class="container-fluid">
+	        <div class="row">
+	            <div class="col-sm-2">
+	                <a class="navbar-brand" href="/home">
+	                    HelpMe
+	                </a>
+	            </div>
+	            <div class="col-sm-10">
+                    <form class="form-group-row form-inline" action="/search" method="POST" name="theForm">
+                        <div class="col-sm-8">
+                            <input type="text" id="query_input" name="query" class="form-control search_input" value="{{query}}" placeholder="Search emergency" width="100%"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="number" id="tweet_num" name="tweet_num" min="0" class="form-control search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
+                        </div>
+                        <div class="col-sm-2">
+                            <button class="btn btn-primary" type="button" id="load_button">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+	            </div>
+    		</div>
+        	<div id="row-filters" class="row justify-content-md-center">
+				<div class="col-sm-2 text-center">
+					<div class="dropdown">
+						<button class="btn dropdown-toggle btn-block btn-primary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+							Priority
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a id="priority-low" class="filter dropdown-item" href="#">Low<i class="fas fa-check"></i></a>
+							<a id="priority-medium" class="filter dropdown-item" href="#">Medium<i class="fas fa-check"></i></a>
+							<a id="priority-high" class="filter dropdown-item" href="#">High<i class="fas fa-check"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2 text-center">
+					<div class="dropdown">
+						<button class="btn dropdown-toggle btn-block btn-primary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Media
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a id="media-yes" class="filter dropdown-item" href="#">Yes<i class="fas fa-check"></i></a>
+							<a id="media-no" class="filter dropdown-item" href="#">No<i class="fas fa-check"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-2 text-center">
+					<div class="dropdown">
+						<button class="btn dropdown-toggle btn-block btn-primary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Order
+						</button>
+						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a id="chronological" class="dropdown-item active" href="#">Chronological</a>
+							<a id="reverse-chronological" class="dropdown-item" href="#">Reverse chronological</a>
+						</div>
+					</div>
+				</div>
+        	</div>
+        </div>
+    </div>          
+ </nav>
+
+
+<div>
+	<div class="sidenav">
+		<div class="card">
+			<div class="card-header">
+				Categories
+			</div>
+			<div class="card-body">
+				{% for key, value in categories.items() %}
+					{% if value is defined and value|length > 0 %}
+						<h5 class="card-title">{{key| safe}}</h5>
+						<div class="category-filters btn-group-toggle" data-toggle="buttons">
+							{% for category in value %}
+							<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active" data-toggle="tooltip" data-placement="top" title="{{tooltips[category]}}">
+								<input type="checkbox" checked autocomplete="off"> {{category| safe}}
+							</label>
+							{% endfor %}
+						</div>
+						<br>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="main">
+		<!-- Source: https://loading.io/css/ -->
+		<div class="text-center" id="refreshing-anim">
+			<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+			<h4>Loading..</h4>
+		</div>
+		<div id="tweet-grid">
+			{{tweets|safe}}
+		</div>
+	</div>
+</div>
+
+{% endblock content %}
