@@ -2,6 +2,8 @@ import unittest
 import sys
 from sklearn.base import is_classifier
 import numpy as np
+from sklearn.naive_bayes import BernoulliNB
+from sklearn.ensemble import RandomForestClassifier
 
 sys.path.insert(0, '../..')
 sys.path.insert(0, '../classifier')
@@ -137,9 +139,35 @@ class TestClassifier(unittest.TestCase):
                                    'PastNews', 'Hashtags']),
                          [11, 2, 17, 16])
 
-    # test constructor if not pretrained
-    def test_creation(self):
+    # test constructor if not pretrained without given model
+    def test_creation_no_model(self):
+        tweets = ['this is a test', 'tweet tweet test', 'testing tweet']
+        cats = [[1, 0, 0, 1], [1, 1, 0, 0], [1, 1, 0, 0]]
+        c = Classify(tweets, cats)
+        self.assertEqual(tweets, c.text)
+        self.assertEqual(cats, c.cat)
+        self.assertIsInstance(c.model, BernoulliNB)
+        self.assertIsNotNone(c.vectorizer)
+        self.assertIsNotNone(c.classifiers)
+        self.assertGreater(len(c.classifiers), 0)
+        self.assertIsInstance(c.classifiers[0], BernoulliNB)
+        for classifier in c.classifiers:
+            self.assertTrue(is_classifier(classifier))
 
+    # test constructor if not pretrained without given model
+    def test_creation_with_model(self):
+        tweets = ['this is a test', 'tweet tweet test', 'testing tweet']
+        cats = [[1, 0, 0, 1], [1, 1, 0, 0], [1, 1, 0, 0]]
+        c = Classify(tweets, cats, model = RandomForestClassifier())
+        self.assertEqual(tweets, c.text)
+        self.assertEqual(cats, c.cat)
+        self.assertIsInstance(c.model, RandomForestClassifier)
+        self.assertIsNotNone(c.vectorizer)
+        self.assertIsNotNone(c.classifiers)
+        self.assertGreater(len(c.classifiers), 0)
+        self.assertIsInstance(c.classifiers[0], RandomForestClassifier)
+        for classifier in c.classifiers:
+            self.assertTrue(is_classifier(classifier))
 
 
 if __name__ == '__main__':
