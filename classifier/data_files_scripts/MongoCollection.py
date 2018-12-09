@@ -164,6 +164,7 @@ class MongoCollection:
                 catmatrix[i]=1
         except Exception as e:
             print("Error", e)
+            raise e
         return catmatrix
 
     def return_catmatrix_all(self):
