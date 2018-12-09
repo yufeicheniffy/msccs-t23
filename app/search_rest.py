@@ -82,7 +82,7 @@ def query_search(query, tweet_num):
     result_list = []
     id_list = []
     matrix_allcate=np.zeros((1,25))
-    dic_catagories={'Request':[],'Calls':[],'Report':[],'Others':[]}
+    dic_categories={'Request':[],'Calls':[],'Report':[],'Others':[]}
     counter=0.0
     for tweet in tweepy.Cursor(api.search, q=query, lang="en", count=60).items():
         if(time.time()> time_started+60 or len(id_list)==int(tweet_num)):
@@ -91,17 +91,17 @@ def query_search(query, tweet_num):
             matrix_allcate=np.where(matrix_allcate>0,1,0)
             for cat in categories_from_prediction(matrix_allcate):
                 if cat in ['GoodsServices', 'SearchAndRescue','InformationWanted']:
-                    dic_catagories['Request'].append(cat)
+                    dic_categories['Request'].append(cat)
                 if cat in ['Volunteer','Donations','MovePeople']:
-                    dic_catagories['Calls'].append(cat)
+                    dic_categories['Calls'].append(cat)
                 if cat in ['FirstPartyObservation', 'ThirdPartyObservation', 'Weather', 'EmergingThreats','SignificantEventChange', 'MultimediaShare', 'ServiceAvailable', 'Factoid', 'Official','CleanUp', 'Hashtags']:
-                    dic_catagories['Report'].append(cat)
+                    dic_categories['Report'].append(cat)
                 if cat in ['PastNews', 'ContinuingNews', 'Advice','Sentiment', 'Discussion', 'Irrelevant', 'Unknown', 'KnownAlready']:
-                    dic_catagories['Others'].append(cat)
+                    dic_categories['Others'].append(cat)
 
-            print('This search contain following catagories:/n',dic_catagories)
+            print('This search contain following catagories:/n',dic_categories)
             print("finished after ", time.time()-time_to_search)
-            return sort_result, id_list, dic_catagories
+            return sort_result, id_list, dic_categories
         # result_list.append(json.loads(json_util.dumps({"Postid": tweet["idstr"], "Text": tweet["text"]})))
         if  ('RT @' not in tweet._json['text']):
             counter+=1
