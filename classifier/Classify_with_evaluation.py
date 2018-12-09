@@ -11,6 +11,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_sc
 from sklearn.externals import joblib
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
+from scipy import sparse
 
 class Classify:
     """
@@ -72,7 +73,11 @@ class Classify:
         self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
             binary=True, max_features=vocab_size)
         self.vect_train = self.vectorizer.fit_transform(text)
-        
+        hashtags = np.array([[1] if '#' in t else [0] for t in text])
+        addtl_feat = sparse.hstack([self.vect_train, hashtags])
+
+        print(addtl_feat.shape)
+
         # clear classifiers (in case retraining)
         self.classifiers = list()
 
@@ -85,7 +90,7 @@ class Classify:
                 m = DummyClassifier('constant', constant=0)
             else:
                 m = clone(self.model)
-            c = m.fit(self.vect_train, cat_arr[:,i])
+            c = m.fit(addtl_feat, cat_arr[:,i])
             self.classifiers.append(c)
 
         #print("Training complete!")
@@ -103,17 +108,16 @@ class Classify:
 
     def map_id(self, category):
         """
-        Return the index of the given category e.g. 0 = 'Advice'
+        Return the indices of the given categories e.g. 0 = 'Advice'
 
-        :param category: category to lookup
+        :param category: categories to lookup
 
-        :return: int index
+        :return: list of int index
         """
         returner = []
         for c in category:
-            for i in range(0,len(self.categories)):
-                if(c == self.categories[i]):
-                    returner.append(i)
+            if c in self.catadictionary:
+                returner.append(self.catadictionary.get(c))
         return returner
 
     def evaluation_(self, ytest_array, predict, names):
@@ -164,7 +168,7 @@ class Classify:
         stats = self.stats_calc(eval['True Positive'], 
             eval['True Negative'], eval['False Positive'], 
             eval['False Negative'], eval['One Label'], 
-            eval['Perfect Match'])
+            eval['Perfect Match'], rows=len(actual[0]))
         eval = {**eval, **stats}
         #print(eval)
         return eval
@@ -181,10 +185,13 @@ class Classify:
         if len(self.classifiers) == 0:
             raise RuntimeError("Classifiers have not been trained!")
         tokenized = self.vectorizer.transform(tweets)
+        hashtags = [[1] if '#' in t else [0] for t in tweets]
+        addtl_feat = sparse.hstack([tokenized, hashtags])
+
         predictions = np.zeros((len(tweets), len(self.classifiers)))
 
         for i in range(0, len(self.classifiers)):
-            predictions[:,i] = self.classifiers[i].predict(tokenized)
+            predictions[:,i] = self.classifiers[i].predict(addtl_feat)
         
         # if nothing predicted, category should be unknown
         for row in predictions:
@@ -213,7 +220,7 @@ class Classify:
             #predictions_categories=self.catadictionary.keys
         return(predictions)
 
-    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match):
+    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, rows=25):
         """
         Calculate summary statistics, return as dict.
 
@@ -231,7 +238,7 @@ class Classify:
 
         # one label/perfect match is out of number of 
         # tweets, not predictions
-        t = n/len(self.catadictionary)
+        t = n/rows
         ret['One Label Score'] = one_lab/t
         ret['Perfect Match Score'] = perf_match/t
         ret['Accuracy'] = (tp+tn)/n

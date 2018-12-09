@@ -12,6 +12,16 @@
     float: right;
 }
 
+.fa-circle {
+    margin-top: 4px;
+    line-height: inherit !important;
+    float: right;
+}
+
+#orders {
+    min-width: 15rem;
+}
+
 #home-page-container {
     background-image: url(../images/emergency.jpg);
     background-size: cover;
