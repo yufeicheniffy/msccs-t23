@@ -22,6 +22,10 @@
     min-width: 15rem;
 }
 
+.twitter-tweet {
+    width: 100% !important;
+}
+
 #home-page-container {
     background-image: url(../images/emergency.jpg);
     background-size: cover;
