@@ -11,6 +11,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_sc
 from sklearn.externals import joblib
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
+from scipy import sparse
 
 class Classify:
     """
@@ -72,7 +73,11 @@ class Classify:
         self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
             binary=True, max_features=vocab_size)
         self.vect_train = self.vectorizer.fit_transform(text)
-        
+        hashtags = np.array([[1] if '#' in t else [0] for t in text])
+        addtl_feat = sparse.hstack([self.vect_train, hashtags])
+
+        print(addtl_feat.shape)
+
         # clear classifiers (in case retraining)
         self.classifiers = list()
 
@@ -85,7 +90,7 @@ class Classify:
                 m = DummyClassifier('constant', constant=0)
             else:
                 m = clone(self.model)
-            c = m.fit(self.vect_train, cat_arr[:,i])
+            c = m.fit(addtl_feat, cat_arr[:,i])
             self.classifiers.append(c)
 
         #print("Training complete!")
@@ -180,10 +185,13 @@ class Classify:
         if len(self.classifiers) == 0:
             raise RuntimeError("Classifiers have not been trained!")
         tokenized = self.vectorizer.transform(tweets)
+        hashtags = [[1] if '#' in t else [0] for t in tweets]
+        addtl_feat = sparse.hstack([tokenized, hashtags])
+
         predictions = np.zeros((len(tweets), len(self.classifiers)))
 
         for i in range(0, len(self.classifiers)):
-            predictions[:,i] = self.classifiers[i].predict(tokenized)
+            predictions[:,i] = self.classifiers[i].predict(addtl_feat)
         
         # if nothing predicted, category should be unknown
         for row in predictions:
