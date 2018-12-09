@@ -150,6 +150,7 @@ class TestClassifier(unittest.TestCase):
         self.assertIsNotNone(c.vectorizer)
         self.assertIsNotNone(c.classifiers)
         self.assertGreater(len(c.classifiers), 0)
+        self.assertIsInstance(c.classifiers[0], BernoulliNB)
         for classifier in c.classifiers:
             self.assertTrue(is_classifier(classifier))
 
@@ -164,6 +165,7 @@ class TestClassifier(unittest.TestCase):
         self.assertIsNotNone(c.vectorizer)
         self.assertIsNotNone(c.classifiers)
         self.assertGreater(len(c.classifiers), 0)
+        self.assertIsInstance(c.classifiers[0], RandomForestClassifier)
         for classifier in c.classifiers:
             self.assertTrue(is_classifier(classifier))
 
