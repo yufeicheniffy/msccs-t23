@@ -173,30 +173,44 @@ class Classify:
                 accuracy, precision, recall, f1, one label,
                 and perfect match scores
         """
+        # result matrix
         evaluation_mat = {'Number of Predictions': len(actual)*len(actual[0]),
-                'True Positive': 0, 'True Negative': 0,
-                'False Positive': 0, 'False Negative': 0,
-                'One Label': 0, 'Perfect Match': 0}
-        one_lab = False
+                          'True Positive': 0, 'True Negative': 0,
+                          'False Positive': 0, 'False Negative': 0,
+                          'One Label': 0, 'Perfect Match': 0}
+        one_label = False # used to check if at least one label in current row is true pos
 
+        # evaluate by row
         for x in range(0, len(actual)):
+            # check for perfect match
             if np.array_equal(actual[x], prediction[x]):
                 evaluation_mat['Perfect Match'] += 1
+
+            # iterate through predictions
             for y in range(0, len(actual[x])):
                 if actual[x][y] == 1:
                     if prediction[x][y] == 1:
+                        # both positive
                         evaluation_mat['True Positive'] += 1
-                        one_lab = True
-                    else: 
-                        evaluation_mat['False Negative'] +=1
+                        one_label = True
+                    else:
+                        # prediction negative, actually positive
+                        evaluation_mat['False Negative'] += 1
                 else:
                     if prediction[x][y] == 1:
+                        # prediction positive, actually negative
                         evaluation_mat['False Positive'] += 1
                     else:
+                        # both negative
                         evaluation_mat['True Negative'] += 1
-            if one_lab:
+
+            # check if at least one true pos
+            if one_label:
                 evaluation_mat['One Label'] += 1
-            one_lab = False
+            one_label = False
+
+        # once all rows checked, use confusion matrix and one label /
+        # perfect match counts to calculate other statistics
         stats = self.stats_calc(evaluation_mat['True Positive'],
                                 evaluation_mat['True Negative'],
                                 evaluation_mat['False Positive'],
@@ -204,8 +218,8 @@ class Classify:
                                 evaluation_mat['One Label'],
                                 evaluation_mat['Perfect Match'],
                                 cats=len(actual[0]))
-        evaluation_mat = {**evaluation_mat, **stats}
-        return evaluation_mat
+        ret = {**evaluation_mat, **stats}
+        return ret
 
     def predict(self, tweets):
         """
