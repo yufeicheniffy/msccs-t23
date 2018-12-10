@@ -158,8 +158,7 @@ class Classify:
                     eval['True Negative'] += 1
         return eval
 
-
-    def simple_evaluation(self, actual, prediction):
+    def evaluate(self, actual, prediction):
         """
         Simple evaluator, returning overal confusion matrix, accuracy
         recall, precision, f1
