@@ -1,13 +1,10 @@
 import sys, os
 sys.path.insert(0, './data_files_scripts')
 
-from sklearn.svm import *
 from sklearn.naive_bayes import BernoulliNB
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 import numpy as np
-from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 from sklearn.externals import joblib
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
@@ -24,7 +21,7 @@ class Classify:
                     'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
                     }
 
-    def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(), 
+    def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(alpha = 0.1), 
         pretrained=None):
         """
         Create and train classifier. Can specify path to pretrained
@@ -41,6 +38,7 @@ class Classify:
         self.text = tweet_texts
         self.model = model
 
+
         self.classifiers = list()
         
         if pretrained is None:
@@ -52,7 +50,6 @@ class Classify:
                     self.vectorizer = joblib.load(pretrained+fn)
                 else:
                     self.classifiers.append(joblib.load(pretrained+fn))
-
 
     def train(self, text = None, cats = None, vocab_size = 2000):
         """
@@ -119,22 +116,48 @@ class Classify:
             if c in self.catadictionary:
                 returner.append(self.catadictionary.get(c))
         return returner
+    
+    def mat_all_categories(self, actual, prediction):
+        """
+        Evaluator returning confusion matrix for all categories as a list of dicts
 
-    def evaluation_(self, ytest_array, predict, names):
+        :param actual: actual category matrix
+        :param prediction: prediction matrix
+        """ 
+        ind_to_cat = self.category_indices()
+        ret = dict()
+        actual_arr = np.array(actual)
+        prediction_arr = np.array(prediction)
+        for n in range(0, len(actual[0])):
+            vals = self.mat_one_category(actual_arr[:,n], prediction_arr[:,n])
+            ret[ind_to_cat[n]] = vals
+        return ret
+
+
+    def mat_one_category(self, actual, prediction):
         """
-        Evaluate the gicen input 
-        """
-        ytest_arr = np.array(ytest_array)
-        res = list()
-        for x in range(0, len(ytest_array[0])):
-            d = {"Category": names[x],
-                "Accuracy": accuracy_score(ytest_arr[:,x],predict[:,x]),
-                "Recall": recall_score(ytest_arr[:,x],predict[:,x]),
-                "Precision": precision_score(ytest_arr[:,x],predict[:,x]),
-                "F1": f1_score(ytest_arr[:,x],predict[:,x])}
-            #print(d)
-            res.append(d)
-        return res
+        Evaluator returning statistics for a single category as a dict
+
+        :param actual: numpy array of binary category vals
+        :param prediction: binary numpy array of predictions
+        """  
+        eval = {'Number of Predictions': len(actual),
+                'True Positive': 0, 'True Negative': 0,
+                'False Positive': 0, 'False Negative': 0}
+
+        for x in range(0, len(actual)):
+            if actual[x] == 1:
+                if prediction[x] == 1:
+                    eval['True Positive'] += 1
+                else: 
+                    eval['False Negative'] +=1
+            else:
+                if prediction[x] == 1:
+                    eval['False Positive'] += 1
+                else:
+                    eval['True Negative'] += 1
+        return eval
+
 
     def simple_evaluation(self, actual, prediction):
         """
@@ -168,7 +191,7 @@ class Classify:
         stats = self.stats_calc(eval['True Positive'], 
             eval['True Negative'], eval['False Positive'], 
             eval['False Negative'], eval['One Label'], 
-            eval['Perfect Match'], rows=len(actual[0]))
+            eval['Perfect Match'], cats=len(actual[0]))
         eval = {**eval, **stats}
         #print(eval)
         return eval
@@ -197,6 +220,7 @@ class Classify:
         for row in predictions:
             if np.sum(row) == 0:
                 row[self.catadictionary['Unknown']] = 1
+        print(np.sum(predictions))
         return(predictions)
 
     def return_predict_categories(self,tweets):
@@ -220,7 +244,7 @@ class Classify:
             #predictions_categories=self.catadictionary.keys
         return(predictions)
 
-    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, rows=25):
+    def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, cats=25):
         """
         Calculate summary statistics, return as dict.
 
@@ -238,14 +262,29 @@ class Classify:
 
         # one label/perfect match is out of number of 
         # tweets, not predictions
-        t = n/rows
+        t = n/cats
         ret['One Label Score'] = one_lab/t
         ret['Perfect Match Score'] = perf_match/t
         ret['Accuracy'] = (tp+tn)/n
-        ret['Precision'] = tp/(tp+fp)
-        ret['Recall'] = tp/(tp+fn)
+        try:
+            ret['Precision'] = tp/(tp+fp)
+        except ZeroDivisionError:
+            ret['Precision'] = 0
+        try:
+            ret['Recall'] = tp/(tp+fn)
+        except ZeroDivisionError:
+            ret['Recall'] = 0
         try:
             ret['F1 Score'] = (2*(ret['Precision']*ret['Recall']))/(ret['Precision']+ret['Recall'])
         except ZeroDivisionError:
             ret['F1 Score'] = 0
+        return ret
+
+    def category_indices(self):
+        """
+        Return dict of index to category, based on the catadict
+        """
+        ret = dict()
+        for key in self.catadictionary:
+            ret[self.catadictionary[key]] = key
         return ret

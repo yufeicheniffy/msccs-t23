@@ -41,7 +41,7 @@ full_event = np.array(full_event)
 full_res = list()
 
 estimators = [1, 10, 25, 50]
-class_weight = ['balanced']
+class_weight = ['balanced', None]
 criterion = ['gini']
 bootstrap = [True]
 
