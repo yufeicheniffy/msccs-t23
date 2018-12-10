@@ -53,27 +53,50 @@ cat_test_arr = np.array(cat_test, dtype=np.float64)
 if pretrained:
 	clas = Classify(pretrained='pretrained/')
 elif classifier == 'rf':
-	clas = Classify(text_train, cat_train, 
-		model=RandomForestClassifier(class_weight='balanced', n_estimators=100))
-elif classifier == 'svc':
-	clas = Classify(text_train, cat_train, 
-		model=SVC(class_weight='balanced'))
-elif classifier == 'linearsvc':
-	clas = Classify(text_train, cat_train, 
-		model=LinearSVC(class_weight='balanced'))
-else: 
-	clas = Classify(text_train, cat_train)
-predict = clas.predict(text_test)
-evals = clas.evaluation_(cat_test,predict, sorted(training_connect.catadictionary, 
-	key=training_connect.catadictionary.__getitem__))
-simp = clas.simple_evaluation(cat_test,predict)
-print(simp)
+	clas = Classify(text_train, cat_train, 2000,
+		model=RandomForestClassifier(class_weight='balanced', 
+			n_estimators=1))
+elif classifier == 'lsvc':
+	clas = Classify(text_train, cat_train, 2000,
+		model= LinearSVC(C = 0.01,
+			class_weight = 'balanced',
+			loss = 'hinge',
+			random_state=1))
+elif classifier == 'log':
+	clas = Classify(text_train, cat_train, 2000,
+		model=LogisticRegression(class_weight='balanced',
+			loss = 'hinge', C = 0.01))
+else:
+	clas = Classify(text_train, cat_train, 2000)
 
-keys = evals[0].keys()
-with open(output_name, 'w') as f:
+predict = clas.predict(text_test)
+evals = clas.simple_evaluation(cat_test, predict)
+cat_confusion = clas.mat_all_categories(cat_test, predict)
+
+cat_stats = list()
+for key in cat_confusion:
+	s = clas.stats_calc(
+			cat_confusion[key]['True Positive'], 
+            cat_confusion[key]['True Negative'], 
+            cat_confusion[key]['False Positive'], 
+            cat_confusion[key]['False Negative'], 
+            0, 0)
+	del s['One Label Score']
+	del s['Perfect Match Score']
+	cat_stats.append({'Category': key,
+			**cat_confusion[key], **s})
+
+keys = evals.keys()
+with open('results/'+output_name, 'w') as f:
     d_write = csv.DictWriter(f, keys)
     d_write.writeheader()
-    d_write.writerows(evals)
+    d_write.writerow(evals)
+
+keys = cat_stats[0].keys()
+with open('results/by_cat.csv', 'w') as f:
+    d_write = csv.DictWriter(f, keys)
+    d_write.writeheader()
+    d_write.writerows(cat_stats)
 
 if save:
 	clas.save_classifier()
