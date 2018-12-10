@@ -22,7 +22,11 @@
     min-width: 15rem;
 }
 
-#home-page-container {
+.twitter-tweet {
+    width: 100% !important;
+}
+
+#home-background {
     background-image: url(../images/emergency.jpg);
     background-size: cover;
     background-repeat: no-repeat;
@@ -31,6 +35,18 @@
     height: 100%;
     position: absolute;
 }
+
+#home-container {
+    position: relative;
+    transform: translatey(-50%);
+    top: 50%;
+}
+
+#home-jumbotron {
+    background-color: rgba(89, 130, 173, 0.2);
+    color: white;
+}
+
 .search_input {
     width: 100% !important;
 }
@@ -127,15 +143,14 @@
     vertical-align: middle;
     margin-left: 10px;
 }
-#list-wrapper {
-    width: 500px;
+.list-wrapper {
     overflow: hidden; /* will contain if #first is longer than #second */
 }
-#first {
+.first {
     width: 50px;
     float:left; /* add this */
 }
-#second {
+.second {
     overflow: hidden; /* if you don't want #second to wrap below #first */
     margin-bottom: 20px;
 }
