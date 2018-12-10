@@ -259,7 +259,7 @@ class Classify:
             if np.sum(row) == 0:
                 row[self.catadictionary['Unknown']] = 1
         print(np.sum(predictions))
-        return(predictions)
+        return predictions 
 
     def return_predict_categories(self,tweets):
         """
@@ -277,10 +277,7 @@ class Classify:
 
         for i in range(0, len(self.classifiers)):
             predictions[:,i] = self.classifiers[i].predict(tokenized)
-        #for i in range((len(tweets)):
-            #predictions_cateindex=np.argwhere(predictions[i,:])
-            #predictions_categories=self.catadictionary.keys
-        return(predictions)
+        return predictions
 
     def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, cats=25):
         """
