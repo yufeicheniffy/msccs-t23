@@ -1,13 +1,10 @@
 import sys, os
 sys.path.insert(0, './data_files_scripts')
 
-from sklearn.svm import *
 from sklearn.naive_bayes import BernoulliNB
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
 import numpy as np
-from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 from sklearn.externals import joblib
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
@@ -119,23 +116,6 @@ class Classify:
             if c in self.catadictionary:
                 returner.append(self.catadictionary.get(c))
         return returner
-
-    def evaluation_(self, ytest_array, predict, names):
-        """
-        Evaluate the given input 
-        """
-        ytest_arr = np.array(ytest_array)
-        res = list()
-        for x in range(0, len(ytest_array[0])):
-            d = {"Category": names[x],
-                "Accuracy": accuracy_score(ytest_arr[:,x],predict[:,x]),
-                "Recall": recall_score(ytest_arr[:,x],predict[:,x]),
-                "Precision": precision_score(ytest_arr[:,x],predict[:,x]),
-                "F1": f1_score(ytest_arr[:,x],predict[:,x])}
-            #print(d)
-            res.append(d)
-        return res
-
     
     def mat_all_categories(self, actual, prediction):
         """
