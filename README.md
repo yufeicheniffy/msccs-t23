@@ -34,9 +34,13 @@ To check it, use command and input:
 You can install the dependences by two ways:
 1. use our requirements.txt to automacticlly install the dependences.
 >> python -m pip install -r requirements.txt
+
 >> python
+
 >> import nltk
+
 >> nltk.download('stopwords')
+
 >> exit()
 
 2. Check the following dependences and install them by yourself.
