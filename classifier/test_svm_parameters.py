@@ -40,9 +40,9 @@ for id in (sorted(text_dict.keys())):
 full_event = np.array(full_event)
 full_res = list()
 
-c = [0.01, 0.1, 1, 10, 100]
-class_weight = [None, 'balanced']
-loss = ['hinge', 'squared_hinge']
+c = [0.01]
+class_weight = ['balanced']
+loss = ['hinge']
 
 params = [(cv, cw, l) \
 			for cv in c
@@ -57,6 +57,8 @@ for c, weight, loss in params:
 				'Perfect Match': 0}
 
 	for event in set(event_dict.values()):
+		print(event)
+
 		test_rows = np.argwhere(full_event == event)
 		train_rows = np.argwhere(full_event != event)
 		
@@ -95,7 +97,7 @@ for c, weight, loss in params:
 	full_res.append(model_res)
 
 keys = full_res[0].keys()
-with open('results/lsvc_param_results.csv', 'w') as f:
+with open('results/lsvc_param_resultst.csv', 'w') as f:
     dict_writer = csv.DictWriter(f, keys)
     dict_writer.writeheader()
     dict_writer.writerows(full_res)

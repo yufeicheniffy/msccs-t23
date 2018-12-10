@@ -14,7 +14,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 
 parser = argparse.ArgumentParser(description='Test classification.')
-parser.add_argument('--out', action='store', default='eval.csv', required=False, dest='output_name')
+parser.add_argument('--out', action='store', default='results/eval.csv', required=False, dest='output_name')
 parser.add_argument('--classifier', action='store', default='nb', required=False, dest='classifier')
 parser.add_argument('--pretrained', action='store_true', dest='pretrained')
 parser.add_argument('--save', action='store_true', dest='save')
@@ -65,8 +65,10 @@ max_res = {'Number of Predictions': 0, 'True Positive': 0,
 			'True Negative': 0, 'False Positive': 0,
 			'False Negative': 0, 'One Label': 0,
 			'Perfect Match': 0}
+
+full_cat_confusion = dict()
 for event in set(event_dict.values()):
-	print("\n\n")
+	#print("\n\n")
 	print("Event: ", event)
 
 	test_rows = np.argwhere(full_event == event)
@@ -84,22 +86,25 @@ for event in set(event_dict.values()):
 	elif classifier == 'rf':
 		clas = Classify(text_train, cat_train, 2000,
 			model=RandomForestClassifier(class_weight='balanced', 
-				n_estimators=100))
-	elif classifier == 'svc':
+				n_estimators=1))
+	elif classifier == 'lsvc':
 		clas = Classify(text_train, cat_train, 2000,
-			model=SVC(class_weight='balanced'))
-	elif classifier == 'linearsvc':
-		clas = Classify(text_train, cat_train, 2000,
-			model=LinearSVC(class_weight='balanced'))
+			model= LinearSVC(C = 0.01,
+				class_weight = 'balanced',
+				loss = 'hinge',
+				random_state=1))
 	elif classifier == 'log':
 		clas = Classify(text_train, cat_train, 2000,
-			model=LogisticRegression(class_weight='balanced'))
+			model=LogisticRegression(class_weight='balanced',
+				loss = 'hinge', C = 0.01))
 	else:
 		clas = Classify(text_train, cat_train, 2000)
 	predict = clas.predict(text_test)
 	simp = clas.simple_evaluation(cat_test, predict)
-	for key in simp:
-		print(key, ": ", simp[key])
+	cat_confusion = clas.mat_all_categories(cat_test, predict)
+	
+	#for key in simp:
+	#	print(key, ": ", simp[key])
 
 	for key in simp:
 		if key in full_res:
@@ -108,6 +113,13 @@ for event in set(event_dict.values()):
 			max_res[key] = max(max_res[key], simp[key])
 		else:
 			max_res[key] = simp[key]
+
+	if len(full_cat_confusion) == 0:
+		full_cat_confusion = cat_confusion
+	else:
+		for cat in cat_confusion:
+			for key in cat_confusion[cat]:
+				full_cat_confusion[cat][key] += cat_confusion[cat][key]
 
 stats = clas.stats_calc(full_res['True Positive'], 
             full_res['True Negative'], full_res['False Positive'], 
@@ -119,11 +131,37 @@ print("\n\nOverall Results: ")
 for key in full_res:
 		print(key, ": ", full_res[key])
 
-print("\n\nBest Results: ")
+"""print("\n\nBest Results: ")
 for key in ['One Label Score', 'Perfect Match Score', 
 	'Accuracy', 'Precision', 'Recall', 'F1 Score']:
-		print(key, ": ", max_res[key])
+		print(key, ": ", max_res[key])"""
 
+
+
+cat_stats = list()
+for key in full_cat_confusion:
+	s = clas.stats_calc(
+			full_cat_confusion[key]['True Positive'], 
+            full_cat_confusion[key]['True Negative'], 
+            full_cat_confusion[key]['False Positive'], 
+            full_cat_confusion[key]['False Negative'], 
+            0, 0)
+	del s['One Label Score']
+	del s['Perfect Match Score']
+	cat_stats.append({'Category': key,
+			**full_cat_confusion[key], **s})
+
+keys = full_res.keys()
+with open(output_name, 'w') as f:
+    d_write = csv.DictWriter(f, keys)
+    d_write.writeheader()
+    d_write.writerows([full_res])
+
+keys = cat_stats[0].keys()
+with open('results/by_cat.csv', 'w') as f:
+    d_write = csv.DictWriter(f, keys)
+    d_write.writeheader()
+    d_write.writerows(cat_stats)
 
 if save:
 	clas.train(full_text, full_cat)
