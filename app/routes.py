@@ -33,12 +33,6 @@ def home():
 
 
 # Filter functions.
-def media_yes(tweet):
-    return tweet['Media']
-
-def media_no(tweet):
-    return not tweet['Media']
-
 def priority_low(tweet):
     return tweet['Priority'] == 'Low'
 
@@ -53,6 +47,13 @@ def order_chronological(tweets):
 
 def order_reverse_chronological(tweets):
     return sorted(tweets, key=lambda k: k['timestamp'])
+
+def check_media(media_only, tweet):
+    if media_only == 'true':
+        if not tweet['Media'] == True:
+            return False
+
+    return True
 
 
 # Add HTML of tweets to a grid with pagination.
@@ -106,14 +107,13 @@ def filter_tweets():
     # When a user will change the filters later on, we can just use a copy of all tweets again.
     tweets_copy = tweets.copy()
     # Get active categories and filters.
-    active_filters = request.args.get('filters').split(',')
+    active_priorities = request.args.get('priorities').split(',')
     active_categories = request.args.get('categories').split(',')
     chronological = request.args.get('chronological')
+    media_only = request.args.get('media_only')
 
     # Dict linked to functions above to reduce syntax.
-    filters = {'media-yes' : media_yes,
-               'media-no' : media_no,
-               'priority-high' : priority_high,
+    priorities = {'priority-high' : priority_high,
                'priority-medium' : priority_medium,
                'priority-low' : priority_low
     }
@@ -125,12 +125,14 @@ def filter_tweets():
         if not set(tweet['Category']).isdisjoint(active_categories):
             tweet_filters = []
 
-            # Check for each filter if the tweet will be showed to the user.
-            for active_filter in active_filters:
-                tweet_filters.append(filters[active_filter](tweet))
+            # Check for each filter if the tweet will be shown to the user.
+            for active_priority in active_priorities:
+                tweet_filters.append(priorities[active_priority](tweet))
+
+            tweet_filters.append(check_media(media_only, tweet))
 
             # Tweet can have priority: low or medium or high and media: yes or no.
-            # When 2 of 5 filters are set to True: add to new tweets.
+            # When 2 of 4 filters are set to True: add to new tweets.
             if tweet_filters.count(True) == 2:
                 new_tweets.append(tweet)
 

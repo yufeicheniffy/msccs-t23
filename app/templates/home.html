@@ -12,9 +12,12 @@
 
 <div id="home-background">
     {% if error %}
-    <div class="alert alert-info" role="alert">
-            <h4 class="alert-heading">No Tweets found!!!</h4>
-            <p>Can not find any relevant Tweets! Please use other keywords and try again.</p>
+    <div id="no-tweets-found" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="alert-heading">No Tweets found!</h4>
+        <p>Can not find any relevant Tweets! Please use other keywords and try again.</p>
     </div>
     {% endif %}
 
@@ -52,7 +55,7 @@
                         <input type="number" id="tweet_num" name="tweet_num" min="0" class="form-control search_input form-control-lg" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
                     </div>
                     <div class="col-sm-1">
-                        <button class="btn btn-primary btn-lg" type="button" id="load_button">
+                        <button class="btn btn-primary btn-lg" type="submit" id="load_button">
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
