@@ -160,8 +160,18 @@ class Classify:
 
     def evaluate(self, actual, prediction):
         """
-        Simple evaluator, returning overal confusion matrix, accuracy
-        recall, precision, f1
+        Evaluator, returning overall confusion matrix, accuracy
+        recall, precision, f1, one label, and perfect match scores
+        as a dictionary
+
+        :param actual: a matrix of actual binary values
+        :param prediction: a matrix of the predicted binary values
+
+        :return: dictionary of number of predictions, true/false
+                positive/negative, number of rows with at least 1
+                true positive, number of perfect match rows,
+                accuracy, precision, recall, f1, one label,
+                and perfect match scores
         """
         eval = {'Number of Predictions': len(actual)*len(actual[0]),
                 'True Positive': 0, 'True Negative': 0,
@@ -192,10 +202,9 @@ class Classify:
             eval['False Negative'], eval['One Label'], 
             eval['Perfect Match'], cats=len(actual[0]))
         eval = {**eval, **stats}
-        #print(eval)
         return eval
 
-    def predict(self,tweets):
+    def predict(self, tweets):
         """
         Returns an array of predictions for the given features.
 
