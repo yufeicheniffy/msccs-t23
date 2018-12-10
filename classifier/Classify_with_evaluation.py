@@ -173,7 +173,7 @@ class Classify:
                 accuracy, precision, recall, f1, one label,
                 and perfect match scores
         """
-        eval = {'Number of Predictions': len(actual)*len(actual[0]),
+        evaluation_mat = {'Number of Predictions': len(actual)*len(actual[0]),
                 'True Positive': 0, 'True Negative': 0,
                 'False Positive': 0, 'False Negative': 0,
                 'One Label': 0, 'Perfect Match': 0}
@@ -181,28 +181,31 @@ class Classify:
 
         for x in range(0, len(actual)):
             if np.array_equal(actual[x], prediction[x]):
-                eval['Perfect Match'] += 1
+                evaluation_mat['Perfect Match'] += 1
             for y in range(0, len(actual[x])):
                 if actual[x][y] == 1:
                     if prediction[x][y] == 1:
-                        eval['True Positive'] += 1
+                        evaluation_mat['True Positive'] += 1
                         one_lab = True
                     else: 
-                        eval['False Negative'] +=1
+                        evaluation_mat['False Negative'] +=1
                 else:
                     if prediction[x][y] == 1:
-                        eval['False Positive'] += 1
+                        evaluation_mat['False Positive'] += 1
                     else:
-                        eval['True Negative'] += 1
+                        evaluation_mat['True Negative'] += 1
             if one_lab:
-                eval['One Label'] += 1
+                evaluation_mat['One Label'] += 1
             one_lab = False
-        stats = self.stats_calc(eval['True Positive'], 
-            eval['True Negative'], eval['False Positive'], 
-            eval['False Negative'], eval['One Label'], 
-            eval['Perfect Match'], cats=len(actual[0]))
-        eval = {**eval, **stats}
-        return eval
+        stats = self.stats_calc(evaluation_mat['True Positive'],
+                                evaluation_mat['True Negative'],
+                                evaluation_mat['False Positive'],
+                                evaluation_mat['False Negative'],
+                                evaluation_mat['One Label'],
+                                evaluation_mat['Perfect Match'],
+                                cats=len(actual[0]))
+        evaluation_mat = {**evaluation_mat, **stats}
+        return evaluation_mat
 
     def predict(self, tweets):
         """
