@@ -11,7 +11,7 @@ import app.search_rest as rest
 tweets = None
 # Tooltips to explain different classes, shown when class elements are hovered.
 tooltips = {'GoodsServices':'The user is asking for a particular service or physical good.', 'SearchAndRescue':'The user is requesting a rescue (for themselves or others)',
-            'InformationWanted':'The user is requesting information', 'CallToAction':'The user is asking people to volunteer to help the response effort',
+            'InformationWanted':'The user is requesting information', 'Volunteer':'The user is asking people to volunteer to help the response effort',
             'Donations':'The user is asking people to donate goods/money','MovePeople':'The user is asking people to leave an area or go to another area',
             'FirstPartyObservation':'The user is giving an eye-witness account','ThirdPartyObservation':'The user is reporting a information that they recieved from someone else',
             'Weather':'The user is providing a weather report (current or forcast)','EmergingThreats':'The user is reporting a potential problem that may cause future loss of life or damage',
