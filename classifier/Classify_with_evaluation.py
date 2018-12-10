@@ -102,7 +102,9 @@ class Classify:
 
         :param path: directory to save classifier and vectorizer into
         """
+        # save vectorizer
         joblib.dump(self.vectorizer, path+'v.pkl', compress=1)
+        # save classifiers
         for n in range(0,len(self.classifiers)):
             joblib.dump(self.classifiers[n], path+'c%02d.pkl' % n, compress=1)
         print("Classifiers saved to: " + path)
@@ -123,10 +125,14 @@ class Classify:
     
     def mat_all_categories(self, actual, prediction):
         """
-        Evaluator returning confusion matrix for all categories as a list of dicts
+        Evaluator returning confusion matrices for all categories
+        as a dictionary, with the keys being the categories and
+        values being confusion matrix dictionaries
 
         :param actual: actual category matrix
         :param prediction: prediction matrix
+
+        :return: dictionary of confusion matrix by category
         """ 
         ind_to_cat = self.category_indices()
         ret = dict()
@@ -137,13 +143,16 @@ class Classify:
             ret[ind_to_cat[n]] = vals
         return ret
 
-
     def mat_one_category(self, actual, prediction):
         """
-        Evaluator returning statistics for a single category as a dict
+        Evaluator returning confusion matrix for a single category as a dict
 
         :param actual: numpy array of binary category vals
         :param prediction: binary numpy array of predictions
+
+        :return: dict of number of predictions,
+                true pos, true neg, false pos,
+                and false neg for predictions
         """  
         eval = {'Number of Predictions': len(actual),
                 'True Positive': 0, 'True Negative': 0,
