@@ -27,7 +27,7 @@
                             <input type="number" id="tweet_num" name="tweet_num" min="0" class="form-control search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
                         </div>
                         <div class="col-sm-2">
-                            <button class="btn btn-primary" type="button" id="load_button">
+                            <button class="btn btn-primary" type="submit" id="load_button">
                                 <i class="fa fa-search"></i>
                             </button>
                         </div>
@@ -41,9 +41,9 @@
 							Priority
 						</button>
 						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a id="priority-low" class="filter dropdown-item" href="#">Low<i class="fas fa-check"></i></a>
-							<a id="priority-medium" class="filter dropdown-item" href="#">Medium<i class="fas fa-check"></i></a>
-							<a id="priority-high" class="filter dropdown-item" href="#">High<i class="fas fa-check"></i></a>
+							<a id="priority-low" class="dropdown-item filter" href="#">Low<i class="fas fa-check"></i></a>
+							<a id="priority-medium" class="dropdown-item filter" href="#">Medium<i class="fas fa-check"></i></a>
+							<a id="priority-high" class="dropdown-item filter" href="#">High<i class="fas fa-check"></i></a>
 						</div>
 					</div>
 				</div>
@@ -53,15 +53,15 @@
 							Media
 						</button>
 						<div class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
-							<a id="media-yes" class="filter dropdown-item" href="#">Yes<i class="fas fa-check"></i></a>
-							<a id="media-no" class="filter dropdown-item" href="#">No<i class="fas fa-check"></i></a>
+							<a id="all-tweets" class="dropdown-item media-filter" href="#">All tweets<i class="fas fa-circle fa-xs"></i></a>
+							<a id="media-only" class="dropdown-item media-filter" href="#">Media only</a>
 						</div>
 					</div>
 				</div>
 				<div class="col-sm-2 text-center">
 					<div class="dropdown">
 						<button class="btn dropdown-toggle btn-block btn-primary" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Order
+							Sort
 						</button>
 						<div id="orders" class="filters dropdown-menu" aria-labelledby="dropdownMenuButton">
 							<a id="chronological" class="dropdown-item order" href="#">Chronological<i class="fas fa-circle fa-xs"></i></a>
@@ -87,7 +87,7 @@
 						<h5 class="card-title">{{key| safe}}</h5>
 						<div class="category-filters btn-group-toggle" data-toggle="buttons">
 							{% for category in value %}
-							<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active" data-toggle="tooltip" data-placement="top" title="{{tooltips[category]}}">
+							<label id="{{category| safe}}" class="{{key| safe}} category btn btn-secondary active" data-toggle="tooltip" data-placement="top" title="{{tooltips[category]}}" data-trigger="hover">
 								<input type="checkbox" checked autocomplete="off"> {{category| safe}}
 							</label>
 							{% endfor %}

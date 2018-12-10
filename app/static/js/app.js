@@ -8,13 +8,13 @@ function waitGrid() {
     }, 1000);
 }
 
-function filterTweets(active_categories, active_filters, chronological) {
+function filterTweets(active_categories, active_priorities, chronological, media_only) {
     $('#tweet-grid').hide();
     $('#refreshing-anim').show();
     $.ajax({
         url: "/filter_tweets",
         type: "get",
-        data: {categories: active_categories.join(','), filters: active_filters.join(','), chronological: chronological},
+        data: {categories: active_categories.join(','), priorities: active_priorities.join(','), chronological: chronological, media_only: media_only},
         success: function(response) {
             $("#tweet-grid").html(response);
         },
@@ -61,9 +61,15 @@ $(document).ready(paginationHandler);
 
 $(document).ready(function() {
     var active_categories = []
-    var active_filters = []
+    var active_priorities = []
+    var media_only = false
     var chronological = true
     paginationHandler
+
+    setTimeout(function() {
+        $("#no-tweets-found").fadeOut();
+    }, 6000);
+    
 
     $('#load_button').click(function(){
         query= $('#query_input').val();
@@ -97,7 +103,7 @@ $(document).ready(function() {
     });
     $('.filters').children('.filter').each(function(i) {
         if ($(this).has('i')) {
-            active_filters.push($(this).attr('id'))
+            active_priorities.push($(this).attr('id'))
         }
     });
 
@@ -109,15 +115,15 @@ $(document).ready(function() {
             active_categories.splice(check_val, 1)
         }
 
-        filterTweets(active_categories, active_filters, chronological)
+        filterTweets(active_categories, active_priorities, chronological, media_only)
     });
 
     $(document).on('click', '.filter', function () {
-        var check_val = $.inArray($(this).attr('id'), active_filters)
+        var check_val = $.inArray($(this).attr('id'), active_priorities)
         if (check_val == -1) {
-            active_filters.push($(this).attr('id'))
+            active_priorities.push($(this).attr('id'))
         } else {
-            active_filters.splice(check_val, 1)
+            active_priorities.splice(check_val, 1)
         }
 
         if ($(this).has('i').length) {
@@ -129,7 +135,7 @@ $(document).ready(function() {
             $(this).html(temp + '<i class="fas fa-check"></i>')
         }
 
-        filterTweets(active_categories, active_filters, chronological)
+        filterTweets(active_categories, active_priorities, chronological, media_only)
     });
 
     $(document).on('click', '.order', function () {
@@ -157,7 +163,35 @@ $(document).ready(function() {
             }           
         }
         
-        filterTweets(active_categories, active_filters, chronological)
+        filterTweets(active_categories, active_priorities, chronological, media_only)
+    });
+
+    $(document).on('click', '.media-filter', function () {
+        var id = $(this).attr('id')
+
+        if (id == 'all-tweets') {
+            media_only = false
+            var temp = $(this).text()
+            $(this).html(temp + '<i class="fas fa-circle fa-xs"></i>')
+
+            if ($('#media-only').has('i').length) {
+                var temp = $('#media-only').text()
+                $('#media-only').empty()
+                $('#media-only').html(temp)  
+            }
+        } else {
+            media_only = true
+            var temp = $(this).text()
+            $(this).html(temp + '<i class="fas fa-circle fa-xs"></i>')
+
+            if ($('#all-tweets').has('i').length) {
+                var temp = $('#all-tweets').text()
+                $('#all-tweets').empty()
+                $('#all-tweets').html(temp)  
+            }           
+        }
+        
+        filterTweets(active_categories, active_priorities, chronological, media_only)
     });
 
 });
