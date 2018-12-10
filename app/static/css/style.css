@@ -6,7 +6,7 @@ body.search_page {
 }
 .search_input {
     width: 100% !important;
-    border-radius: 20px !important;
+    border-radius: 10px !important;
 }
 .search_button{
     margin-left: 45%;
@@ -192,7 +192,6 @@ body.search_page {
 }
 
 #refreshing-anim {
-    display: none;
     margin-top: 120px;
 }
 
@@ -222,6 +221,7 @@ body.search_page {
 }
 
 #tweet-grid {
+    display: none;
     margin: 40px 0 40px 0 !important;
 }
 
@@ -303,4 +303,9 @@ body.search_page {
         background: url(../images/load.gif) no-repeat;
         background-size: contain;
         cursor: wait;
+    }
+
+    .container-home{
+        /* margin: 2% !important; */
+        color:#fff !important;
     }

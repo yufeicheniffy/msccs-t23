@@ -59,6 +59,31 @@
                 </div>
             </nav>
         </header> -->
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark" style="background-color: #828386;">
+                <a class="navbar-brand" href="/home" style="margin-right: 10%;">
+                    HelpMe
+                </a>
+                <div class="col-md-12">
+                    <form action="/search" method="POST" name="theForm">
+                        <div class="row form-inline" >
+                            
+                                <div class="col-md-6" id="custom-search-input">
+                                    
+                                    <input type="text" id="query_input" name="query" class="form-control input-lg search_input" value="{{query}}" placeholder="Search emergency" width="100%"/>
+                                    
+                                </div>
+                                <div class="col-md-2 " id="custom-search-input">
+                                    <input type="number" id="tweet_num" name="tweet_num" class="form-control input-lg search_input" value="{{tweet_num}}" placeholder="No of Tweets" width="90%"/>
+                                </div>
+                                <div class="col-md-2" >
+                                        <button class="btn btn-light btn-lg" type="button" id="load_button">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                </div>
+                        </div>
+                    </form>
+                </div>
+            </nav>
     <div class="container">
         {% block content %}{% endblock content %}
     </div>
@@ -67,6 +92,29 @@
 <!--     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script>
+            $('#load_button').click(function(){
+                query= $('#query_input').val();
+                tweetnum= $('#tweet_num').val();
+                console.log(query+' '+tweetnum)
+                if(query == '' || tweetnum == ''){
+                    if(query == '' ){
+                        $('#query_input').focus();
+                        $('#query_input').css("background-color", "red");
+                    }
+                    if(tweetnum == '' ){
+                        $('#tweet_num').focus();
+                        $('#tweet_num').css("background-color", "red");
+                    }
+                    
+                }else{
+                    $('#loading').show();
+                    $('#query_input').prop('readonly', true);
+                    $('#tweet_num').prop('readonly', true);
+                    document.theForm.submit();
+                }
+            })
+        </script>
 </body>
 <!-- <footer id="footer" class="sticky">
     

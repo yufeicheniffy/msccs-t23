@@ -20,18 +20,54 @@ Part of the University of Glasgow Master's Team Project for Data Science student
  - flask #virtual environment of this project
 
 ### To run this project
+#### Use the virtual enviroment built in this project.
     in windows, enter msccs-t23 folder by cmd, type following command.
     >> flask\Scripts\activate
     >> python helpme.py
     
-    in Linux/Macos, enter msccs-t23 folder by cmd, type following command.
-    >> source flask\Scripts\activate
+    in Linux/Macos, enter msccs-t23 folder by cd, type following command.
+    >> source flask/Scripts/activate
     >> python helpme.py
 
-FELL FREE TO RUN IT IN YOUR OWN ENVIROMENT.
+#### Use your own enviroment.
+Sometimes the virtual enviroment can not be used in some machines. In this case, please use your python enviroment and run this project after you intalled these dependences:
+
+- Flask:
+    >>python -m pip install Flask
+
+- Pymongo:
+    >>python -m pip install pymongo
+
+- flask_wtf:
+    >>python -m pip install flask_wtf
+
+- numpy:
+    >>python -m pip install numpy
+
+- sklearn:
+    >>python -m pip install sklearn
+
+- nltk:
+    >>python -m pip install nltk
+
+- nltk data:
+    >>python 
+    >>import nltk
+    >>nltk.download('stopwords')
+    >>exit()
+           
+- Tweepy:
+    >>python -m pip install tweepy
+
+- dateutil:
+    >>python -m pip install python-dateutil
 
 ### Database
+
+**This project is based on a could database and will connect to it automaticlly**
+
 Database: MongoDB
+
 DatabaseName: Helpme
 
 CollectionName:

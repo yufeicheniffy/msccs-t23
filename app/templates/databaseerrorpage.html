@@ -1,38 +1,55 @@
 {% extends "layout.html" %}
 {% block body_content %}
-<br>
-<div class="container">
-    <div class="alert alert-info" role="alert">
-                <h4 class="alert-heading">Cannot connected to the database!.</h4>
-                <p>Please check you network, or use our guide to set a local database.</p>
-    </div>
-    <div id="jumbotron-homepage" class="jumbotron">
-        <h1 class="display-3">Help me!</h1>
-        <p>Help me! is a tool to help public safety officers in retrieving information from Twitter during an emergency. This tool collects data from Twitter and runs a classifier to retrieve valuable knowledge from this data. Classified data is visualised to enable the user to get information he or she wants. Help me! involves two simple steps:</p>
-        <div id="list-wrapper">
-            <div id="first"><div class="numberCircle">1</div></div>
-            <div id="second">Use the searchbar to search for an existing emergency. This will start the tool retrieving tweets for us. For example: "forest fire California" will make a call to the Twitter API to search for relevant tweets.</div>
-        </div>
-        <div id="list-wrapper">
-            <div id="first"><div class="numberCircle">2</div></div>
-            <div id="second">Filter the returned tweets by the provide filters. Available filters are: type of incident, priority, order (e.g. chronological) and media.</div>
-        </div>
-    </div>
 
- 
-    <div id="custom-search-input">
-        <div class="input-group col-md-12">
-            <form action="/search" method="POST">
-                <input type="text" name=query class="form-control input-lg" placeholder="Search emergency" />
-                <span class="input-group-btn">
-                    <button class="btn btn-info btn-lg" type="button">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </span>
-            </form>
-        </div>
+    <div class="alert alert-info" role="alert">
+        <h4 class="alert-heading">Cannot connect to the database!!!</h4>
+        <p>Please check your network, or use our guide to set a local database.</p>
     </div>
-</div>
+    <div class="container-home home">
+        <!-- loading effect -->
+        <div id="loading" style="display:none;"><p style="margin-top: 45%; margin-left: 18%">Loading Tweets!!!!!</p></div>
+      <div id="jumbotron-homepage" class="jumbotron">
+          <h1 class="display-3">Help me!</h1>
+          <p>Help me! is a tool to help public safety officers in retrieving information from Twitter during an emergency. This tool collects data from Twitter and runs a classifier to retrieve valuable knowledge from this data. Classified data is visualised to enable the user to get information he or she wants. Help me! involves two simple steps:</p>
+          <div class="row">
+              <div class="col-md-6 col-sm-12">
+                  <div id="list-wrapper">
+                          <div id="first"><div class="numberCircle">1</div></div>
+                          <div id="second">Use the searchbar to search for an existing emergency. This will start the tool retrieving tweets for us. For example: "forest fire California" will make a call to the Twitter API to search for relevant tweets.</div>
+                      </div>
+              </div>
+              <div class="col-md-6 col-sm-12">
+                  <div id="list-wrapper">
+                          <div id="first"><div class="numberCircle">2</div></div>
+                          <div id="second">Filter the returned tweets by the provide filters. Available filters are: type of incident, priority, order (e.g. chronological) and media.</div>
+                      </div>
+              </div>
+          </div>
+       
+      </div>
+  </div>
+  
+  <div class="container">
+          <form action="/search" method="POST" name="theForm">
+              <div class="row form-inline" >
+                      <div class="col-md-8 col-sm-12" id="custom-search-input">
+                          <input type="text" id="query_input" name="query" class="form-control input-lg search_input" placeholder="Search emergency" width="100%"/>
+                      </div>
+                      <div class="col-md-2 col-sm-12" id="custom-search-input">
+                          <input type="number" id="tweet_num" name="tweet_num" class="form-control input-lg search_input" placeholder="No of Tweets" width="100%"/>
+                      </div>
+                      <div lass="col-md-2 col-sm-12" >
+                              <button class="btn btn-light btn-lg" type="button" id="load_button">
+                                  <i class="fa fa-search"></i>
+                              </button>
+                      </div>
+              </div>
+                 
+               
+              </form>
+      </div>
+
+<!-- </div> -->
 <!-- <div class="container">
     <form class="home_form" action="/tweetapi" method="POST">
         <h1 class="home_title">Help Me!!!</h1>
