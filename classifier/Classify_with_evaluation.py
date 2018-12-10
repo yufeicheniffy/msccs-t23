@@ -38,12 +38,12 @@ class Classify:
         self.cat = cats
         self.text = tweet_texts
         self.model = model
-
-
         self.classifiers = list()
+        self.vectorizer = None
+        self.vect_train = None
         
         if pretrained is None:
-            self.train()
+            self.train(vocab_size=vocab_size)
         else: # load pretrained classifiers
             for f in sorted(os.listdir(pretrained)):
                 fn = os.fsdecode(f)
@@ -52,7 +52,7 @@ class Classify:
                 else:
                     self.classifiers.append(joblib.load(pretrained+fn))
 
-    def train(self, text = None, cats = None, vocab_size = 2000):
+    def train(self, text=None, cats=None, vocab_size=2000):
         """
         Fits classifiers to the training data provided. If
         already trained, clears classifiers and retrains.
@@ -69,29 +69,32 @@ class Classify:
 
         # fit vectorizer
         self.vectorizer = CountVectorizer(stop_words=stopwords.words(),
-            binary=True, max_features=vocab_size)
+                                          binary=True,
+                                          max_features=vocab_size)
         self.vect_train = self.vectorizer.fit_transform(text)
+
+        # add feature determining if hashtag in tweet
         hashtags = np.array([[1] if '#' in t else [0] for t in text])
         addtl_feat = sparse.hstack([self.vect_train, hashtags])
 
-        print(addtl_feat.shape)
-
-        # clear classifiers (in case retraining)
+        # clear classifiers (in case of retraining)
         self.classifiers = list()
 
-        cat_arr = np.array(cats)
+        cat_arr = np.array(cats) # convert to array
 
         # train
         for i in range(0, len(cat_arr[0])):
             # unknown should not be predicted unless no other category found
+            # so use dummy classifier only predicting 0 for unknown
             if i == self.catadictionary['Unknown']:
                 m = DummyClassifier('constant', constant=0)
             else:
+                # clone original model. "clone" is needed or it will
+                # just keep training the original model on all categories
                 m = clone(self.model)
+            # fit model and append to list of models
             c = m.fit(addtl_feat, cat_arr[:,i])
             self.classifiers.append(c)
-
-        #print("Training complete!")
 
     def save_classifier(self, path='pretrained/'):
         """
