@@ -22,59 +22,80 @@ Part of the University of Glasgow Master's Team Project for Data Science student
 ### To run this project
 **first you need have a python 3.5+ installed**
 To check it, use command and input:
->> python -V
+
+    >> python -V
+    
 #### 1. Activate the virtual enviroment built in this project.
+
     in windows, enter msccs-t23 folder by cmd, type following command.
+    
     >> flask\Scripts\activate
     
     in Linux/Macos, enter msccs-t23 folder by cd, type following command.
+    
     >> source ./flask/Scripts/activate
 
 #### 2. Install the dependences.
 You can install the dependences by two ways:
-1. use our requirements.txt to automacticlly install the dependences.
->> python -m pip install -r requirements.txt
 
->> python
+    1. use our requirements.txt to automacticlly install the dependences.
+    
+    >> python -m pip install -r requirements.txt
 
->> import nltk
+    >> python
 
->> nltk.download('stopwords')
+    >> import nltk
 
->> exit()
+    >> nltk.download('stopwords')
+
+    >> exit()
 
 2. Check the following dependences and install them by yourself.
 
 - Flask:
-    >>python -m pip install Flask
+
+    python -m pip install Flask
 
 - Pymongo:
-    >>python -m pip install pymongo
+
+
+    python -m pip install pymongo
+    
 
 - flask_wtf:
-    >>python -m pip install flask_wtf
+     
+    python -m pip install flask_wtf
 
 - numpy:
-    >>python -m pip install numpy
-
+         
+    python -m pip install numpy
+    
 - sklearn:
-    >>python -m pip install sklearn
-
+         
+    python -m pip install sklearn
+    
 - nltk:
-    >>python -m pip install nltk
-
+         
+    python -m pip install nltk
+    
 - nltk data:
-    >>python 
-    >>import nltk
-    >>nltk.download('stopwords')
-    >>exit()
+       
+    python 
+       
+    import nltk
+       
+    nltk.download('stopwords')
+       
+    exit()
            
 - Tweepy:
-    >>python -m pip install tweepy
+        
+    python -m pip install tweepy
 
 - dateutil:
-    >>python -m pip install python-dateutil
-
+    
+    python -m pip install python-dateutil
+    
 ### Database
 
 **This project is based on a could database and will connect to it automaticlly**
