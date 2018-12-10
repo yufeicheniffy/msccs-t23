@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<!-- Source: https://loading.io/css/ -->
 <div class="text-center" id="loading">
     <div id="inner-div-loading">
         <div id="home-anim" class="lds-ring"><div></div><div></div><div></div><div></div></div>
@@ -11,13 +10,23 @@
 
 
 <div id="home-background">
-    {% if error %}
-    <div id="no-tweets-found" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% if no_tweets_found_error %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         <h4 class="alert-heading">No Tweets found!</h4>
         <p>Can not find any relevant Tweets! Please use other keywords and try again.</p>
+    </div>
+    {% endif %}
+
+    {% if oembed_error %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="alert-heading">Got invalid response from Twitter API!</h4>
+        <p>Seems like something went wrong when trying to connect to the Twitter API for embedded HTML.</p>
     </div>
     {% endif %}
 

@@ -158,7 +158,7 @@ def search():
         # Get tweets from Twitter API along with categories.
         tweets, tweetids, categories = rest.query_search(query, tweet_num)
     except Exception:
-        return render_template('home.html', error=True)
+        return render_template('home.html', no_tweets_found_error=True, oembed_error=False)
     # Loop over retrieved tweets to get corresponding HTML.
     for tweet in tweets:
             try:
@@ -168,7 +168,7 @@ def search():
                 data = json.load(response)
                 tweet['html'] = data['html']
             except:
-                continue
+                return render_template('home.html', no_tweets_found_error=False, oembed_error=True)
     
     # Order tweets.
     tweets = order_chronological(tweets)

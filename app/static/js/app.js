@@ -27,7 +27,6 @@ function filterTweets(active_categories, active_priorities, chronological, media
     });
 }
 
-// Source: http://www.undg.net/codemonde/2015/8/25/using-bootstrap-pagination-to-page-through-divs-on-same-page
 var paginationHandler = function(){
     // store pagination container so we only select it once
     var $paginationContainer = $(".pagination-container"),
@@ -67,7 +66,7 @@ $(document).ready(function() {
     paginationHandler
 
     setTimeout(function() {
-        $("#no-tweets-found").fadeOut();
+        $('.alert').fadeOut();
     }, 6000);
     
 

@@ -11,6 +11,10 @@
     font-size: 1rem;
 }
 
+#card-categories {
+    margin: 0px 20px 20px 0px;
+}
+
 .fas {
     color: #495057;
 }
@@ -44,7 +48,7 @@
     position: absolute;
 }
 
-#no-tweets-found {
+.alert {
     position: absolute;
     top: 10%;
     transform: translate(-50%, -50%);
@@ -372,8 +376,7 @@ blockquote.twitter-tweet {
         display: block;
     }
     div#loading {
-        position:
-        absolute;
+        position: fixed;
         top: 0;
         left: 0;
         height: 100%;
