@@ -8,6 +8,7 @@ from data_files_scripts.MongoCollection import MongoCollection
 from sklearn.model_selection import train_test_split
 import numpy as np
 from sklearn.naive_bayes import BernoulliNB
+import csv
 
 # runs locally
 training_connect = MongoCollection(collectionname='Training_token', MongoURI="mongodb://localhost:27017/")
@@ -42,7 +43,8 @@ full_res = list()
 
 for alpha in [0, .001, .01, .1, 1]:
 
-	model_res = {'Number of Predictions': 0, 'True Positive': 0,
+	model_res = {'Alpha': alpha,
+				'Number of Predictions': 0, 'True Positive': 0,
 				'True Negative': 0, 'False Positive': 0,
 				'False Negative': 0, 'One Label': 0,
 				'Perfect Match': 0}
@@ -78,3 +80,9 @@ for alpha in [0, .001, .01, .1, 1]:
 	for key in model_res:
 			print(key, ": ", model_res[key])
 	full_res.append(model_res)
+
+keys = full_res[0].keys()
+with open('results/nb_param_results.csv', 'w') as f:
+    dict_writer = csv.DictWriter(f, keys)
+    dict_writer.writeheader()
+    dict_writer.writerows(full_res)

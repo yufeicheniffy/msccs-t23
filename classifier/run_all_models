@@ -1,4 +1,0 @@
-python3 test_classifier_with_evaluation.py --out results/nb.csv --classifier nb
-python3 test_classifier_with_evaluation.py --out results/randomforest.csv --classifier rf
-python3 test_classifier_with_evaluation.py --out results/svc.csv --classifier svc
-python3 test_classifier_with_evaluation.py --out results/linearsvc.csv --classifier linearsvc
