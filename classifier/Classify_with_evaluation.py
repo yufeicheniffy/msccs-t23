@@ -12,7 +12,8 @@ from scipy import sparse
 
 class Classify:
     """
-    A classifier which pulls tweet data from the mongodb database.
+    A classifier which can categorize tweets into one or more of the
+    25 categories, as required by TREC.
     """
     catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
                     'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8, 'EmergingThreats': 9,
