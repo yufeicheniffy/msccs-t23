@@ -4,11 +4,10 @@ import tweepy
 from dateutil import parser
 import calendar
 import numpy as np
-#sys.path.insert(0, '../')
-#from classifier.Classify_with_evaluation import Classify
 import unittest
 
-#classifier_ = Classify(list(), pretrained='./classifier/pretrained/')
+# Unit Testing For Tweets processing
+
 '''
 a dictionary which provides ids at each ontology
 '''
