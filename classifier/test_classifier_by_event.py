@@ -100,7 +100,7 @@ for event in set(event_dict.values()):
 	else:
 		clas = Classify(text_train, cat_train, 2000)
 	predict = clas.predict(text_test)
-	simp = clas.simple_evaluation(cat_test, predict)
+	simp = clas.evaluate(cat_test, predict)
 	cat_confusion = clas.mat_all_categories(cat_test, predict)
 	
 	#for key in simp:

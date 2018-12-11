@@ -64,7 +64,7 @@ for alpha in [0, .001, .01, .1, 1]:
 			model = BernoulliNB(alpha=alpha))
 
 		predict = clas.predict(text_test)
-		simp = clas.simple_evaluation(cat_test, predict)
+		simp = clas.evaluate(cat_test, predict)
 
 		for key in simp:
 			if key in model_res:

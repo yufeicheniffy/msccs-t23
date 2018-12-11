@@ -70,7 +70,7 @@ else:
 	clas = Classify(text_train, cat_train, 2000)
 
 predict = clas.predict(text_test)
-evals = clas.simple_evaluation(cat_test, predict)
+evals = clas.evaluate(cat_test, predict)
 cat_confusion = clas.mat_all_categories(cat_test, predict)
 
 cat_stats = list()

@@ -65,7 +65,7 @@ for c, weight in [(x, y) for x in c for y in class_weight]:
 			model = LogisticRegression(C=c, class_weight=weight))
 
 		predict = clas.predict(text_test)
-		simp = clas.simple_evaluation(cat_test, predict)
+		simp = clas.evaluate(cat_test, predict)
 
 		for key in simp:
 			if key in model_res:
