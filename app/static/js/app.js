@@ -3,6 +3,7 @@ function waitGrid() {
         if ($("#tweet-grid").children().length > 0) {
             $('#refreshing-anim').hide();
             $('#tweet-grid').show();
+            $(document).ready(paginationHandler);
             clearInterval(checkExist);
         }
     }, 1000);
