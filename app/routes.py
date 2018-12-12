@@ -7,7 +7,7 @@ import json
 import urllib.request
 import app.search_rest as rest
 
-# Tweets variable to store all retrieved tweets by the Twitter API.
+# Variable to store all retrieved tweets by the Twitter API.
 tweets = None
 # Tooltips to explain different classes, shown when class elements are hovered.
 tooltips = {'GoodsServices':'The user is asking for a particular service or physical good.', 'SearchAndRescue':'The user is requesting a rescue (for themselves or others)',
@@ -25,7 +25,7 @@ tooltips = {'GoodsServices':'The user is asking for a particular service or phys
             'KnownAlready':'The Responder already knows this information'}
 
 
-# Home and index page.
+# Homepage.
 @app.route('/')
 @app.route('/home')
 def home():
@@ -112,7 +112,7 @@ def filter_tweets():
     chronological = request.args.get('chronological')
     media_only = request.args.get('media_only')
 
-    # Dict linked to functions above to reduce syntax.
+    # Dict linked to priority filter functions above to reduce syntax.
     priorities = {'priority-high' : priority_high,
                'priority-medium' : priority_medium,
                'priority-low' : priority_low
@@ -123,16 +123,17 @@ def filter_tweets():
     for tweet in tweets_copy:
         # Check if tweet contains one of the active categories.
         if not set(tweet['Category']).isdisjoint(active_categories):
+            # Create boolean array to check whether tweet contains one of the active priorities and meets the media_only criterion.
             tweet_filters = []
 
-            # Check for each filter if the tweet will be shown to the user.
+            # Check if tweet has one of the active priorities, appends at most one True to boolean array tweet_filters.
             for active_priority in active_priorities:
                 tweet_filters.append(priorities[active_priority](tweet))
 
+            # Check if tweet meets media_only criterion, appends True or False to boolean array tweet_filters.
             tweet_filters.append(check_media(media_only, tweet))
 
-            # Tweet can have priority: low or medium or high and media: yes or no.
-            # When 2 of 4 filters are set to True: add to new tweets.
+            # When boolean array tweet_filters contains two True objects, criteria are met, tweet is shown to the user.
             if tweet_filters.count(True) == 2:
                 new_tweets.append(tweet)
 
@@ -142,7 +143,7 @@ def filter_tweets():
     else:
         new_tweets = order_reverse_chronological(new_tweets)
 
-    # Add HTML of tweets to grid with pagination.
+    # Construct tweet grid of filtered tweets.
     return beautify_html(new_tweets)
 
 
