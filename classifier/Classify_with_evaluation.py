@@ -1,6 +1,5 @@
-import sys, os
-sys.path.insert(0, './data_files_scripts')
-
+import sys
+import os
 from sklearn.naive_bayes import BernoulliNB
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.corpus import stopwords
@@ -9,6 +8,9 @@ from sklearn.externals import joblib
 from sklearn.base import clone
 from sklearn.dummy import DummyClassifier
 from scipy import sparse
+
+sys.path.insert(0, './data_files_scripts')
+
 
 class Classify:
     """
@@ -19,10 +21,12 @@ class Classify:
                     'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8, 'EmergingThreats': 9,
                     'SignificantEventChange':10, 'MultimediaShare': 11, 'ServiceAvailable': 12, 'Factoid': 13, 'Official': 14,
                     'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
-                    'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24,
-                    }
+                    'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24}
+    actionable = ['SearchAndRescue', 'MovePeople', 'InformationWanted']
+    knowledge = ['FirstPartyObservation', 'EmergingThreats',
+                 'SignificantEventChange', 'MultimediaShare','Official']
 
-    def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(alpha = 0.1), 
+    def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(alpha = 0.1),
         pretrained=None):
         """
         Create and train classifier. Can specify path to pretrained
@@ -41,7 +45,7 @@ class Classify:
         self.classifiers = list()
         self.vectorizer = None
         self.vect_train = None
-        
+
         if pretrained is None:
             self.train(vocab_size=vocab_size)
         else: # load pretrained classifiers
@@ -122,7 +126,7 @@ class Classify:
             if c in self.catadictionary:
                 returner.append(self.catadictionary.get(c))
         return returner
-    
+
     def mat_all_categories(self, actual, prediction):
         """
         Evaluator returning confusion matrices for all categories
@@ -133,7 +137,7 @@ class Classify:
         :param prediction: prediction matrix
 
         :return: dictionary of confusion matrix by category
-        """ 
+        """
         ind_to_cat = self.category_indices()
         ret = dict()
         actual_arr = np.array(actual)
@@ -153,7 +157,7 @@ class Classify:
         :return: dict of number of predictions,
                 true pos, true neg, false pos,
                 and false neg for predictions
-        """  
+        """
         eval = {'Number of Predictions': len(actual),
                 'True Positive': 0, 'True Negative': 0,
                 'False Positive': 0, 'False Negative': 0}
@@ -162,7 +166,7 @@ class Classify:
             if actual[x] == 1:
                 if prediction[x] == 1:
                     eval['True Positive'] += 1
-                else: 
+                else:
                     eval['False Negative'] +=1
             else:
                 if prediction[x] == 1:
@@ -174,8 +178,8 @@ class Classify:
     def evaluate(self, actual, prediction):
         """
         Evaluator, returning overall confusion matrix, accuracy
-        recall, precision, f1, one label, and perfect match scores
-        as a dictionary
+        recall, precision, f1, one label, category, and perfect match
+        scores as a dictionary
 
         :param actual: a matrix of actual binary values
         :param prediction: a matrix of the predicted binary values
@@ -252,31 +256,13 @@ class Classify:
         predictions = np.zeros((len(tweets), len(self.classifiers)))
 
         for i in range(0, len(self.classifiers)):
-            predictions[:,i] = self.classifiers[i].predict(addtl_feat)
-        
+            predictions[:, i] = self.classifiers[i].predict(addtl_feat)
+
         # if nothing predicted, category should be unknown
         for row in predictions:
             if np.sum(row) == 0:
                 row[self.catadictionary['Unknown']] = 1
         print(np.sum(predictions))
-        return predictions 
-
-    def return_predict_categories(self,tweets):
-        """
-        Returns an List of prediction catagories for the given features.
-        :param tweets: a list or array of string tweets
-        :returns: predictions matrix
-
-        :throws RuntimeError: if classifiers have not been trained
-    
-        """
-        if len(self.classifiers) == 0:
-            raise RuntimeError("Classifiers have not been trained!")
-        tokenized = self.vectorizer.transform(tweets)
-        predictions = np.zeros((len(tweets), len(self.classifiers)))
-
-        for i in range(0, len(self.classifiers)):
-            predictions[:,i] = self.classifiers[i].predict(tokenized)
         return predictions
 
     def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, cats=25):
@@ -295,7 +281,7 @@ class Classify:
         ret = dict()
         n = tp + tn + fp + fn
 
-        # one label/perfect match is out of number of 
+        # one label/perfect match is out of number of
         # tweets, not predictions
         t = n/cats
         ret['One Label Score'] = one_lab/t
@@ -323,3 +309,33 @@ class Classify:
         for key in self.catadictionary:
             ret[self.catadictionary[key]] = key
         return ret
+
+    def special_mats(self, mat):
+        """
+        Calculate knowledge and actionable confusion matrices from a category confusion matrix dict
+
+        :param mat: a dictionary of conf matrices for categories as formed by self.mat_all_categories
+
+        :return: dictionary of name to dict confusion matrix
+
+        :raise ValueError: if any of the stats in self.actionable or self.knowledge don't appear in mat
+        """
+        act = {'Number of Predictions': 0,
+                'True Positive': 0, 'True Negative': 0,
+                'False Positive': 0, 'False Negative': 0}
+        know = {'Number of Predictions': 0,
+                'True Positive': 0, 'True Negative': 0,
+                'False Positive': 0, 'False Negative': 0}
+        for m in self.actionable:
+            if m in mat:
+                for stat in m:
+                    act[stat] += m[stat]
+            else:
+                raise ValueError("Incorrectly formed dictionary passed to calculate actionable stats.")
+        for m in self.knowledge:
+            if m in mat:
+                for stat in m:
+                    know[stat] += m[stat]
+            else:
+                raise ValueError("Incorrectly formed dictionary passed to calculate knowledge stats.")
+        return {'Actionable': act, 'Knowledge': know}

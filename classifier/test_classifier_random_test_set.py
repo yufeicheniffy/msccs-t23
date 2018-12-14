@@ -65,7 +65,7 @@ elif classifier == 'lsvc':
 elif classifier == 'log':
 	clas = Classify(text_train, cat_train, 2000,
 		model=LogisticRegression(class_weight='balanced',
-			loss = 'hinge', C = 0.01))
+			loss='hinge', C=0.01))
 else:
 	clas = Classify(text_train, cat_train, 2000)
 
