@@ -91,7 +91,7 @@ for event in set(event_dict.values()):
                                         random_state=1))
     elif classifier == 'log':
         clas = Classify(text_train, cat_train, 2000,
-                        model=LogisticRegression(class_weight='balanced', loss='hinge', C=0.01))
+                        model=LogisticRegression(class_weight='balanced', C=0.01))
     else:
         clas = Classify(text_train, cat_train, 2000)
     predict = clas.predict(text_test)
