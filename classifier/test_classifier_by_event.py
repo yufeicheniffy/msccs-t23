@@ -66,7 +66,6 @@ max_res = {'Number of Predictions': 0, 'True Positive': 0,
 
 full_cat_confusion = dict()
 for event in set(event_dict.values()):
-    #print("\n\n")
     print("Event: ", event)
 
     test_rows = np.argwhere(full_event == event)
@@ -98,7 +97,7 @@ for event in set(event_dict.values()):
     predict = clas.predict(text_test)
     simp = clas.evaluate(cat_test, predict)
     cat_confusion = clas.mat_all_categories(cat_test, predict)
-
+    cat_confusion = {**cat_confusion, **clas.special_mats(cat_confusion)}
 
     for key in simp:
         if key in full_res:

@@ -18,10 +18,10 @@ class Classify:
     25 categories, as required by TREC.
     """
     catadictionary={'GoodsServices':0, 'SearchAndRescue':1,'InformationWanted':2,'Volunteer':3,'Donations':4,
-                    'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8, 'EmergingThreats': 9,
-                    'SignificantEventChange':10, 'MultimediaShare': 11, 'ServiceAvailable': 12, 'Factoid': 13, 'Official': 14,
-                    'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18, 'Advice': 19,
-                    'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24}
+                    'MovePeople':5, 'FirstPartyObservation': 6, 'ThirdPartyObservation': 7, 'Weather': 8,
+                    'EmergingThreats': 9, 'SignificantEventChange':10, 'MultimediaShare': 11, 'ServiceAvailable': 12,
+                    'Factoid': 13, 'Official': 14, 'CleanUp':15, 'Hashtags': 16, 'PastNews': 17, 'ContinuingNews': 18,
+                    'Advice': 19, 'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24}
     actionable = ['SearchAndRescue', 'MovePeople', 'InformationWanted']
     knowledge = ['FirstPartyObservation', 'EmergingThreats',
                  'SignificantEventChange', 'MultimediaShare','Official']
@@ -321,21 +321,21 @@ class Classify:
         :raise ValueError: if any of the stats in self.actionable or self.knowledge don't appear in mat
         """
         act = {'Number of Predictions': 0,
-                'True Positive': 0, 'True Negative': 0,
-                'False Positive': 0, 'False Negative': 0}
+               'True Positive': 0, 'True Negative': 0,
+               'False Positive': 0, 'False Negative': 0}
         know = {'Number of Predictions': 0,
                 'True Positive': 0, 'True Negative': 0,
                 'False Positive': 0, 'False Negative': 0}
         for m in self.actionable:
             if m in mat:
-                for stat in m:
-                    act[stat] += m[stat]
+                for stat in mat[m]:
+                    act[stat] += mat[m][stat]
             else:
                 raise ValueError("Incorrectly formed dictionary passed to calculate actionable stats.")
         for m in self.knowledge:
             if m in mat:
-                for stat in m:
-                    know[stat] += m[stat]
+                for stat in mat[m]:
+                    know[stat] += mat[m][stat]
             else:
                 raise ValueError("Incorrectly formed dictionary passed to calculate knowledge stats.")
         return {'Actionable': act, 'Knowledge': know}
