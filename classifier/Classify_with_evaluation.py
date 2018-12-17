@@ -262,7 +262,6 @@ class Classify:
         for row in predictions:
             if np.sum(row) == 0:
                 row[self.catadictionary['Unknown']] = 1
-        print(np.sum(predictions))
         return predictions
 
     def stats_calc(self, tp, tn, fp, fn, one_lab, perf_match, cats=25):

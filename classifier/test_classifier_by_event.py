@@ -63,7 +63,7 @@ max_res = {'Number of Predictions': 0, 'True Positive': 0,
             'True Negative': 0, 'False Positive': 0,
             'False Negative': 0, 'One Label': 0,
             'Perfect Match': 0}
-print(len(set(event_dict.values())))
+
 full_cat_confusion = dict()
 for event in set(event_dict.values()):
     print("Event: ", event)
