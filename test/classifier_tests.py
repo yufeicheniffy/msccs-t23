@@ -255,6 +255,27 @@ class TestClassifier(unittest.TestCase):
                               'False Negative': 4}}
         self.assertEqual(c.special_mats(d3), res3)
 
+        # test error
+        d4 = d1.copy()
+        del d4['Official']
+        self.assertRaises(ValueError, c.special_mats, d4)
+        d5 = d1.copy()
+        del d5['SearchAndRescue']
+        self.assertRaises(ValueError, c.special_mats, d5)
+
+    # test category_indicis
+    def test_category_indices(self):
+        c = Classify(pretrained='../classifier/pretrained/')
+        r = {0: 'GoodsServices', 1: 'SearchAndRescue', 2: 'InformationWanted', 3: 'Volunteer',
+             4: 'Donations', 5: 'MovePeople', 6: 'FirstPartyObservation', 7: 'ThirdPartyObservation',
+             8: 'Weather', 9: 'EmergingThreats', 10: 'SignificantEventChange', 11: 'MultimediaShare',
+             12: 'ServiceAvailable', 13: 'Factoid', 14: 'Official', 15: 'CleanUp', 16: 'Hashtags',
+             17: 'PastNews', 18: 'ContinuingNews', 19: 'Advice', 20: 'Sentiment', 21: 'Discussion',
+             22: 'Irrelevant', 23: 'Unknown', 24: 'KnownAlready'}
+        self.assertEqual(c.category_indices(), r)
+
+
+
 
 if __name__ == '__main__':
     unittest.main()
