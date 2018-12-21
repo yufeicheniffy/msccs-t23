@@ -54,7 +54,7 @@ class TestClassifier(unittest.TestCase):
         c = Classify(pretrained='../classifier/pretrained/')
 
         # check perfect prediction
-        t = c.simple_evaluation(base, perf)
+        t = c.evaluate(base, perf)
 
         keys = ['Number of Predictions',
                 'True Positive', 'True Negative',
@@ -80,7 +80,7 @@ class TestClassifier(unittest.TestCase):
             t['F1 Score'] == 1]))
 
         # test imperfect predictions
-        t = c.simple_evaluation(base, close)
+        t = c.evaluate(base, close)
         self.assertTrue(all([
             t['Number of Predictions'] == 25,
             t['True Positive'] == 7,
@@ -98,7 +98,7 @@ class TestClassifier(unittest.TestCase):
             2*t['Precision']*t['Recall']/(t['Precision'] + t['Recall'])]))
 
         # check all predictions wrong
-        t = c.simple_evaluation(base, worst)
+        t = c.evaluate(base, worst)
         self.assertTrue(all([
             t['Number of Predictions'] == 25,
             t['True Positive'] == 0,
@@ -115,7 +115,7 @@ class TestClassifier(unittest.TestCase):
             t['F1 Score'] == 0]))
 
         # check 1 for each row
-        t = c.simple_evaluation(base, one_match_all)
+        t = c.evaluate(base, one_match_all)
         self.assertTrue(all([
             t['Number of Predictions'] == 25,
             t['True Positive'] == 5,
@@ -168,6 +168,92 @@ class TestClassifier(unittest.TestCase):
         self.assertIsInstance(c.classifiers[0], RandomForestClassifier)
         for classifier in c.classifiers:
             self.assertTrue(is_classifier(classifier))
+
+    # test special_mat function
+    def test_special_mats(self):
+        c = Classify(pretrained='../classifier/pretrained/')
+
+        # no predictions
+        d0 = dict()
+        for key in c.catadictionary.keys():
+            d0[key] = {'Number of Predictions': 0,
+                'True Positive': 0, 'True Negative': 0,
+                'False Positive': 0, 'False Negative': 0}
+        res0 = {'Actionable': {'Number of Predictions': 0,
+                              'True Positive': 0,
+                              'True Negative': 0,
+                              'False Positive': 0,
+                              'False Negative': 0},
+               'Knowledge': {'Number of Predictions': 0,
+                             'True Positive': 0,
+                             'True Negative': 0,
+                             'False Positive': 0,
+                             'False Negative': 0}}
+        self.assertEqual(c.special_mats(d0), res0)
+
+
+        # all correct
+        d1 = dict()
+        for key in c.catadictionary.keys():
+            d1[key] = {'Number of Predictions': 10,
+                       'True Positive': 5, 'True Negative': 5,
+                       'False Positive': 0, 'False Negative': 0}
+        res1 = {'Actionable': {'Number of Predictions': 30,
+                               'True Positive': 15,
+                               'True Negative': 15,
+                               'False Positive': 0,
+                               'False Negative': 0},
+                'Knowledge': {'Number of Predictions': 50,
+                              'True Positive': 25,
+                              'True Negative': 25,
+                              'False Positive': 0,
+                              'False Negative': 0}}
+        self.assertEqual(c.special_mats(d1), res1)
+
+        # all wrong
+        d2 = dict()
+        for key in c.catadictionary.keys():
+            d2[key] = {'Number of Predictions': 10,
+                       'True Positive': 0, 'True Negative': 0,
+                       'False Positive': 5, 'False Negative': 5}
+        res2 = {'Actionable': {'Number of Predictions': 30,
+                               'True Positive': 0,
+                               'True Negative': 0,
+                               'False Positive': 15,
+                               'False Negative': 15},
+                'Knowledge': {'Number of Predictions': 50,
+                              'True Positive': 0,
+                              'True Negative': 0,
+                              'False Positive': 25,
+                              'False Negative': 25}}
+        self.assertEqual(c.special_mats(d2), res2)
+
+
+        # mixed
+        d3 = d1.copy()
+        d3['SearchAndRescue'] = {'Number of Predictions': 10,
+                                 'True Positive': 7, 'True Negative': 0,
+                                 'False Positive': 2, 'False Negative': 1}
+        d3['InformationWanted'] = {'Number of Predictions': 10,
+                                   'True Positive': 1, 'True Negative': 3,
+                                   'False Positive': 3, 'False Negative': 3}
+        d3['Official'] = {'Number of Predictions': 10,
+                          'True Positive': 7, 'True Negative': 0,
+                          'False Positive': 2, 'False Negative': 1}
+        d3['MultimediaShare'] = {'Number of Predictions': 10,
+                                 'True Positive': 1, 'True Negative': 3,
+                                 'False Positive': 3, 'False Negative': 3}
+        res3 = {'Actionable': {'Number of Predictions': 30,
+                               'True Positive': 13,
+                               'True Negative': 8,
+                               'False Positive': 5,
+                               'False Negative': 4},
+                'Knowledge': {'Number of Predictions': 50,
+                              'True Positive': 23,
+                              'True Negative': 18,
+                              'False Positive': 5,
+                              'False Negative': 4}}
+        self.assertEqual(c.special_mats(d3), res3)
 
 
 if __name__ == '__main__':

@@ -24,7 +24,7 @@ class Classify:
                     'Advice': 19, 'Sentiment':20, 'Discussion': 21, 'Irrelevant': 22, 'Unknown': 23, 'KnownAlready': 24}
     actionable = ['SearchAndRescue', 'MovePeople', 'InformationWanted']
     knowledge = ['FirstPartyObservation', 'EmergingThreats',
-                 'SignificantEventChange', 'MultimediaShare','Official']
+                 'SignificantEventChange', 'MultimediaShare', 'Official']
 
     def __init__(self, tweet_texts=None, cats=None, vocab_size=2000, model=BernoulliNB(alpha = 0.1),
         pretrained=None):
